@@ -8,10 +8,13 @@
 # http://www.opensource.org/licenses/MIT-license
 # Copyright (c) 2018, Erik Gärtner <erik@gartner.io>
 
-from hyperdock import __version__
+from hyperdock.worker.worker import Worker
 from tests.base import TestCase
 
 
-class VersionTestCase(TestCase):
-    def test_has_proper_version(self):
-        self.assertEqual(__version__, '0.1.0')
+
+class WorkerTestCase(TestCase):
+
+    def test_simple_execute(self):
+        worker = Worker()
+        worker.execute('ubuntu:latest', 'touch /hyperdock/out/test', {''})
