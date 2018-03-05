@@ -1,3 +1,3 @@
 # HyperDock (aka DeepDock)
 
-![HyperDock logo](extra/logo.png)
+![HyperDock logo](extra/banner.png)
