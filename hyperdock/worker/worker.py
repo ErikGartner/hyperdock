@@ -51,5 +51,3 @@ class Worker:
         print('Waiting for container: %s' % container.name)
         container.wait()
         print('Container finished!')
-
-        return out_folder
