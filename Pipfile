@@ -10,9 +10,12 @@ name = "pypi"
 hyperopt = "*"
 docker = "*"
 click = "*"
+networkx = "==1.11"
+dill = "*"
 
 
 [dev-packages]
+
 
 
 [requires]

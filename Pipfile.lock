@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "702a4039a8ba35899f5b0f21af570b93cb2d05cf56f86d9c70e6dfe31b836e41"
+            "sha256": "98bd5daa788666ccd0adb29517f035ab39fc978b84880be53f37e63896ca359c"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -44,12 +44,18 @@
             ],
             "version": "==4.2.1"
         },
+        "dill": {
+            "hashes": [
+                "sha256:97fd758f5fe742d42b11ec8318ecfcff8776bccacbfcec05dfd6276f5d450f73"
+            ],
+            "version": "==0.2.7.1"
+        },
         "docker": {
             "hashes": [
-                "sha256:53ee5532d59f63287d0da5f0fd8b34af5704382152114cc1e1f3eb79167bd567",
-                "sha256:830823845cc32273896124d42e672eaeb2f509ea37eb7dca1101a5fbc1c451e2"
+                "sha256:462165ca6367f802280684ab44e581cd2efba8995d78d07ea994e42194927c3b",
+                "sha256:651c6feea03f5f12c823d3adc1db34ecf21e05965908e580d1b651b8c2269e9e"
             ],
-            "version": "==3.1.0"
+            "version": "==3.1.1"
         },
         "docker-pycreds": {
             "hashes": [
@@ -79,9 +85,13 @@
         },
         "networkx": {
             "hashes": [
-                "sha256:64272ca418972b70a196cb15d9c85a5a6041f09a2f32e0d30c0255f25d458bb1"
+                "sha256:0d0e70e10dfb47601cbb3425a00e03e2a2e97477be6f80638fef91d54dd1e4b8",
+                "sha256:1b229b54fe9ccb009cee4de02a88552191497a542a7d5d34adab216b9f15c1ff",
+                "sha256:38e6bd32c0a2ad26439489d9b51e2684c01f352b536aaabbe499a3ad8c89f52b",
+                "sha256:3fbc044a40bc847ae28b65850b759f3d6c697ee7ff459a02dc8f8bc4d849dc7e",
+                "sha256:b3e0144d5fe6b7479b694e1b598a5545a38f3fc6f1e3c09173eb30f0c7a5770e"
             ],
-            "version": "==2.1"
+            "version": "==1.11"
         },
         "nose": {
             "hashes": [

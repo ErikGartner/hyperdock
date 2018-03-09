@@ -1,0 +1,8 @@
+FROM ubuntu:latest
+# This an template file for the objective image that is optimized.
+
+# Do stuff: install, run the function
+
+# Setup the experiment. Make sure it reads input params from
+# param.json and writes loss to loss.json
+CMD cat /hyperdock/params.json; echo '{"loss": 0, "status": "ok"}' > /hyperdock/loss.json
