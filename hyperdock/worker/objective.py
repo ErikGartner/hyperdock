@@ -11,7 +11,7 @@ class Worker:
     def __init__(self, docker_client):
         self.docker_client = docker_client
 
-    def execute(self, image, cmd, results_folder, hyperparams):
+    def execute(self, image, cmd, host_results_folder, host_data_folder, hyperparams):
         """
         Executes the given image and waits for it to finish.
         Returns the loss of the execution.
@@ -19,26 +19,25 @@ class Worker:
         Args:
             image (string): The Docker image to execute.
             cmd (string): The command to send to the docker image.
+            data_folder (tring): The folder containing the data for evaluated function.
             results_folder (string): Path to the base of the results folder.
             hyperparams (dict): The parameters for the function being optimized.
 
         Returns:
             dict: Containing the loss information for HyperOpt.
         """
-        # Prepare mounts
-        volume_root = os.path.abspath(tempfile.mkdtemp(
-            prefix='run_', dir='/results')
-        )
+        # Prepare mounts through attached volume to the worker.
+        folder_name = 'run_%s' % time.strftime('%Y-%m-%d_%H.%M.%S')
+        volume_root = os.path.join('/results', folder_name)
+        os.mkdir(volume_root)
 
         # Folder paths
         out_folder = os.path.join(volume_root, 'out')
-        data_folder = os.path.join(volume_root, 'data')
         in_file = os.path.join(volume_root, 'params.json')
         loss_file = os.path.join(volume_root, 'loss.json')
 
         # Make empty foldes and files
         os.mkdir(out_folder)
-        os.mkdir(data_folder)
         open(loss_file, 'a').close()
 
         # Create params file
@@ -53,7 +52,8 @@ class Worker:
             tty=True,
             detach=True,
             volumes=[
-                '%s:/hyperdock:' % os.path.join(results_folder, volume_root.split('/', maxsplit=2)[-1]),
+                '%s:/data:ro' % host_data_folder,
+                '%s:/hyperdock' % os.path.join(host_results_folder, folder_name),
             ])
 
         print('Waiting for container: %s' % container.name)
@@ -89,7 +89,8 @@ def docker_objective(args):
     results = worker.execute(
         image=docker_params['image'],
         cmd=docker_params['cmd'],
-        results_folder=os.environ.get('HYPERDOCK_RESULT_DIR'),
+        host_results_folder=os.environ.get('HYPERDOCK_RESULT_DIR'),
+        host_data_folder=os.environ.get('HYPERDOCK_DATA_DIR'),
         hyperparams=hyperparams
     )
 
