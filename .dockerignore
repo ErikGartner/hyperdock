@@ -2,3 +2,7 @@ docker
 README.md
 tests
 extra
+.DS_Store
+.git
+/data
+/results

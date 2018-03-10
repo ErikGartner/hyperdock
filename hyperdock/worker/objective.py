@@ -11,7 +11,8 @@ class Worker:
     def __init__(self, docker_client):
         self.docker_client = docker_client
 
-    def execute(self, image, cmd, host_results_folder, host_data_folder, hyperparams):
+    def execute(self, image, cmd, host_results_folder, host_data_folder,
+                hyperparams, docker_runtime=''):
         """
         Executes the given image and waits for it to finish.
         Returns the loss of the execution.
@@ -51,16 +52,17 @@ class Worker:
             auto_remove=True,
             tty=True,
             detach=True,
+            runtime=docker_runtime,
             volumes=[
                 '%s:/data:ro' % host_data_folder,
                 '%s:/hyperdock' % os.path.join(host_results_folder, folder_name),
             ])
 
-        print('Waiting for container: %s' % container.name)
+        print('Running container %s' % container.name)
+        print('Params: %s' % hyperparams)
         t = time.time()
         container.wait()
         tt = time.time() - t
-        print('Container finished!')
 
         try:
             with open(loss_file, 'r') as f:
@@ -68,6 +70,7 @@ class Worker:
         except:
             raise Exception('Failed to read results.')
 
+        print('Container finished with loss: %s!' % loss)
         return dict(loss=loss, time=tt)
 
 
@@ -91,7 +94,8 @@ def docker_objective(args):
         cmd=docker_params['cmd'],
         host_results_folder=os.environ.get('HYPERDOCK_RESULT_DIR'),
         host_data_folder=os.environ.get('HYPERDOCK_DATA_DIR'),
-        hyperparams=hyperparams
+        hyperparams=hyperparams,
+        docker_runtime=os.environ.get('HYPERDOCK_RUNTIME', '')
     )
 
     return results['loss']

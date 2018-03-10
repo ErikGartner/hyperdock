@@ -2,6 +2,7 @@
 # Created by https://www.gitignore.io/api/osx,python
 
 /data
+/results
 
 ### OSX ###
 *.DS_Store
@@ -10,6 +11,8 @@
 
 # Icon must end with two \r
 Icon
+
+logfile.txt
 
 # Thumbnails
 ._*
