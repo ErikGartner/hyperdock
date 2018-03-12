@@ -36,6 +36,7 @@ class Worker:
         out_folder = os.path.join(volume_root, 'out')
         in_file = os.path.join(volume_root, 'params.json')
         loss_file = os.path.join(volume_root, 'loss.json')
+        docker_log = os.path.join(volume_root, 'docker_log.txt')
 
         # Make empty foldes and files
         os.mkdir(out_folder)
@@ -45,24 +46,26 @@ class Worker:
         with open(in_file, 'w') as f:
             json.dump(hyperparams, f)
 
+        print('Running container %s' % container.name)
+        print('Params: %s' % hyperparams)
+
         # Launch container
-        container = self.docker_client.containers.run(
+        t = time.time()
+        output = self.docker_client.containers.run(
             image=image,
             command=cmd,
             auto_remove=True,
-            tty=True,
-            detach=True,
+            tty=False,
+            detach=False,
             runtime=docker_runtime,
             volumes=[
                 '%s:/data:ro' % host_data_folder,
                 '%s:/hyperdock' % os.path.join(host_results_folder, folder_name),
             ])
-
-        print('Running container %s' % container.name)
-        print('Params: %s' % hyperparams)
-        t = time.time()
-        container.wait()
         tt = time.time() - t
+
+        with open(docker_log, 'a') as f:
+            f.write(output)
 
         try:
             with open(loss_file, 'r') as f:
