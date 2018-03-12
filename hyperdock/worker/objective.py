@@ -46,7 +46,7 @@ class Worker:
         with open(in_file, 'w') as f:
             json.dump(hyperparams, f)
 
-        print('Running container %s' % container.name)
+        print('Running container')
         print('Params: %s' % hyperparams)
 
         # Launch container
