@@ -34,7 +34,7 @@ A hyperoptimizer living in Docker
     author='Erik Gärtner',
     author_email='erik@gartner.io',
     url='http://github.com/ErikGartner/hyperdock',
-    license='MIT',
+    license='',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',

@@ -57,6 +57,7 @@ class Worker:
             auto_remove=True,
             tty=False,
             detach=False,
+            environment=dict(os.environ),
             runtime=docker_runtime,
             volumes=[
                 '%s:/data:ro' % host_data_folder,
