@@ -16,8 +16,7 @@ def load_space(config_module):
 @click.option('--mongo', default='mongo://localhost:27017/hyperdock/jobs', help='Mongodb for saving results')
 def run_experiment(name, image, mongo, config_module, trials):
     space = load_space(config_module)
-    create_dockerized_experiment(name, mongo, image, None,
-                                 space, trials)
+    create_dockerized_experiment(name, mongo, image, space, trials)
 
 
 if __name__ == '__main__':

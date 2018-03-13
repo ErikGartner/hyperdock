@@ -8,7 +8,7 @@ from hyperopt.mongoexp import MongoTrials
 from ..worker import objective
 
 
-def create_dockerized_experiment(name, mongo_url, docker_image, docker_cmd,
+def create_dockerized_experiment(name, mongo_url, docker_image,
                                  space, max_trials):
     """
     Creates a dockerized experiment that is supervised by this processed
@@ -21,8 +21,7 @@ def create_dockerized_experiment(name, mongo_url, docker_image, docker_cmd,
     # Add static docker params to hyper params
     space = {
         'docker_params': {
-            'image': docker_image,
-            'cmd': docker_cmd,
+            'image': docker_image
         },
         'hyperparams': space,
     }

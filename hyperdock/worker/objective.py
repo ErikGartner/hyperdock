@@ -11,7 +11,7 @@ class Worker:
     def __init__(self, docker_client):
         self.docker_client = docker_client
 
-    def execute(self, image, cmd, host_results_folder, host_data_folder,
+    def execute(self, image, host_results_folder, host_data_folder,
                 hyperparams, docker_runtime=''):
         """
         Executes the given image and waits for it to finish.
@@ -53,11 +53,10 @@ class Worker:
         t = time.time()
         output = self.docker_client.containers.run(
             image=image,
-            command=cmd,
             auto_remove=True,
             tty=False,
             detach=False,
-            environment=dict(os.environ),
+            environment=json.loads(os.environ.get('HYPERDOCK_ENV', '[]')),
             runtime=docker_runtime,
             volumes=[
                 '%s:/data:ro' % host_data_folder,
@@ -95,7 +94,6 @@ def docker_objective(args):
     # Execute the experiment
     results = worker.execute(
         image=docker_params['image'],
-        cmd=docker_params['cmd'],
         host_results_folder=os.environ.get('HYPERDOCK_RESULT_DIR'),
         host_data_folder=os.environ.get('HYPERDOCK_DATA_DIR'),
         hyperparams=hyperparams,
