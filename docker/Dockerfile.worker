@@ -17,4 +17,4 @@ ENV MONGO_URL="mongo://localhost:27017/hyperdock"
 ENV HYPERDOCK_RUNTIME=""
 ENV HYPERDOCK_ENV="[]"
 
-CMD hyperopt-mongo-worker --reserve-timeout=0 --poll-interval=0.5 --mongo=${MONGO_URL}
+ENTRYPOINT hyperopt-mongo-worker --reserve-timeout=0 --poll-interval=0.5 --mongo=${MONGO_URL}

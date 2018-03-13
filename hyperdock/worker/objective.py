@@ -2,6 +2,8 @@ import tempfile
 import os
 import json
 import time
+import sys
+import traceback
 
 import docker
 
@@ -51,27 +53,39 @@ class Worker:
 
         # Launch container
         t = time.time()
-        output = self.docker_client.containers.run(
-            image=image,
-            auto_remove=True,
-            tty=False,
-            detach=False,
-            environment=json.loads(os.environ.get('HYPERDOCK_ENV', '[]')),
-            runtime=docker_runtime,
-            volumes=[
-                '%s:/data:ro' % host_data_folder,
-                '%s:/hyperdock' % os.path.join(host_results_folder, folder_name),
-            ])
-        tt = time.time() - t
+        try:
+            output = self.docker_client.containers.run(
+                image=image,
+                auto_remove=True,
+                tty=False,
+                detach=False,
+                environment=json.loads(os.environ.get('HYPERDOCK_ENV', '[]')),
+                runtime=docker_runtime,
+                volumes=[
+                    '%s:/data:ro' % host_data_folder,
+                    '%s:/hyperdock' % os.path.join(host_results_folder, folder_name),
+                ])
 
-        with open(docker_log, 'a') as f:
-            f.write(output)
+            # Save docker output to file
+            with open(docker_log, 'a') as f:
+                f.write(output)
+
+        except:
+            # Write error to docker log
+            err_info = sys.exc_info()
+            traceback.print_exception(err_info[0], err_info[1], err_info[2])
+            with open(docker_log, 'a') as f:
+                traceback.print_exception(err_info[0], err_info[1], err_info[2], file=f)
+
+        # Time the execution
+        tt = time.time() - t
 
         try:
             with open(loss_file, 'r') as f:
                 loss = json.load(f)
         except:
-            raise Exception('Failed to read results.')
+            print('Failed to read results.')
+            return dict(loss={'status': 'fail', 'loss':'inf'})
 
         print('Container finished with loss: %s!' % loss)
         return dict(loss=loss, time=tt)
