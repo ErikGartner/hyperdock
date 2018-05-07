@@ -54,28 +54,34 @@ class Worker:
         # Launch container
         t = time.time()
         try:
-            output = self.docker_client.containers.run(
+            container = self.docker_client.containers.run(
                 image=image,
-                auto_remove=True,
-                tty=False,
-                detach=False,
+                tty=True,
+                detach=True,
                 environment=json.loads(os.environ.get('HYPERDOCK_ENV', '[]')),
                 runtime=docker_runtime,
+                log_config={'type': 'json-file'},
+                stdout=True,
+                stderr=True,
                 volumes=[
                     '%s:/data:ro' % host_data_folder,
                     '%s:/hyperdock' % os.path.join(host_results_folder, folder_name),
                 ])
 
-            # Save docker output to file
-            with open(docker_log, 'a') as f:
-                f.write(output)
+            container.wait()
 
-        except:
-            # Write error to docker log
-            err_info = sys.exc_info()
-            traceback.print_exception(err_info[0], err_info[1], err_info[2])
-            with open(docker_log, 'a') as f:
-                traceback.print_exception(err_info[0], err_info[1], err_info[2], file=f)
+        except (docker.errors.ContainerError, docker.errors.APIError,
+                docker.errors.ImageNotFound) as e:
+            print(e)
+
+        with open(docker_log, 'ab') as f:
+            f.write(container.logs(stdout=True, stderr=True))
+
+        try:
+            # Manually remove container since we want to be able to retreive logs.
+            container.remove()
+        except docker.errors.APIError as e:
+            print('Error while removing docker container: %s' % e)
 
         # Time the execution
         tt = time.time() - t
