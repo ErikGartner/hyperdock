@@ -8,7 +8,7 @@ Hyperdock is a software that runs makes trying out different hyper parameters si
 
 The main idea for Hyperdock is universal hyperparameter with the only dependency being that the optimization target runs in a Docker image.
 
-![Hyperdock diagram](extra/diagram.svg)
+![Hyperdock diagram](extra/diagram.png)
 
 The **Hyperdock supervisor** reads a configuration module that declares which parameters to optimize and their ranges.
 It then samples from the parameter space and creates a set of parameter combination to be evaluated. These trials are stored in a **mongo database**.
