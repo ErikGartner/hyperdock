@@ -1,12 +1,11 @@
 # Hyperdock
-
 ![Hyperdock logo](extra/banner.png)
 
-Hyperdock is a software that runs makes trying out different hyper parameters simple. All you need to do is make sure the software you want to optimize can be started from a docker image.
+A simple framework for distributed hyper parameter optimization in Docker. All you need to do is make sure the software you want to optimize can be run in a Docker image.
 
 ## Philosophy
 
-The main idea for Hyperdock is universal hyperparameter with the only dependency being that the optimization target runs in a Docker image.
+The main idea for Hyperdock is universal hyperparameter optimization with the only dependency being that the optimization target runs in a Docker image.
 
 ![Hyperdock diagram](extra/diagram.png)
 
