@@ -48,15 +48,12 @@ class Worker:
         with open(in_file, 'w') as f:
             json.dump(hyperparams, f)
 
-        print('Running container')
-        print('Params: %s' % hyperparams)
-
         # Launch container
         t = time.time()
         try:
             container = self.docker_client.containers.run(
                 image=image,
-                tty=True,
+                tty=False,
                 detach=True,
                 environment=json.loads(os.environ.get('HYPERDOCK_ENV', '[]')),
                 runtime=docker_runtime,
@@ -110,6 +107,10 @@ def docker_objective(args):
     worker = Worker(
             docker_client=docker.from_env()
     )
+
+    print('Running container')
+    print('Docker params: %s' % docker_params)
+    print('Params: %s' % hyperparams)
 
     # Execute the experiment
     results = worker.execute(
