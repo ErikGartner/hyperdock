@@ -10,3 +10,8 @@ SPACE = {
     'max_epochs': 50,
     'dropout': hp.quniform('dropout', 0, 0.5, 0.25),
 }
+
+
+if __name__ == '__main__':
+    # Loads the space and samples from it as a test.
+    print(hyperopt.pyll.stochastic.sample(SPACE))
