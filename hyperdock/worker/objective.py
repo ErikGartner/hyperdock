@@ -110,6 +110,7 @@ def docker_objective(args):
 
     print('Running container')
     print('Docker params: %s' % docker_params)
+    print('Docker env: %s' % json.loads(os.environ.get('HYPERDOCK_ENV', '[]')))
     print('Params: %s' % hyperparams)
 
     # Execute the experiment
