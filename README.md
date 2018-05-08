@@ -1,11 +1,11 @@
 # Hyperdock
 ![Hyperdock logo](extra/banner.png)
 
-A simple framework for distributed hyper parameter optimization in Docker. All you need to do is make sure the software you want to optimize can be run in a Docker image.
+*A simple framework for distributed hyper parameter optimization in Docker. All you need to do is make sure the software you want to optimize can be run in a Docker container.*
 
 ## Philosophy
 
-The main idea for Hyperdock is universal hyperparameter optimization with the only dependency being that the optimization target runs in a Docker image.
+The main idea of Hyperdock is universal hyperparameter optimization with the only dependency being that the optimization target runs in a Docker image.
 
 ![Hyperdock diagram](extra/diagram.png)
 
@@ -17,13 +17,10 @@ The **Hyperdock workers** fetches parameter combinations from the database and t
 The **target image** receives parameter in the json file `/hyperdock/params.json` as well as data and a folder to write result to. Once the image has evaluated the parameters it simply writes the loss to file `/hyperdock/loss.json`.
 
 ## Running
-Setting up the Hyperdock system can seem a bit complicated but once it is up it quite
-easy to use.
+Setting up the Hyperdock system can seem a bit complicated but once it is up it quite easy to use.
 
 #### Mongo database
-
 To start a Mongo database you can use this simple Docker command or use any normal Mongo instance.
-
 ```bash
 # Starts mongo db, add --bind_ip_all to listen on all interfaces.
 docker run --name hyperdock-mongo -p 27017:27017 -d mongo
@@ -50,7 +47,7 @@ Options:
 - `--image erikgartner/hyperdock-test` sets the _target image_
 - `--config_module example` sets which configuration module to use
 - ` --mongo mongo://172.17.0.1:27017/hyperdock/jobs` sets which Mongo database to connect to
-- `--trials 5` sets the number of retries incase of errors in the target image container.
+- `--trials 5` sets the number of retries in case of errors in the target image container.
 
 #### Worker
 To start the **Hyperdock worker** run the following command.
@@ -100,3 +97,5 @@ The latest version should be available from Docker Hub but you can also build it
 docker build -t erikgartner/hyperdock-worker:latest -f docker/Dockerfile.worker .
 docker build -t erikgartner/hyperdock-supervisor:latest -f docker/Dockerfile.supervisor .
 ```
+## License
+TBD
