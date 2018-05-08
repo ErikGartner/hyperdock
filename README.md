@@ -1,20 +1,20 @@
 # Hyperdock
 ![Hyperdock logo](extra/banner.png)
 
-*A simple framework for distributed hyper parameter optimization in Docker. All you need to do is make sure the software you want to optimize can be run in a Docker container.*
+*A simple framework for distributed hyperparameter optimization in Docker. All you need to do is make sure the software you want to optimize can be run in a Docker container.*
 
 ## Philosophy
 
-The main idea of Hyperdock is universal hyperparameter optimization with the only dependency being that the optimization target runs in a Docker image.
+The main idea of Hyperdock is universal hyperparameter optimization with minimal dependencies (i.e. Docker).
 
 ![Hyperdock diagram](extra/diagram.png)
 
 The **Hyperdock supervisor** reads a configuration module that declares which parameters to optimize and their ranges.
 It then samples from the parameter space and creates a set of parameter combination to be evaluated. These trials are stored in a **mongo database**.
 
-The **Hyperdock workers** fetches parameter combinations from the database and then executes the **target image** with these parameters as to evaluate the combination. This is repeated a number of time and then **Hyperdock** returns the best parameter combination. Since the workers talk connect directly with the database they can be distributed as long as they can access any data needed by the **target image**.
+The **Hyperdock workers** fetches parameter combinations from the database and then executes the **target image** with these parameters as to evaluate the combination. This is repeated a specified number of time and then **Hyperdock** returns the best parameter combination. Since the workers talk connect directly with the database they can be distributed as long as they can access any data needed by the **target image**.
 
-The **target image** receives parameter in the json file `/hyperdock/params.json` as well as data and a folder to write result to. Once the image has evaluated the parameters it simply writes the loss to file `/hyperdock/loss.json`.
+The **target image** receives the parameters from the json file `/hyperdock/params.json`. Once the target image has evaluated the parameters it simply writes the loss to file `/hyperdock/loss.json`.
 
 ## Running
 Setting up the Hyperdock system can seem a bit complicated but once it is up it quite easy to use.
