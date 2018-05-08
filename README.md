@@ -47,7 +47,7 @@ Options:
 - `--image erikgartner/hyperdock-test` sets the _target image_
 - `--config_module example` sets which configuration module to use
 - ` --mongo mongo://172.17.0.1:27017/hyperdock/jobs` sets which Mongo database to connect to
-- `--trials 5` sets the number of retries in case of errors in the target image container.
+- `--trials 5` sets the maximum number of parameter combination to try out.
 
 #### Worker
 To start the **Hyperdock worker** run the following command.
