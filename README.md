@@ -102,8 +102,3 @@ However if you like you can also build the images yourself:
 docker build -t erikgartner/hyperdock-worker:latest -f docker/Dockerfile.worker .
 docker build -t erikgartner/hyperdock-supervisor:latest -f docker/Dockerfile.supervisor .
 ```
-
-## License
-The MIT License (MIT)
-
-Copyright (c) 2018 Erik Gärtner
