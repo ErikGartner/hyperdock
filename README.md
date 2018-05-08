@@ -91,11 +91,19 @@ See [example.py](hyperdock/config/example.py) for an example.
 
 ## Building
 
-The latest version should be available from Docker Hub but you can also build it yourself.
+The latest version should be available from Docker Hub just use the pull command:
+```bash
+docker pull erikgartner/hyperdock-worker:latest
+docker pull erikgartner/hyperdock-supervisor:latest
+```
 
+However if you like you can also build the images yourself:
 ```bash
 docker build -t erikgartner/hyperdock-worker:latest -f docker/Dockerfile.worker .
 docker build -t erikgartner/hyperdock-supervisor:latest -f docker/Dockerfile.supervisor .
 ```
+
 ## License
-TBD
+The MIT License (MIT)
+
+Copyright (c) 2018 Erik Gärtner
