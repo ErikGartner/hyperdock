@@ -30,7 +30,7 @@ class Worker:
             dict: Containing the loss information for HyperOpt.
         """
         # Prepare mounts through attached volume to the worker.
-        folder_name = 'run_%s' % time.strftime('%Y-%m-%d_%H.%M.%S')
+        folder_name = 'run_%s' % time.strftime('%Y-%m-%d_%H.%M.%S.%f')
         volume_root = os.path.join('/results', folder_name)
         os.mkdir(volume_root)
 
