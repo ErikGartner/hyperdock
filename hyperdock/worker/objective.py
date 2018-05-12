@@ -2,6 +2,7 @@ import tempfile
 import os
 import json
 import time
+from datetime import datetime
 import sys
 import traceback
 
@@ -30,7 +31,7 @@ class Worker:
             dict: Containing the loss information for HyperOpt.
         """
         # Prepare mounts through attached volume to the worker.
-        folder_name = 'run_%s' % time.strftime('%Y-%m-%d_%H.%M.%S.%f')
+        folder_name = 'run_%s' % datetime.now().strftime('%Y-%m-%d_%H.%M.%S.%f')
         volume_root = os.path.join('/results', folder_name)
         os.mkdir(volume_root)
 
