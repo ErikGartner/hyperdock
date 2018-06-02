@@ -1,6 +1,8 @@
 from threading import Thread
 import logging
 from time import sleep
+import secrets
+from datetime import datetime
 
 
 SLEEP_TIME = 5
@@ -12,8 +14,9 @@ class Worker(Thread):
         super().__init__(name="Worker")
 
         self._mongodb = mongodb
-        self.logger = logging.getLogger('Worker')
-        self.running = True
+        self.id = self._generate_id()
+        self.logger = logging.getLogger('Worker %s' % self.id)
+        self._running = True
 
     def run(self):
         """
@@ -25,7 +28,7 @@ class Worker(Thread):
         """
         self.logger.info('Started main loop')
 
-        while self.running:
+        while self._running:
             self._register_worker()
             self._monitor_experiments()
             self._start_new_experiments()
@@ -37,14 +40,19 @@ class Worker(Thread):
         """
         Request a stop of the worker.
         """
-        self.running = False
+        self._running = False
 
     def _register_worker(self):
         """
         Updates the worker list with this worker.
         Also used as a keep-alive message.
         """
-        pass
+        data = {
+            'id': self.id,
+            'time': datetime.utcnow(),
+        }
+        self._mongodb.workers.update_one({'id': self.id}, {'$set': data},
+                                         upsert=True)
 
     def _monitor_experiments(self):
         """
@@ -65,3 +73,9 @@ class Worker(Thread):
         experiments.
         """
         pass
+
+    def _generate_id(self):
+        """
+        Generates a unique worker id
+        """
+        return 'worker-%s' % secrets.token_hex(16)
