@@ -11,7 +11,7 @@ SLEEP_TIME = 5
 class Worker(Thread):
 
     def __init__(self, args, mongodb):
-        super().__init__(name="Worker")
+        super().__init__(name='Worker')
 
         self._mongodb = mongodb
         self.id = self._generate_id()
@@ -76,6 +76,6 @@ class Worker(Thread):
 
     def _generate_id(self):
         """
-        Generates a unique worker id
+        Generates a unique worker id.
         """
         return 'worker-%s' % secrets.token_hex(16)
