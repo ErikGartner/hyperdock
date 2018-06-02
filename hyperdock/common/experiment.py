@@ -72,4 +72,4 @@ class MockExperiment(Experiment):
 
     def get_result(self):
         state = 'ok' if not self.failure else 'failure'
-        return {'loss': 1, 'state': state}
+        return {'loss': 1.0, 'state': state}
