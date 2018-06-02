@@ -31,5 +31,5 @@ class TestWorker(TestCase):
 
         self.assertEqual(collection.find_one()['id'], self.worker.id, 'Incorrect id')
         self.assertAlmostEquals(collection.find_one()['time'],
-                                   datetime.utcnow(), msg='Timestamp off',
-                                   delta=timedelta(seconds=5))
+                                datetime.utcnow(), msg='Timestamp off',
+                                delta=timedelta(seconds=5))
