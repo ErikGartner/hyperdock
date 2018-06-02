@@ -9,6 +9,8 @@
 # Copyright (c) 2018, Erik Gärtner <erik@gartner.io>
 
 from unittest import TestCase
+from datetime import datetime, timedelta
+
 import mongomock
 
 from hyperdock.worker.worker import Worker
@@ -22,9 +24,12 @@ class TestWorker(TestCase):
 
     def test_register_worker(self):
         collection = self.db.workers
-        self.assertEqual(collection.count(), 0, 'Not empty before start!')
+        self.assertEqual(collection.count(), 0, 'Not empty before start')
 
         self.worker._register_worker()
-        self.assertEqual(collection.count(), 1, 'Failed to register worker!')
+        self.assertEqual(collection.count(), 1, 'Failed to register worker')
 
-        print(list(collection.find()))
+        self.assertEqual(collection.find_one()['id'], self.worker.id, 'Incorrect id')
+        self.assertAlmostEquals(collection.find_one()['time'],
+                                   datetime.utcnow(), msg='Timestamp off',
+                                   delta=timedelta(seconds=5))
