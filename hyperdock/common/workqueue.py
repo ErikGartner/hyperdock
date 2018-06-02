@@ -50,7 +50,7 @@ class WorkQueue:
         Marks the job as alive.
         """
         t = datetime.utcnow()
-        self.collection.update(_id, {'$set': {'last_update': t}})
+        self.collection.update({'_id': _id}, {'$set': {'last_update': t}})
 
     def finish_job(self, _id, result):
         """

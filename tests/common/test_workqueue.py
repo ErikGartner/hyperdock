@@ -35,11 +35,11 @@ class TestWorkQueue(TestCase):
                                 datetime.utcnow(), msg='Timestamp off',
                                 delta=timedelta(seconds=5))
         self.assertEqual(self.collection.find_one()['start_time'],
-                                -1, msg='Timestamp off',)
+                         -1, msg='Timestamp off',)
         self.assertEqual(self.collection.find_one()['end_time'],
-                                -1, msg='Timestamp off',)
+                         -1, msg='Timestamp off',)
         self.assertEqual(self.collection.find_one()['last_update'],
-                                -1, msg='Timestamp off',)
+                         -1, msg='Timestamp off',)
 
     def test_take_job(self):
         worker_id = 'worker1'
