@@ -102,3 +102,13 @@ However if you like you can also build the images yourself:
 docker build -t erikgartner/hyperdock-worker:latest -f docker/Dockerfile.worker .
 docker build -t erikgartner/hyperdock-supervisor:latest -f docker/Dockerfile.supervisor .
 ```
+
+## License
+Copyright 2018 Erik Gärtner
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
