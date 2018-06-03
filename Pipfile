@@ -11,6 +11,7 @@ networkx = "==1.11"
 dill = "*"
 mongomock = "*"
 pymongo = "*"
+sklearn = "*"
 
 [dev-packages]
 
