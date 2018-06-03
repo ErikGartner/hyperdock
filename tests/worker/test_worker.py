@@ -12,7 +12,7 @@ class TestWorker(TestCase):
 
     def setUp(self):
         self.db = mongomock.MongoClient().db
-        self.worker = Worker({}, self.db)
+        self.worker = Worker(self.db)
 
     def test_register_worker(self):
         collection = self.db.workers

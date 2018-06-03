@@ -17,9 +17,7 @@ setup(
     name='hyperdock',
     version=__version__,
     description='A hyperoptimizer living in Docker',
-    long_description='''
-A hyperoptimizer living in Docker
-''',
+    long_description='''A hyperoptimizer living in Docker''',
     keywords='',
     author='Erik Gärtner',
     author_email='erik@gartner.io',
@@ -31,7 +29,7 @@ A hyperoptimizer living in Docker
         'License :: OSI Approved :: Apache 2.0',
         'Natural Language :: English',
         'Operating System :: Unix',
-        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.6',
         'Operating System :: OS Independent',
     ],
     packages=find_packages(),
@@ -47,6 +45,7 @@ A hyperoptimizer living in Docker
         'console_scripts': [
             # add cli scripts here in this form:
             # 'hyperdock=hyperdock.cli:main',
+            'hyperdock-supervisor=hyperdock.supervisor.cli'
         ],
     },
 )
