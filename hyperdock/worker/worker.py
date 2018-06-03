@@ -12,7 +12,7 @@ SLEEP_TIME = 5
 
 class Worker(Thread):
 
-    def __init__(self, args, mongodb):
+    def __init__(self, mongodb):
         super().__init__(name='Worker')
 
         self._mongodb = mongodb
@@ -89,6 +89,9 @@ class Worker(Thread):
         """
         for i in range(self.max_experiments - len(self.experiments)):
             job = self.workqueue.assign_next_job(self.id)
+            if job is None:
+                break
+
             experiment = experiment_cls(job)
             experiment.start()
             self.experiments.append(experiment)
