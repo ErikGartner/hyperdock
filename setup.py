@@ -28,7 +28,7 @@ A hyperoptimizer living in Docker
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: Apache 2.0',
         'Natural Language :: English',
         'Operating System :: Unix',
         'Programming Language :: Python :: 3.4',
