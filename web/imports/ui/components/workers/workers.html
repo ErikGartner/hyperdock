@@ -1,0 +1,19 @@
+<template name="workers">
+  <h2>Registered Workers</h2>
+
+  <table class="table table-hover">
+    <thead>
+      <th>Id</th>
+      <th>Last Update</th>
+    </thead>
+    <tbody>
+    {{#each workers}}
+      <tr>
+        <td>{{id}}</td>
+        <td>{{time}}</td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+
+</template>
