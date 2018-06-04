@@ -1,6 +1,7 @@
 from threading import Thread
 import logging
 from time import sleep
+from datetime import datetime, timedelta
 
 from sklearn.model_selection import ParameterGrid
 
@@ -8,6 +9,7 @@ from ..common.trialqueue import TrialQueue
 from ..common.workqueue import WorkQueue
 
 SLEEP_TIME = 5
+WORKER_TIMEOUT = 300
 
 
 class Supervisor(Thread):
@@ -24,6 +26,7 @@ class Supervisor(Thread):
         self._mongodb = mongodb
         self.trialqueue = TrialQueue(mongodb)
         self.workqueue = WorkQueue(mongodb)
+        self.worker_collection = mongodb.workers
         self._running = True
 
     def run(self):
@@ -36,6 +39,7 @@ class Supervisor(Thread):
         self.logger.info('Started main loop')
 
         while self._running:
+            self._purge_old_workers()
             self._process_trials()
             sleep(SLEEP_TIME)
 
@@ -62,3 +66,11 @@ class Supervisor(Thread):
         experiments_specs = list(ParameterGrid(trial['param_space']))
         for payload in experiments_specs:
             self.workqueue.add_job(payload, trial['priority'])
+
+    def _purge_old_workers(self):
+        """
+        The supervisor checks the latests registered workers and cleans up
+        timed out workers.
+        """
+        t = datetime.utcnow() - timedelta(seconds=WORKER_TIMEOUT)
+        self.worker_collection.remove({'time': {'$lt': t}})
