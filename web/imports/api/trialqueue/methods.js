@@ -11,8 +11,12 @@ Meteor.methods({
     let p = JSON.parse(param_space);
 
     return TrialQueue.insert({
-      docker_image: docker_image,
       param_space: p,
+      data: {
+        docker: {
+          image: docker_image
+        }
+      },
       created_on: new Date(),
       start_time: -1,
       end_time: -1,

@@ -31,7 +31,7 @@ class WorkQueue:
         )
         return job
 
-    def add_job(self, payload, priority=0):
+    def add_job(self, parameters, data, priority=0):
         """
         Adds new work to the workqueue.
         """
@@ -41,7 +41,8 @@ class WorkQueue:
             'last_update': -1,
             'created_on': datetime.utcnow(),
             'priority': priority,
-            'payload': payload,
+            'parameters': parameters,
+            'data': data,
             'worker': None,
             'result': {},
             '_id': str(ObjectId()),
