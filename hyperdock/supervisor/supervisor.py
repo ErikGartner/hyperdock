@@ -63,9 +63,10 @@ class Supervisor(Thread):
         Takes a trial experiment, expands the parameter space and
         adds experiments to the work queue.
         """
-        experiments_specs = list(ParameterGrid(trial['param_space']))
-        for payload in experiments_specs:
-            self.workqueue.add_job(payload, trial['priority'])
+        params_list = list(ParameterGrid(trial['param_space']))
+
+        for params in params_list:
+            self.workqueue.add_job(params, trial['data'], trial['priority'])
 
     def _purge_old_workers(self):
         """

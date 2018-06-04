@@ -12,6 +12,7 @@ class TrialQueue:
         end_time: <date>,
         created_on: <date>,
         priority: <int>,
+        data: <dict>,
         param_space: {
             ...
         },

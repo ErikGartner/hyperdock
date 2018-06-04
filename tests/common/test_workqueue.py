@@ -14,13 +14,14 @@ class TestWorkQueue(TestCase):
         self.collection = self.db.workqueue
 
         # Default data
-        self.payload = 'payload1'
-        self.q.add_job(self.payload)
+        self.parameters = 'parameters1'
+        self.data = {'docker': {'image': 'a_docker_image'}}
+        self.q.add_job(self.parameters, self.data)
 
     def test_add_job(self):
         self.assertEqual(self.collection.count(), 1, 'Failed to add to queue')
-        self.assertEqual(self.collection.find_one()['payload'], self.payload,
-                         'Incorrect payload')
+        self.assertEqual(self.collection.find_one()['parameters'], self.parameters,
+                         'Incorrect parameters')
         self.assertAlmostEquals(self.collection.find_one()['created_on'],
                                 datetime.utcnow(), msg='Timestamp off',
                                 delta=timedelta(seconds=5))
@@ -35,7 +36,7 @@ class TestWorkQueue(TestCase):
         worker_id = 'worker1'
         job = self.q.assign_next_job(worker_id)
 
-        self.assertEqual(job['payload'], self.payload)
+        self.assertEqual(job['parameters'], self.parameters)
         self.assertEqual(job['worker'], worker_id)
         self.assertAlmostEquals(job['start_time'],
                                 datetime.utcnow(), msg='Timestamp off',

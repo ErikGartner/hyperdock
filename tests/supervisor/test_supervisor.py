@@ -22,6 +22,7 @@ class TestSupervisor(TestCase):
             'end_time': -1,
             'created_on': datetime.utcnow(),
             'priority': 1,
+            'data': {'docker': {'image': 'a_docker_image'}},
             'param_space': {
                 'learning_rate': [0.1, 0.001],
                 'solver': ['adam', 'adagrad'],
@@ -40,7 +41,7 @@ class TestSupervisor(TestCase):
         workq = self.db.workqueue
         self.assertEqual(workq.find({'start_time': -1}).count(), 4,
                          'Missing parameter combinations')
-        self.assertEqual(workq.find({'payload':
+        self.assertEqual(workq.find({'parameters':
                                      {'learning_rate': 0.001,
                                       'solver': 'adagrad'}
                                      }).count(), 1,
