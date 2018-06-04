@@ -45,3 +45,16 @@ class TestSupervisor(TestCase):
                                       'solver': 'adagrad'}
                                      }).count(), 1,
                          'Missing parameter combination')
+
+    def test_purge_old_workers(self):
+        collection = self.db.workers
+        collection.insert({'id': 'test-worker-old', 'time': datetime(year=1,
+                                                                     month=1,
+                                                                     day=1)})
+        collection.insert({'id': 'test-worker-new', 'time': datetime.utcnow()})
+        self.assertEqual(collection.find().count(), 2, 'Missing workers')
+
+        self.supervisor._purge_old_workers()
+        self.assertEqual(collection.find().count(), 1, 'Incorrect purge')
+        self.assertEqual(collection.find({'id': 'test-worker-new'}).count(), 1,
+                                         'Incorrect purge')
