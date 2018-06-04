@@ -12,6 +12,9 @@ FlowRouter.route('/', {
   action() {
     BlazeLayout.render('App_body', { main: 'App_home' });
   },
+  subscriptions: function(params, queryParams) {
+    this.register('workers.all', Meteor.subscribe('workers.all'));
+  }
 });
 
 FlowRouter.notFound = {
