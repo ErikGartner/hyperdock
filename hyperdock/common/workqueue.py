@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from bson.objectid import ObjectId
+
 
 class WorkQueue:
     """
@@ -42,6 +44,7 @@ class WorkQueue:
             'payload': payload,
             'worker': None,
             'result': {},
+            '_id': str(ObjectId()),
         })
         return id
 

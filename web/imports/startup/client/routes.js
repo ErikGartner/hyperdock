@@ -14,6 +14,8 @@ FlowRouter.route('/', {
   },
   subscriptions: function(params, queryParams) {
     this.register('workers.all', Meteor.subscribe('workers.all'));
+    this.register('trialqueue.all', Meteor.subscribe('trialqueue.all'));
+    this.register('workqueue.all', Meteor.subscribe('workqueue.all'));
   }
 });
 
