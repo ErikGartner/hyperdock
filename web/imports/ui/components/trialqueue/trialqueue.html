@@ -1,0 +1,19 @@
+<template name="trialqueue">
+  <h2>Trial Queue</h2>
+
+  <table class="table table-hover">
+    <thead>
+      <th>Id</th>
+      <th>Parameter Space</th>
+    </thead>
+    <tbody>
+    {{#each trialqueue}}
+      <tr>
+        <td>{{_id}}</td>
+        <td>{{json2string param_space}}</td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+
+</template>

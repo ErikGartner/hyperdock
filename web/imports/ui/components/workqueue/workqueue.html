@@ -1,0 +1,23 @@
+<template name="workqueue">
+  <h2>Work Queue</h2>
+
+  <table class="table table-hover">
+    <thead>
+      <th>Id</th>
+      <th>Start Time</th>
+      <th>Assigned Worker</th>
+      <th>Parameters</th>
+    </thead>
+    <tbody>
+    {{#each workqueue}}
+      <tr>
+        <td>{{_id}}</td>
+        <td>{{start_time}}</td>
+        <td>{{worker}}</td>
+        <td>{{json2string payload}}</td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+
+</template>
