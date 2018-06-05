@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 docker = "*"
 click = "*"
-networkx = "==1.11"
 dill = "*"
 mongomock = "*"
 pymongo = "*"
