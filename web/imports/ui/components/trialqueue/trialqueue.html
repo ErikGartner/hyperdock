@@ -3,6 +3,7 @@
 
   <table class="table table-hover">
     <thead>
+      <th>Remove</th>
       <th>Id</th>
       <th>Data</th>
       <th>Parameter Space</th>
@@ -10,6 +11,7 @@
     <tbody>
     {{#each trialqueue}}
       <tr>
+        <td>{{> quickRemoveButton class="btn btn-danger" collection=TrialQueue _id=_id}}</td>
         <td>{{_id}}</td>
         <td>{{json2string data}}</td>
         <td>{{json2string param_space}}</td>
@@ -18,10 +20,14 @@
     </tbody>
   </table>
 
-  <form class="add-trial">
-   <input type="text" name="docker_image" placeholder="Docker Image" required>
-   <input type="text" name="param_space" placeholder="Param Space" required>
-   <input type="submit" name="submit" value="Add trial">
- </form>
-
+ {{#autoForm schema=TrialInsertSchema id="insertTrial" type="normal" validation="submit"}}
+   <fieldset>
+     <legend>Add Trial</legend>
+   </fieldset>
+   {{> afQuickField name="docker_image"}}
+   {{> afQuickField name="param_space"}}
+   {{> afQuickField name="data_path"}}
+   {{> afQuickField name="results_path"}}
+   <button type="submit" class="btn btn-primary">Add Trial</button>
+  {{/autoForm}}
 </template>

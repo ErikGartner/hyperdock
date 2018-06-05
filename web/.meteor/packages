@@ -26,5 +26,7 @@ johanbrook:publication-collector  # Test a Meteor publication by collecting its 
 
 twbs:bootstrap
 
-msavin:mongol
-insecure
+aldeed:autoform
+aldeed:collection2@3.0.0
+aldeed:delete-button
+ongoworks:security

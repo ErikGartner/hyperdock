@@ -1,4 +1,4 @@
-import { TrialQueue } from '/imports/api/trialqueue/trialqueue.js';
+import { TrialQueue, TrialInsertSchema } from '/imports/api/trialqueue/trialqueue.js';
 import { Meteor } from 'meteor/meteor';
 import './trialqueue.html';
 
@@ -6,23 +6,38 @@ Template.trialqueue.helpers({
   trialqueue() {
     return TrialQueue.find({});
   },
+  TrialInsertSchema() {
+    return TrialInsertSchema;
+  },
+  TrialQueue() {
+    return TrialQueue;
+  },
 });
 
-Template.trialqueue.events({
-  'submit .add-trial'(event) {
-    event.preventDefault();
+AutoForm.hooks({
+  insertTrial: {
+    onSubmit: function (insertDoc, updateDoc, currentDoc) {
+      this.event.preventDefault();
 
-    const target = event.target;
-    const docker_image = target.docker_image;
-    const param_space = target.param_space;
-
-    Meteor.call('trialqueue.insert', docker_image.value, param_space.value, (error) => {
-      if (error) {
-        alert(error.error);
-      } else {
-        docker_image.value = '';
-        param_space.value = '';
+      doc = {
+        data: {
+          docker: {
+            image: insertDoc.docker_image
+          },
+          volumes: {
+            results: insertDoc.results_path,
+            data: insertDoc.data_path,
+          }
+        },
+        param_space: JSON.parse(insertDoc.param_space)
       }
-    });
-  },
+
+      if (TrialQueue.insert(doc)) {
+        this.done();
+      } else {
+        this.done(new Error("Submission failed"));
+      }
+      return false;
+    }
+  }
 });
