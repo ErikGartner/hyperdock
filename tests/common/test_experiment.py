@@ -11,7 +11,7 @@ import docker
 from hyperdock.common.experiment import Experiment
 
 
-#@skip("Skip on Travis since it requires a Docker installation")
+#@skip('Skip since it requires a Docker installation')
 class TestExperiment(TestCase):
 
     def setUp(self):
@@ -88,14 +88,12 @@ class TestExperiment(TestCase):
         # Make sure it says it has has stopped
         self.assertFalse(self.experiment.is_running(), 'Container has stopped')
 
-
         # Check parameters were correct
         with open(os.path.join(self.experiment._volume_root,
                                'params.json'), 'r') as f:
             params = json.load(f)
             self.assertDictEqual(params, self.job['parameters'],
                                  'Incorrect parameters!')
-
 
         # Get result, ensure it is correct
         result = self.experiment.get_result()
