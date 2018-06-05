@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-hyperopt = "*"
 docker = "*"
 click = "*"
 networkx = "==1.11"
@@ -14,6 +13,7 @@ pymongo = "*"
 sklearn = "*"
 
 [dev-packages]
+nose = "*"
 
 [requires]
 python_version = "3.6"
