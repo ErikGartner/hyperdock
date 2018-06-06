@@ -3,6 +3,7 @@
 
   <table class="table table-hover">
     <thead>
+      <th>Trial</th>
       <th>Id</th>
       <th>Start Time</th>
       <th>Assigned Worker</th>
@@ -12,6 +13,7 @@
     <tbody>
     {{#each workqueue}}
       <tr>
+        <td>{{trial}}</td>
         <td>{{_id}}</td>
         <td>{{start_time}}</td>
         <td>{{worker}}</td>
