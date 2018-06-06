@@ -31,7 +31,7 @@ class WorkQueue:
         )
         return job
 
-    def add_job(self, parameters, data, priority=0):
+    def add_job(self, parameters, data, trial, priority=0):
         """
         Adds new work to the workqueue.
         """
@@ -45,6 +45,7 @@ class WorkQueue:
             'data': data,
             'worker': None,
             'result': {},
+            'trial': trial,
             '_id': str(ObjectId()),
         })
         return id
