@@ -16,7 +16,8 @@ class TestWorkQueue(TestCase):
         # Default data
         self.parameters = 'parameters1'
         self.data = {'docker': {'image': 'a_docker_image'}}
-        self.q.add_job(self.parameters, self.data)
+        self.trial_id = 'trial-1'
+        self.q.add_job(self.parameters, self.data, self.trial_id)
 
     def test_add_job(self):
         self.assertEqual(self.collection.count(), 1, 'Failed to add to queue')
@@ -31,6 +32,9 @@ class TestWorkQueue(TestCase):
                          -1, msg='Timestamp off',)
         self.assertEqual(self.collection.find_one()['last_update'],
                          -1, msg='Timestamp off',)
+        self.assertEqual(self.collection.find_one()['trial'],
+                         self.trial_id, msg='Incorrect trial id')
+
 
     def test_take_job(self):
         worker_id = 'worker1'
