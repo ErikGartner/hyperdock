@@ -11,7 +11,7 @@ import docker
 from hyperdock.common.experiment import Experiment
 
 
-#@skip('Skip since it requires a Docker installation')
+# @skip('since it requires a Docker installation')
 class TestExperiment(TestCase):
 
     def setUp(self):
@@ -27,7 +27,7 @@ class TestExperiment(TestCase):
                 'docker': {
                     'image': self.image,
                     'environment': [
-                        'NVIDIA_VISIBLE_DEVICES=1'
+                        'NVIDIA_VISIBLE_DEVICES=1',
                     ],
                 },
                 'volumes': {
@@ -42,6 +42,7 @@ class TestExperiment(TestCase):
             'last_update': -1,
             'priority': 1,
             'result': {},
+            'trial': 'trial-1',
             '_id': 'job-1',
         }
 
