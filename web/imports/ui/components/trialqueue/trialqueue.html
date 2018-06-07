@@ -3,7 +3,6 @@
 
   <table class="table table-hover">
     <thead>
-      <th>Remove</th>
       <th>Id</th>
       <th>Data</th>
       <th>Parameter Space</th>
@@ -11,8 +10,7 @@
     <tbody>
     {{#each trialqueue}}
       <tr>
-        <td>{{> quickRemoveButton class="btn btn-danger" collection=TrialQueue _id=_id}}</td>
-        <td>{{_id}}</td>
+        <td><a href="{{pathFor route='Trial' trialId=_id}}">{{_id}}</a></td>
         <td>{{json2string data}}</td>
         <td>{{json2string param_space}}</td>
       </tr>

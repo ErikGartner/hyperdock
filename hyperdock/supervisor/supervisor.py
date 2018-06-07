@@ -66,7 +66,8 @@ class Supervisor(Thread):
         params_list = list(ParameterGrid(trial['param_space']))
 
         for params in params_list:
-            self.workqueue.add_job(params, trial['data'], trial['priority'])
+            self.workqueue.add_job(params, trial['data'], trial['_id'],
+                                   trial['priority'])
 
     def _purge_old_workers(self):
         """
