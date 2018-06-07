@@ -3,11 +3,12 @@ import logging
 from time import sleep
 import secrets
 from datetime import datetime
+import platform
 
 from ..common.workqueue import WorkQueue
 from ..common.experiment import Experiment
 
-SLEEP_TIME = 5
+SLEEP_TIME = 20
 
 
 class Worker(Thread):
@@ -56,6 +57,10 @@ class Worker(Thread):
         data = {
             'id': self.id,
             'time': datetime.utcnow(),
+            'parallelism': self.max_experiments,
+            'jobs': [e.id for e in self.experiments],
+            'env': self.docker_env,
+            'host': platform.node(),
         }
         self._mongodb.workers.update_one({'id': self.id}, {'$set': data},
                                          upsert=True)
