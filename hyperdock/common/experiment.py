@@ -180,6 +180,9 @@ class Experiment:
         results_folder = try_key(data, 'results', 'volumes', 'results')
         folder_name = 'run_%s' % datetime.utcnow().strftime('%Y-%m-%d_%H.%M.%S.%f')
         volume_root = os.path.join(results_folder, folder_name)
+
+        # Ensure path is absolute
+        volume_root = os.path.abspath(volume_root)
         os.makedirs(volume_root, exist_ok=True)
 
         # Folder paths
@@ -201,8 +204,9 @@ class Experiment:
         ]
         self._volume_root = volume_root
 
-        # Get host data folder
+        # Get host data folder, ensure it is absolute
         host_data_folder = try_key(data, '', 'volumes', 'data')
+        host_data_folder = os.path.abspath(host_data_folder)
         if host_data_folder is not '':
             self._volumes.append('%s:/data:ro' % host_data_folder)
 
