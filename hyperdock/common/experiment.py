@@ -13,7 +13,7 @@ class Experiment:
     Class managing an experiment.
     """
 
-    def __init__(self, job):
+    def __init__(self, job, worker_env):
         super().__init__()
 
         self._queue_job = job
@@ -26,6 +26,7 @@ class Experiment:
         self._volume_root = None
         self._docker_client = docker.from_env()
         self.has_started = False
+        self.worker_env = worker_env
 
     def start(self):
         """
@@ -94,16 +95,17 @@ class Experiment:
         Starts a docker container and returns its handle.
         """
         try:
+            runtime = try_key(self._queue_job['data'], '', 'docker', 'runtime')
             container = self._docker_client.containers.run(
                 image=image,
                 tty=False,
                 detach=True,
-                environment=try_key(self._queue_job['data'], {}, 'docker', 'environment'),
-                runtime=try_key(self._queue_job['data'], '', 'docker', 'runtime'),
+                environment=self._get_environment(),
+                runtime=runtime,
                 log_config={'type': 'json-file'},
                 stdout=True,
                 stderr=True,
-                volumes=self._volumes
+                volumes=self._volumes,
             )
             return container
 
@@ -113,6 +115,24 @@ class Experiment:
             self.logger.error('Failed to start container:\n%s' % e)
             self._result = {'status': 'fail', 'msg': e}
             return None
+
+    def _get_environment(self):
+        """
+        Creates the Target Image enviroment from the enviroment set by
+        the worker and the job. Raises ValueError if job_spec contains
+        the wrong format.
+        """
+        env = []
+        job_env = try_key(self._queue_job['data'], [], 'docker', 'environment')
+        if isinstance(job_env, list):
+            env.extend(job_env)
+        elif isinstance(job_env, dict):
+            for k, v in job_env.items():
+                env.append('%s=%s' % (k, v))
+        else:
+            raise ValueError('Invalid environment in job spec: %s' % job_env)
+        env.extend(self.worker_env)
+        return env
 
     def _check_container_running(self):
         """
@@ -198,8 +218,8 @@ class MockExperiment(Experiment):
     It runs for one check then finishes. Returns a loss of 1.0.
     """
 
-    def __init__(self, job):
-        super().__init__(job)
+    def __init__(self, job, worker_env):
+        super().__init__(job, worker_env)
         self.running = False
         self.failure = False
 
