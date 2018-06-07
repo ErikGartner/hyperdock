@@ -8,7 +8,7 @@ import platform
 from ..common.workqueue import WorkQueue
 from ..common.experiment import Experiment
 
-SLEEP_TIME = 20
+SLEEP_TIME = 10
 
 
 class Worker(Thread):
@@ -68,9 +68,15 @@ class Worker(Thread):
     def _monitor_experiments(self):
         """
         Monitor the status of the current experiments.
+        Also checks to see if an experiment has been cancelled by the user.
         """
         running_exps = []
         for ex in self.experiments:
+            if self.workqueue.is_job_cancelled(ex.id):
+                # Experiment was cancelled by user
+                ex.cleanup()
+                continue
+
             if ex.is_running():
                 # Update the stay alive
                 self._update_experiment(ex)
