@@ -4,12 +4,14 @@
   <table class="table table-hover">
     <thead>
       <th>Id</th>
+      <th>Host</th>
       <th>Last Update</th>
     </thead>
     <tbody>
     {{#each workers}}
       <tr>
         <td>{{id}}</td>
+        <td>{{host}}</td>
         <td>{{time}}</td>
       </tr>
     {{/each}}
