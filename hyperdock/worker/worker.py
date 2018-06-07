@@ -69,16 +69,22 @@ class Worker(Thread):
         """
         Monitor the status of the current experiments.
         """
-        exps = []
+        running_exps = []
         for ex in self.experiments:
             if ex.is_running():
                 # Update the stay alive
-                self.workqueue.update_job(ex.id)
-                exps.append(ex)
+                self._update_experiment(ex)
+                running_exps.append(ex)
             else:
                 # Wrap up the finished experiment
                 self._cleanup_experiment(ex)
-        self.experiments = exps
+        self.experiments = running_exps
+
+    def _update_experiment(self, experiment):
+        """
+        Takes and experiment and updates the workqueue.
+        """
+        self.workqueue.update_job(experiment.id)
 
     def _cleanup_experiment(self, experiment):
         """
