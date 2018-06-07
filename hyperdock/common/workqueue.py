@@ -22,7 +22,7 @@ class WorkQueue:
         """
         t = datetime.utcnow()
         job = self.collection.find_and_modify(
-            query={'start_time': -1},
+            query={'start_time': -1, 'cancelled': False},
             sort=[('priority', -1), ('created_on', 1)],
             update={'$set': {'start_time': t,
                              'last_update': t,
@@ -47,6 +47,7 @@ class WorkQueue:
             'result': {},
             'trial': trial,
             '_id': str(ObjectId()),
+            'cancelled': False,
         })
         return id
 
@@ -56,6 +57,13 @@ class WorkQueue:
         """
         t = datetime.utcnow()
         self.collection.update({'_id': _id}, {'$set': {'last_update': t}})
+
+    def is_job_cancelled(self, _id):
+        """
+        Checks if a certain job has been explicitly cancelled.
+        """
+        return (self.collection.find_one({'_id': _id, 'cancelled': True})
+                is not None)
 
     def finish_job(self, _id, result):
         """

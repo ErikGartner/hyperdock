@@ -17,7 +17,7 @@ class TestWorkQueue(TestCase):
         self.parameters = 'parameters1'
         self.data = {'docker': {'image': 'a_docker_image'}}
         self.trial_id = 'trial-1'
-        self.q.add_job(self.parameters, self.data, self.trial_id)
+        self.job_id = self.q.add_job(self.parameters, self.data, self.trial_id)
 
     def test_add_job(self):
         self.assertEqual(self.collection.count(), 1, 'Failed to add to queue')
@@ -57,3 +57,10 @@ class TestWorkQueue(TestCase):
         self.assertAlmostEquals(self.collection.find_one({'_id': job['_id']})['end_time'],
                                 datetime.utcnow(), msg='Timestamp off',
                                 delta=timedelta(seconds=5))
+
+    def test_is_job_cancelled(self):
+        self.assertFalse(self.q.is_job_cancelled(self.job_id))
+        self.collection.update({'_id': self.job_id},
+                               {'$set': {'cancelled': True,
+                                         'end_time': datetime.utcnow()}})
+        self.assertTrue(self.q.is_job_cancelled(self.job_id))
