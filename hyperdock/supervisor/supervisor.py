@@ -8,7 +8,7 @@ from sklearn.model_selection import ParameterGrid
 from ..common.trialqueue import TrialQueue
 from ..common.workqueue import WorkQueue
 
-SLEEP_TIME = 5
+SLEEP_TIME = 10
 WORKER_TIMEOUT = 300
 
 

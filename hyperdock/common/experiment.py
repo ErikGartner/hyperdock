@@ -245,4 +245,4 @@ class MockExperiment(Experiment):
         return {'loss': 1.0, 'state': state}
 
     def cleanup(self):
-        pass
+        self.running = False
