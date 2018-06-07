@@ -4,6 +4,6 @@ import './workqueue.html';
 
 Template.workqueue.helpers({
   workqueue() {
-    return WorkQueue.find({});
+    return WorkQueue.find({}, {sort: {start_time: -1}});
   },
 });
