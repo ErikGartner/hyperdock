@@ -45,8 +45,8 @@ class TestExperiment(TestCase):
             'trial': 'trial-1',
             '_id': 'job-1',
         }
-
-        self.experiment = Experiment(self.job)
+        self.worker_env = ['WORKER_ID=1', 'WORKER_ENV_OK=1']
+        self.experiment = Experiment(self.job, self.worker_env)
         self.container = None
 
     def tearDown(self):
@@ -78,10 +78,15 @@ class TestExperiment(TestCase):
         self.assertTrue(self.experiment._volume_root.startswith(self.test_folder),
                         'Incorrect result folder')
 
+        # Check enviroment variables
         for e in self.job['data']['docker']['environment']:
             self.assertIn(e,
                           self.container.attrs['Config']['Env'],
-                          'Missing env from container')
+                          'Missing job env')
+        for e in self.worker_env:
+            self.assertIn(e,
+                          self.container.attrs['Config']['Env'],
+                          'Missing worker env')
 
         # Wait for container to exit
         self.container.wait(timeout=10)

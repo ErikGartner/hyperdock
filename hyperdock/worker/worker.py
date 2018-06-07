@@ -12,7 +12,7 @@ SLEEP_TIME = 5
 
 class Worker(Thread):
 
-    def __init__(self, mongodb):
+    def __init__(self, mongodb, docker_env):
         super().__init__(name='Worker')
 
         self._mongodb = mongodb
@@ -22,6 +22,7 @@ class Worker(Thread):
         self.workqueue = WorkQueue(mongodb)
         self.experiments = []
         self.max_experiments = 1
+        self.docker_env = docker_env
 
     def run(self):
         """
@@ -92,7 +93,7 @@ class Worker(Thread):
             if job is None:
                 break
 
-            experiment = experiment_cls(job)
+            experiment = experiment_cls(job, self.docker_env)
             experiment.start()
             self.experiments.append(experiment)
 
