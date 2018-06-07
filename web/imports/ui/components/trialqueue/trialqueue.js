@@ -19,6 +19,14 @@ AutoForm.hooks({
     onSubmit: function (insertDoc, updateDoc, currentDoc) {
       this.event.preventDefault();
 
+      let param_space = null;
+      try {
+        param_space = JSON.parse(insertDoc.param_space)
+      } catch (e) {
+        this.done(new Error("Parsing JSON failed"));
+        return false;
+      }
+
       doc = {
         data: {
           docker: {
@@ -29,7 +37,7 @@ AutoForm.hooks({
             data: insertDoc.data_path,
           }
         },
-        param_space: JSON.parse(insertDoc.param_space)
+        param_space: param_space
       }
 
       if (TrialQueue.insert(doc)) {
