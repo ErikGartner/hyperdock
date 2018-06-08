@@ -10,6 +10,8 @@ dill = "*"
 mongomock = "*"
 pymongo = "*"
 sklearn = "*"
+scipy = "*"
+numpy = "*"
 
 [dev-packages]
 nose = "*"
