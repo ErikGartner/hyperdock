@@ -3,6 +3,7 @@
 
   <table class="table table-hover">
     <thead>
+      <th>Cancel</th>
       <th>Id</th>
       <th>Start Time</th>
       <th>Assigned Worker</th>
@@ -11,9 +12,16 @@
     </thead>
     <tbody>
     {{#each workqueue}}
-      <tr>
+      <tr class="{{rowColor}}">
+        <td>
+          {{#if notCancellable}}
+          <div class="btn btn-danger" disabled>Cancel</div>
+          {{else}}
+          <div class="btn btn-danger cancel-work" data-id={{_id}}>Cancel</div>
+          {{/if}}
+        </td>
         <td>{{_id}}</td>
-        <td>{{start_time}}</td>
+        <td>{{niceTime start_time}}</td>
         <td>{{worker}}</td>
         <td>{{json2string parameters}}</td>
         <td>{{json2string result}}</td>
