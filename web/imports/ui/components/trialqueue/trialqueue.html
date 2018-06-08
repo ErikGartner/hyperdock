@@ -23,9 +23,9 @@
      <legend>Add Trial</legend>
    </fieldset>
    {{> afQuickField name="docker_image"}}
-   {{> afQuickField name="param_space"}}
    {{> afQuickField name="data_path"}}
    {{> afQuickField name="results_path"}}
+   {{> afQuickField name="param_space" rows=10}}
    <button type="submit" class="btn btn-primary">Add Trial</button>
   {{/autoForm}}
 </template>
