@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
-import { TrialQueue } from './trialqueue.js';
+import { TrialQueue, TrialInsertSchema } from './trialqueue.js';
 import { WorkQueue } from '../workqueue/workqueue.js';
 
 Meteor.methods({
@@ -27,5 +27,35 @@ Meteor.methods({
                                       start_time: w.start_time}});
     });
 
-  }
+  },
+  'trialqueue.insert'(insertDoc) {
+
+    TrialInsertSchema.clean(insertDoc);
+    TrialInsertSchema.validate(insertDoc);
+
+    let param_space = null;
+    try {
+      param_space = JSON.parse(insertDoc.param_space)
+    } catch (e) {
+      throw new Meteor.Error(e);
+    }
+
+    doc = {
+      data: {
+        docker: {
+          image: insertDoc.docker_image,
+          runtime: insertDoc.docker_runtime,
+        },
+        volumes: {
+          results: insertDoc.results_path,
+          data: insertDoc.data_path,
+        }
+      },
+      param_space: param_space
+    }
+
+    console.log(doc);
+
+    return TrialQueue.insert(doc);
+  },
 });

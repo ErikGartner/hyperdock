@@ -18,11 +18,12 @@
     </tbody>
   </table>
 
- {{#autoForm schema=TrialInsertSchema id="insertTrial" type="normal" validation="submit"}}
+ {{#autoForm schema=TrialInsertSchema id="insertTrial" type="method" meteormethod="trialqueue.insert" validation="submitThenKeyup"}}
    <fieldset>
      <legend>Add Trial</legend>
    </fieldset>
    {{> afQuickField name="docker_image"}}
+   {{> afQuickField name="docker_runtime"}}
    {{> afQuickField name="data_path"}}
    {{> afQuickField name="results_path"}}
    {{> afQuickField name="param_space" rows=10}}
