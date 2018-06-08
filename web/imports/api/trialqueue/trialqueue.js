@@ -1,5 +1,6 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
+import { check, Match } from 'meteor/check';
 
 export const TrialQueue = new Mongo.Collection('trialqueue');
 
@@ -44,13 +45,29 @@ TrialSchema = new SimpleSchema({
     }
 });
 TrialQueue.attachSchema(TrialSchema);
-
 TrialQueue.permit(['insert', 'update', 'remove']).allowInClientCode();
+
+function param_space_validator() {
+  check(this.value, String);
+  try {
+    let j = JSON.parse(this.value);
+    check(j, Match.OneOf(Object, [Object]));
+  } catch (e) {
+    return 'bad_json';
+  }
+  return undefined;
+}
 
 export const TrialInsertSchema = new SimpleSchema({
   docker_image: {
     label: 'Docker Image',
     type: String,
+  },
+  docker_runtime: {
+    label: 'Docker Runtime',
+    type: String,
+    optional: true,
+    defaultValue: '',
   },
   results_path: {
     type: String,
@@ -63,5 +80,12 @@ export const TrialInsertSchema = new SimpleSchema({
   param_space: {
     label: 'Parameter Space',
     type: String,
+    custom: param_space_validator,
   }
+}, { check, tracker: Tracker});
+
+TrialInsertSchema.messageBox.messages({
+  en: {
+      'bad_json': 'Invalid JSON!',
+    },
 });
