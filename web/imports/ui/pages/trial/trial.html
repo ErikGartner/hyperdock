@@ -1,6 +1,10 @@
 <template name="Trial">
 
-  <h1 class="display-4">Trial {{_id}} <div class="btn btn-danger cancel-trial" data-id="{{_id}}">Cancel</div></h1>
+  <h1 class="display-4">Trial {{_id}}
+    {{#if notDone}}
+      <div class="btn btn-danger cancel-trial" data-id="{{_id}}">Cancel</div>
+    {{/if}}
+  </h1>
   <div class="progress" style="height: 20px;">
     <div class="progress-bar" role="progressbar" style="width: {{progress}}%;" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100"></div>
   </div>

@@ -5,7 +5,7 @@ export const WorkQueue = new Mongo.Collection('workqueue');
 
 WorkSchema = new SimpleSchema({
   start_time: {
-    type: Date,
+    type: SimpleSchema.oneOf(Date, SimpleSchema.Integer),
     autoValue: function() {
       if (this.isInsert) {
         return -1;
@@ -13,7 +13,7 @@ WorkSchema = new SimpleSchema({
     }
   },
   end_time: {
-    type: Date,
+    type: SimpleSchema.oneOf(Date, SimpleSchema.Integer),
     autoValue: function() {
       if (this.isInsert) {
         return -1;

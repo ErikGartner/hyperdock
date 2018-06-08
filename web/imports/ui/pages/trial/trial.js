@@ -8,6 +8,9 @@ Template.Trial.helpers({
     let all = WorkQueue.find({trial: this._id}).count();
     return 100 * (1.0 - not_done / all);
   },
+  notDone() {
+    return this.end_time == -1;
+  }
 });
 
 Template.Trial.events({
