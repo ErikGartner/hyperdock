@@ -6,7 +6,7 @@ export const TrialQueue = new Mongo.Collection('trialqueue');
 
 TrialSchema = new SimpleSchema({
     start_time: {
-      type: SimpleSchema.Integer,
+      type: SimpleSchema.oneOf(Date, SimpleSchema.Integer),
       autoValue: function() {
         if (this.isInsert) {
           return -1;
@@ -14,7 +14,7 @@ TrialSchema = new SimpleSchema({
       }
     },
     end_time: {
-      type: SimpleSchema.Integer,
+      type: SimpleSchema.oneOf(Date, SimpleSchema.Integer),
       autoValue: function() {
         if (this.isInsert) {
           return -1;
