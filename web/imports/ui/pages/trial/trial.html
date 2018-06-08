@@ -1,3 +1,13 @@
 <template name="Trial">
+
+  <h1 class="display-4">Trial {{_id}} <div class="btn btn-danger cancel-trial" data-id="{{_id}}">Cancel</div></h1>
+  <div class="progress" style="height: 20px;">
+    <div class="progress-bar" role="progressbar" style="width: {{progress}}%;" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100"></div>
+  </div>
+  <h5>Parameter Space</h5>
+  <pre><code class="json">{{json2string param_space}}</code></pre>
+  <h5>Settings</h5>
+  <pre><code class="json">{{json2string data}}</code></pre>
+
   {{> workqueue}}
 </template>
