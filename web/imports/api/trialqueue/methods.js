@@ -12,10 +12,13 @@ Meteor.methods({
       throw new Meteor.Error('trialqueue.cancel called with invalid id.');
     }
 
+    let end_time = new Date();
+    TrialQueue.update(id, {$set: {end_time: end_time}});
+
     let works = WorkQueue.find({trial: id, end_time: -1, cancelled: false});
     works.forEach(function (w){
       w.cancelled = true;
-      w.end_time = new Date();
+      w.end_time = end_time;
       if (w.start_time == -1) {
         w.start_time = w.end_time;
       }
