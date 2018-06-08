@@ -1,8 +1,6 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
-import './methods.js';
-
 export const WorkQueue = new Mongo.Collection('workqueue');
 
 WorkSchema = new SimpleSchema({

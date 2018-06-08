@@ -1,4 +1,5 @@
-// Import needed templates
+import { TrialQueue } from '../../api/trialqueue/trialqueue.js';
+
 
 Router.configure({
   layoutTemplate: 'ApplicationLayout'
@@ -17,5 +18,8 @@ Router.route('/trial/:trialId', {
   name: 'Trial',
   subscriptions: function() {
    return [Meteor.subscribe('trial', this.params.trialId)];
+  },
+  data: function() {
+    return TrialQueue.findOne(this.params.trialId);
   }
 });
