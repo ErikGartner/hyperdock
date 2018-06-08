@@ -13,7 +13,7 @@ SLEEP_TIME = 10
 
 class Worker(Thread):
 
-    def __init__(self, mongodb, docker_env):
+    def __init__(self, mongodb, docker_env, parallelism=1):
         super().__init__(name='Worker')
 
         self._mongodb = mongodb
@@ -22,7 +22,7 @@ class Worker(Thread):
         self._running = True
         self.workqueue = WorkQueue(mongodb)
         self.experiments = []
-        self.max_experiments = 1
+        self.max_experiments = parallelism
         self.docker_env = docker_env
 
     def run(self):

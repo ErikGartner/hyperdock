@@ -4,14 +4,14 @@
   <table class="table table-hover">
     <thead>
       <th>Id</th>
-      <th>Data</th>
+      <th>Docker Image</th>
       <th>Parameter Space</th>
     </thead>
     <tbody>
     {{#each trialqueue}}
       <tr>
         <td><a href="{{pathFor route='Trial' trialId=_id}}">{{_id}}</a></td>
-        <td>{{json2string data}}</td>
+        <td>{{data.docker.image}}</td>
         <td>{{json2string param_space}}</td>
       </tr>
     {{/each}}

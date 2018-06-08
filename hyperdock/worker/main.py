@@ -9,7 +9,8 @@ from .worker import Worker
 @click.command()
 @click.option('--mongodb', default='mongodb://localhost:27017/hyperdock', help='The URI to the MongoDB.')
 @click.option('--env', default='[]', help='Environment variables to set in the Target image. Use Docker list format.')
-def launch_worker(mongodb, env):
+@click.option('--parallelism', default=1, help='Maximum number of simulteanous experiments running.')
+def launch_worker(mongodb, env, parallelism):
     # Create database connection
     database = MongoClient(mongodb).get_default_database()
 
@@ -19,7 +20,7 @@ def launch_worker(mongodb, env):
         raise ValueError('Environment must be in Docker list format.')
 
     # Start worker
-    worker = Worker(database, docker_env)
+    worker = Worker(database, docker_env, parallelism)
     worker.start()
 
 
