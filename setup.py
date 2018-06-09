@@ -26,7 +26,6 @@ setup(
         'certifi==2018.4.16',
         'chardet==3.0.4',
         'click==6.7',
-        'dill==0.2.7.1',
         'docker-pycreds==0.3.0',
         'docker==3.3.0',
         'idna==2.6',
