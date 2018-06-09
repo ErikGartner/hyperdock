@@ -51,12 +51,13 @@ class WorkQueue:
         })
         return id
 
-    def update_job(self, _id):
+    def update_job(self, _id, update=None):
         """
-        Marks the job as alive.
+        Marks the job as alive and post an update from the job.
         """
         t = datetime.utcnow()
-        self.collection.update({'_id': _id}, {'$set': {'last_update': t}})
+        self.collection.update({'_id': _id}, {'$set': {'last_update': t,
+                                                       'update': update}})
 
     def is_job_cancelled(self, _id):
         """

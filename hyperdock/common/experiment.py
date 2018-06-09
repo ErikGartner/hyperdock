@@ -27,6 +27,7 @@ class Experiment:
         self._docker_client = docker.from_env()
         self.has_started = False
         self.worker_env = worker_env
+        self._last_update = {}
 
     def start(self):
         """
@@ -89,6 +90,26 @@ class Experiment:
             return {'state': 'running'}
         else:
             return self._result
+
+    def get_update(self):
+        """
+        Returns the latest update from the experiment.
+        """
+        if self._is_running and self._container is not None:
+            try:
+                logs = self._container.logs(tail=50)
+            except Exception as e:
+                logs = 'Failed to fetch logs.'
+
+            self._last_update = {
+                'container':  {
+                    'name': self._container.name,
+                    'id': self._container.short_id,
+                    'logs': logs,
+                }
+            }
+
+        return self._last_update
 
     def _start_container(self, image):
         """
