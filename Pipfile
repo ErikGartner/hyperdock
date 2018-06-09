@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 docker = "*"
 click = "*"
-dill = "*"
 mongomock = "*"
 pymongo = "*"
 sklearn = "*"
