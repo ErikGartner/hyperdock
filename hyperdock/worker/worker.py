@@ -90,7 +90,7 @@ class Worker(Thread):
         """
         Takes and experiment and updates the workqueue.
         """
-        self.workqueue.update_job(experiment.id)
+        self.workqueue.update_job(experiment.id, experiment.get_update())
 
     def _cleanup_experiment(self, experiment):
         """

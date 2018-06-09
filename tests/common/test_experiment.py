@@ -88,6 +88,10 @@ class TestExperiment(TestCase):
                           self.container.attrs['Config']['Env'],
                           'Missing worker env')
 
+        # Check that update fetches information
+        update = self.experiment.get_update()
+        self.assertIn('container', update)
+
         # Wait for container to exit
         self.container.wait(timeout=10)
 
