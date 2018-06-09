@@ -5,14 +5,18 @@
     <thead>
       <th>Id</th>
       <th>Docker Image</th>
-      <th>Parameter Space</th>
+      <th>Progress</th>
     </thead>
     <tbody>
     {{#each trialqueue}}
       <tr>
         <td><a href="{{pathFor route='Trial' trialId=_id}}">{{_id}}</a></td>
         <td>{{data.docker.image}}</td>
-        <td>{{json2string param_space}}</td>
+        <td>
+          <div class="progress" style="height: 20px;">
+            <div class="progress-bar" role="progressbar" style="width: {{trialProgress _id}}%;" aria-valuenow="{{trialProgress _id}}" aria-valuemin="0" aria-valuemax="100">{{trialProgress _id}}%</div>
+          </div>
+        </td>
       </tr>
     {{/each}}
     </tbody>
@@ -29,4 +33,27 @@
    {{> afQuickField name="param_space" rows=10}}
    <button type="submit" class="btn btn-primary">Add Trial</button>
   {{/autoForm}}
+
+  <a class="" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2>Finished Trials</h2>
+  </a>
+  <div class="collapse" id="collapseExample">
+    <table class="table table-hover">
+      <thead>
+        <th>Id</th>
+        <th>Docker Image</th>
+        <th>End Time</th>
+      </thead>
+      <tbody>
+      {{#each trialhistory}}
+        <tr>
+          <td><a href="{{pathFor route='Trial' trialId=_id}}">{{_id}}</a></td>
+          <td>{{data.docker.image}}</td>
+          <td>{{niceTime end_time}}</td>
+        </tr>
+      {{/each}}
+      </tbody>
+    </table>
+  </div>
+
 </template>

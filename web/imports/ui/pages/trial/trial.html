@@ -6,7 +6,9 @@
     {{/if}}
   </h1>
   <div class="progress" style="height: 20px;">
-    <div class="progress-bar" role="progressbar" style="width: {{progress}}%;" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100"></div>
+    <div class="progress-bar" role="progressbar" style="width: {{progress}}%;" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
+      {{progress}}%
+    </div>
   </div>
   <h5>Parameter Space</h5>
   <pre><code class="json">{{json2string param_space}}</code></pre>
