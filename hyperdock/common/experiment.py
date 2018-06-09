@@ -7,6 +7,8 @@ import docker
 
 from .utils import try_key
 
+LOG_TAIL_ROWS = 100
+
 
 class Experiment:
     """
@@ -97,7 +99,7 @@ class Experiment:
         """
         if self._is_running and self._container is not None:
             try:
-                logs = self._container.logs(tail=50)
+                logs = self._container.logs(tail=LOG_TAIL_ROWS)
             except Exception as e:
                 logs = 'Failed to fetch logs.'
 
