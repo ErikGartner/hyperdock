@@ -24,17 +24,34 @@ class TrialQueue:
         super().__init__()
 
         self._mongodb = mongodb
-        self.collection = mongodb.trialqueue
+        self._collection = mongodb.trialqueue
 
     def next_trial(self):
         """
         Takes the next trial from the database.
         """
         t = datetime.utcnow()
-        job = self.collection.find_and_modify(
+        trial = self._collection.find_and_modify(
             query={'start_time': -1},
             sort=[('priority', -1), ('created_on', 1)],
             update={'$set': {'start_time': t}},
             new=True
         )
-        return job
+        return trial
+
+    def update_trials(self):
+        """
+        Call this periodically to mark Trials as finished, and
+        propapage the results from the experiments.
+        """
+        end_time = datetime.utcnow()
+        trials = self._collection.find({'end_time': -1})
+        for trial in iter(trials):
+            trial_id = trial['_id']
+            unfinished_jobs = self._mongodb.workqueue.find({'trial': trial_id,
+                                                            'end_time': -1}).count()
+            if unfinished_jobs == 0:
+                self._collection.update_one(
+                    {'end_time': -1, '_id': trial_id},
+                    {'$set': {'end_time': end_time}}
+                )

@@ -41,6 +41,7 @@ class Supervisor(Thread):
         while self._running:
             self._purge_old_workers()
             self._process_trials()
+            self.trialqueue.update_trials()
             sleep(SLEEP_TIME)
 
     def stop(self):
