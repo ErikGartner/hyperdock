@@ -44,6 +44,7 @@ WorkSchema = new SimpleSchema({
   },
   worker: {
     type: String,
+    optional: true,
   },
   trial: {
     type: String,
