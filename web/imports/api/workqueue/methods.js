@@ -11,12 +11,15 @@ Meteor.methods({
       throw new Meteor.Error('workqueue.cancel called with invalid id.');
     }
 
-    w.cancelled = true;
-    w.end_time = new Date();
-    if (w.start_time == -1) {
-      w.start_time = w.end_time;
+    let update = {
+      cancelled: true,
+      end_time: new Date(),
     }
 
-    return WorkQueue.update({_id: id}, w);
+    if (w.start_time == -1) {
+      update.start_time = update.end_time;
+    }
+
+    return WorkQueue.update({_id: id}, {$set: update});
   }
 });
