@@ -6,6 +6,7 @@ import click
 from pymongo import MongoClient
 
 from .worker import Worker
+from ..common import utils
 
 
 @click.command()
@@ -13,6 +14,8 @@ from .worker import Worker
 @click.option('--env', default='[]', help='Environment variables to set in the Target image. Use Docker list format.')
 @click.option('--parallelism', default=1, help='Maximum number of simulteanous experiments running.')
 def launch_worker(mongodb, env, parallelism):
+    utils.setup_logging()
+
     # Create database connection
     database = MongoClient(mongodb).get_default_database()
 

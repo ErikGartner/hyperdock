@@ -1,3 +1,4 @@
+import logging
 
 
 def try_key(dictionary, default, *keys):
@@ -11,3 +12,12 @@ def try_key(dictionary, default, *keys):
         return res
     except (KeyError, IndexError) as e:
         return default
+
+
+def setup_logging(level=logging.DEBUG):
+    """
+    Setups the format string and config for the Python logging module.
+    """
+    FORMAT = '%(asctime)-15s - %(name)-25s - %(levelname)s - %(threadName)s - %(message)s'
+    logging.basicConfig(format=FORMAT)
+    logging.getLogger().setLevel(level)
