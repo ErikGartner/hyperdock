@@ -1,12 +1,10 @@
-FROM python:3
+FROM python:3.6-alpine
 
 RUN mkdir /app
 WORKDIR /app
 COPY . ./
 
-RUN pip install -r requirements.txt
+RUN pip install -e .
 
-VOLUME /app/hyperdock/config
-
-ENTRYPOINT ["python", "supervisor_cli.py"]
+ENTRYPOINT ["hyperdock-supervisor"]
 CMD ["--help"]

@@ -1,20 +1,15 @@
-FROM python:3
+FROM python:3.6-alpine
+
+RUN mkdir /results
+RUN mkdir /data
+VOLUME /results
+VOLUME /data
 
 RUN mkdir /app
 WORKDIR /app
 COPY . ./
 
-RUN pip install -r requirements.txt
+RUN pip install -e .
 
-# Setup the results folder
-RUN mkdir /results
-VOLUME /results
-
-# Required for the worker to find the objective module
-ENV PYTHONPATH="${PYTHONPATH}:/app/hyperdock/worker"
-
-ENV MONGO_URL="mongo://localhost:27017/hyperdock"
-ENV HYPERDOCK_RUNTIME=""
-ENV HYPERDOCK_ENV="[]"
-
-ENTRYPOINT hyperopt-mongo-worker --reserve-timeout=0 --poll-interval=0.5 --mongo=${MONGO_URL}
+ENTRYPOINT ["hyperdock-worker"]
+CMD ["--help"]
