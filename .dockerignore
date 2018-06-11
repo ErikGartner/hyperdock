@@ -6,3 +6,5 @@ extra
 .git
 /data
 /results
+/web/.meteor/local
+/web/node_modules
