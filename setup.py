@@ -1,11 +1,14 @@
 from setuptools import setup, find_packages
 from hyperdock import __version__
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
     name='hyperdock',
     version=__version__,
     description='A simple program for distributed hyperparameter optimization in Docker',
-    long_description='''A simple program for distributed hyperparameter optimization in Docker''',
+    long_description=long_description,
     keywords='hyperparameter optimization,docker',
     author='Erik Gärtner',
     author_email='erik@gartner.io',
@@ -14,7 +17,7 @@ setup(
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache 2.0',
+        'License :: OSI Approved',
         'Natural Language :: English',
         'Operating System :: Unix',
         'Programming Language :: Python :: 3.6',
