@@ -96,12 +96,7 @@ meteor run
 ##### Options:
 
 - `-e MONGO_URL=mongodb://localhost:27017/hyperdock` sets the Mongo database
-- `-e PORT=3000` the port to listen to
 - `-p 3000:3000` publish the port to the host
-
-For full arguments to the worker run: `hyperdock-worker --help`.
-
-**Note:** That since the Hyperdock Worker needs to control Docker and access files on the host computer it might be easier to run it directly on the host.
 
 #### Target Image
 For the **Target Image** the following volumes are mounted:
