@@ -1,6 +1,9 @@
 # Hyperdock
 ![Hyperdock logo](extra/banner.png)
 
+[![PyPI](https://img.shields.io/pypi/v/hyperdock.svg?style=for-the-badge)](https://pypi.org/project/hyperdock/)
+[![Travis](https://img.shields.io/travis/ErikGartner/hyperdock.svg?style=for-the-badge)](https://travis-ci.org/ErikGartner/hyperdock)
+
 *A simple framework for distributed hyperparameter optimization in Docker.*
 
 ## Philosophy
