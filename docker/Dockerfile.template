@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.6-alpine
 # This an template file for the objective image that is optimized.
 
 # Do stuff: install, run the function
