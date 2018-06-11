@@ -40,8 +40,7 @@ hyperdock-supervisor --mongo mongo://localhost:27017/hyperdock
 ```
 
 ##### Options:
-
-- ` --mongo mongo://localhost:27017/hyperdock` URL to the Mongo database
+- `--mongo mongo://localhost:27017/hyperdock` URL to the Mongo database
 
 For full arguments to the supervisor run: `hyperdock-supervisor --help`.
 
@@ -55,17 +54,17 @@ docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock \
   --mongo mongo://localhost:27017/hyperdock
 ```
 
-Or run it on your host with Python 3.6 and install with pip:
-```bash
-pip install hyperdock
-hyperdock-worker --mongo mongo://localhost:27017/hyperdock
-```
-
 ##### Options:
 
 - `-v $(pwd)/results:/results` sets folder to store the results from target image to the host
 - `-v $(pwd)/data:/data:ro` sets folder to store the results from target image to the host
 - `-v /var/run/docker.sock:/var/run/docker.sock` gives the Docker image access to control the outer Docker daemon. This is crucial for worker to start new containers
+
+Or run it on your host with Python 3.6 and install with pip:
+```bash
+pip install hyperdock
+hyperdock-worker --mongo mongo://localhost:27017/hyperdock
+```
 
 For full arguments to the worker run: `hyperdock-worker --help`.
 
@@ -81,6 +80,11 @@ docker run -d --rm --name hyperdock-webui --link hyperdock-mongo \
   erikgartner/hyperdock-webui:latest
 ```
 
+##### Options:
+
+- `-e MONGO_URL=mongodb://localhost:27017/hyperdock` sets the Mongo database
+- `-p 3000:3000` publish the port to the host
+
 Or run it on your host with Meteor:
 ```bash
 # Setup Meteor
@@ -92,11 +96,6 @@ meteor npm install
 export MONGO_URL=mongodb://localhost:27017/hyperdock
 meteor run
 ```
-
-##### Options:
-
-- `-e MONGO_URL=mongodb://localhost:27017/hyperdock` sets the Mongo database
-- `-p 3000:3000` publish the port to the host
 
 #### Target Image
 For the **Target Image** the following volumes are mounted:
