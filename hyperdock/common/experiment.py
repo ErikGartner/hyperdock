@@ -190,7 +190,7 @@ class Experiment:
 
             except:
                 self.logger.error('Failed to read loss')
-                self._result = {'state': 'fail'}
+                self._result = {'state': 'fail', 'msg': 'Failed to read loss.'}
 
     def _setup_volumes(self):
         """

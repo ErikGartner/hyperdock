@@ -13,7 +13,7 @@ SLEEP_TIME = 10
 
 class Worker(Thread):
 
-    def __init__(self, mongodb, docker_env, parallelism=1):
+    def __init__(self, mongodb, docker_env, parallelism=1, in_docker=False):
         super().__init__(name='Worker')
 
         self._mongodb = mongodb
@@ -24,6 +24,7 @@ class Worker(Thread):
         self.experiments = []
         self.max_experiments = parallelism
         self.docker_env = docker_env
+        self.in_docker = in_docker
 
     def run(self):
         """
@@ -54,13 +55,16 @@ class Worker(Thread):
         Updates the worker list with this worker.
         Also used as a keep-alive message.
         """
+        host_name = platform.node()
+        host = '(Docker) %s' % host_name if self.in_docker else host_name
+
         data = {
             'id': self.id,
             'time': datetime.utcnow(),
             'parallelism': self.max_experiments,
             'jobs': [e.id for e in self.experiments],
             'env': self.docker_env,
-            'host': platform.node(),
+            'host': host,
         }
         self._mongodb.workers.update_one({'id': self.id}, {'$set': data},
                                          upsert=True)

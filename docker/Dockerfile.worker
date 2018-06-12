@@ -11,5 +11,7 @@ COPY . ./
 
 RUN pip install -e .
 
+ENV HYPERDOCK_IN_DOCKER true
+
 ENTRYPOINT ["hyperdock-worker"]
 CMD ["--help"]

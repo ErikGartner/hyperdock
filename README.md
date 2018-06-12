@@ -31,19 +31,19 @@ You can either use the built Docker images for Hyperdock or run the parts direct
 #### Supervisor
 To start the Hyperdock Supervisor using the Docker image run the following command:
 ```bash
-docker run -it --rm --name hyperdock-supervisor \
+docker run -it --rm --name hyperdock-supervisor --link hyperdock-mongo \
   erikgartner/hyperdock-supervisor:latest \
-  --mongo mongo://localhost:27017/hyperdock
+  --mongodb mongodb://hyperdock-mongo:27017/hyperdock
 ```
 
 Or run it on your host with Python 3.6 and install with pip:
 ```bash
 pip install hyperdock
-hyperdock-supervisor --mongo mongo://localhost:27017/hyperdock
+hyperdock-supervisor --mongodb mongodb://localhost:27017/hyperdock
 ```
 
 ##### Options:
-- `--mongo mongo://localhost:27017/hyperdock` URL to the Mongo database
+- `--mongo mongodb://localhost:27017/hyperdock` URL to the Mongo database
 
 For full arguments to the supervisor run: `hyperdock-supervisor --help`.
 
@@ -51,22 +51,21 @@ For full arguments to the supervisor run: `hyperdock-supervisor --help`.
 To start the Hyperdock Worker using the Docker image run the following command:
 ```bash
 docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  -v $(pwd)/results:/results \
-  -v $(pwd)/data:/data:ro \
-  erikgartner/hyperdock-worker:latest \
-  --mongo mongo://localhost:27017/hyperdock
+  --link hyperdock-mongo \
+  -v $(pwd):$(pwd) \
+  erikgartner/hyperdock-worker:latest \
+  --mongodb mongodb://hyperdock-mongo:27017/hyperdock
 ```
 
 ##### Options:
 
-- `-v $(pwd)/results:/results` sets folder to store the results from target image to the host
-- `-v $(pwd)/data:/data:ro` sets folder to store the results from target image to the host
+- `-v $(pwd):$(pwd)` mirrors the path structure from the host in to  the Docker container. This is needed since the paths must be the the same when the worker starts the Target Image and mounts the data and results folders.
 - `-v /var/run/docker.sock:/var/run/docker.sock` gives the Docker image access to control the outer Docker daemon. This is crucial for worker to start new containers
 
 Or run it on your host with Python 3.6 and install with pip:
 ```bash
 pip install hyperdock
-hyperdock-worker --mongo mongo://localhost:27017/hyperdock
+hyperdock-worker --mongodb mongodb://localhost:27017/hyperdock
 ```
 
 For full arguments to the worker run: `hyperdock-worker --help`.
@@ -76,16 +75,16 @@ For full arguments to the worker run: `hyperdock-worker --help`.
 #### WebUI
 To start the Hyperdock WebUI using the Docker image run the following command:
 ```bash
-docker run -d --rm --name hyperdock-webui --link hyperdock-mongo \
-  -e ROOT_URL=http://localhost \
-  -e MONGO_URL=mongodb://localhost:27017/hyperdock \
+docker run -it --rm --name hyperdock-webui --link hyperdock-mongo \
+  -e ROOT_URL=http://localhost:3000/ \
+  -e MONGO_URL=mongodb://hyperdock-mongo:27017/hyperdock \
   -p 3000:3000 \
   erikgartner/hyperdock-webui:latest
 ```
 
 ##### Options:
 
-- `-e MONGO_URL=mongodb://localhost:27017/hyperdock` sets the Mongo database
+- `-e MONGO_URL=mongodb://hyperdock-mongo:27017/hyperdock` sets the Mongo database
 - `-p 3000:3000` publish the port to the host
 
 Or run it on your host with Meteor:

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import json
+import os
 
 import click
 from pymongo import MongoClient
@@ -24,8 +25,11 @@ def launch_worker(mongodb, env, parallelism):
     if not isinstance(docker_env, list):
         raise ValueError('Environment must be in Docker list format.')
 
+    # Checks to see if it is running in Docker
+    in_docker = os.env.get('HYPERDOCK_IN_DOCKER', 'false').lower() == 'true'
+
     # Start worker
-    worker = Worker(database, docker_env, parallelism)
+    worker = Worker(database, docker_env, parallelism, in_docker)
     worker.start()
 
 

@@ -19,7 +19,7 @@ class Supervisor(Thread):
     workers.
     """
 
-    def __init__(self, mongodb):
+    def __init__(self, mongodb, in_docker=False):
         super().__init__(name='Supervisor')
 
         self.logger = logging.getLogger('Supervisor')
@@ -27,6 +27,7 @@ class Supervisor(Thread):
         self.trialqueue = TrialQueue(mongodb)
         self.workqueue = WorkQueue(mongodb)
         self.worker_collection = mongodb.workers
+        self.in_docker = in_docker
         self._running = True
 
     def run(self):

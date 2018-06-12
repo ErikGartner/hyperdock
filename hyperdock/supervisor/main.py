@@ -12,7 +12,11 @@ from ..common import utils
 def launch_supervisor(mongodb):
     utils.setup_logging()
     database = MongoClient(mongodb).get_default_database()
-    supervisor = Supervisor(database)
+
+    # Checks to see if it is running in Docker
+    in_docker = os.env.get('HYPERDOCK_IN_DOCKER', 'false').lower() == 'true'
+
+    supervisor = Supervisor(database, in_docker)
     supervisor.start()
 
 
