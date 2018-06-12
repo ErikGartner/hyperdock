@@ -10,11 +10,12 @@ sevices:
 
 install:
   - pip install -r requirements.txt
-  - pip install codecov
   - pip install coverage
+  - pip install codecov
 
 script:
-  - nosetests -vse --with-coverage tests/
+  - nosetests --with-coverage -vse test/
 
 after_success:
+  - coverage combine
   - codecov
