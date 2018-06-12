@@ -3,6 +3,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/hyperdock.svg?style=for-the-badge)](https://pypi.org/project/hyperdock/)
 [![Travis](https://img.shields.io/travis/ErikGartner/hyperdock.svg?style=for-the-badge)](https://travis-ci.org/ErikGartner/hyperdock)
+[![Docker Build Status](https://img.shields.io/docker/build/erikgartner/hyperdock-supervisor.svg?style=for-the-badge)](https://hub.docker.com/r/erikgartner/hyperdock-supervisor/)
 
 *A simple framework for distributed hyperparameter optimization in Docker.*
 
