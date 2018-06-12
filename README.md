@@ -2,9 +2,9 @@
 ![Hyperdock logo](extra/banner.png)
 
 [![PyPI](https://img.shields.io/pypi/v/hyperdock.svg?style=for-the-badge)](https://pypi.org/project/hyperdock/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/erikgartner/hyperdock-supervisor.svg?style=for-the-badge)](https://hub.docker.com/r/erikgartner/hyperdock-supervisor/)
 [![Travis](https://img.shields.io/travis/ErikGartner/hyperdock.svg?style=for-the-badge)](https://travis-ci.org/ErikGartner/hyperdock)
-[![Docker Pulls](https://img.shields.io/docker/pulls/erikgartner/hyperdock-supervisor.svg)](https://hub.docker.com/r/erikgartner/hyperdock-supervisor/)
-
+[![Codecov](https://img.shields.io/codecov/c/github/ErikGartner/hyperdock.svg?style=for-the-badge)](https://codecov.io/gh/ErikGartner/hyperdock)
 
 *A simple framework for distributed hyperparameter optimization in Docker.*
 
