@@ -91,6 +91,7 @@ class TestExperiment(TestCase):
         # Check that update fetches information
         update = self.experiment.get_update()
         self.assertIn('container', update)
+        self.assertTrue(isinstance(update['container']['logs'], str))
 
         # Wait for container to exit
         self.container.wait(timeout=10)

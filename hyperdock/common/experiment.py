@@ -99,7 +99,11 @@ class Experiment:
         """
         if self._is_running and self._container is not None:
             try:
-                logs = self._container.logs(tail=LOG_TAIL_ROWS)
+                logs = self._container.logs(stdout=True, stderr=True,
+                                            tail=LOG_TAIL_ROWS)
+                if isinstance(logs, (bytes, bytearray)):
+                    logs = logs.decode()
+
             except Exception as e:
                 logs = 'Failed to fetch logs.'
 
