@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import json
 import os
 
@@ -26,7 +25,7 @@ def launch_worker(mongodb, env, parallelism):
         raise ValueError('Environment must be in Docker list format.')
 
     # Checks to see if it is running in Docker
-    in_docker = os.env.get('HYPERDOCK_IN_DOCKER', 'false').lower() == 'true'
+    in_docker = os.environ.get('HYPERDOCK_IN_DOCKER', 'false').lower() == 'true'
 
     # Start worker
     worker = Worker(database, docker_env, parallelism, in_docker)
