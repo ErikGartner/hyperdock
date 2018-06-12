@@ -15,4 +15,6 @@ install:
 
 script:
   - nosetests -vse --with-coverage tests/
+
+after_success:
   - codecov
