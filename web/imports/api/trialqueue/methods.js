@@ -55,8 +55,6 @@ Meteor.methods({
       param_space: param_space
     }
 
-    console.log(doc);
-
     return TrialQueue.insert(doc);
   },
 });
