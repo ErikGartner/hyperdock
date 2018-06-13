@@ -133,4 +133,4 @@ class Worker(Thread):
         """
         Generates a unique worker id.
         """
-        return 'worker-%s' % secrets.token_hex(16)
+        return 'worker-%s' % secrets.token_hex(8)
