@@ -41,6 +41,7 @@ Meteor.methods({
     }
 
     doc = {
+      name: insertDoc.name,
       data: {
         docker: {
           image: insertDoc.docker_image,

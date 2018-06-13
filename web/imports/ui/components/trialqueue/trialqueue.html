@@ -3,15 +3,17 @@
 
   <table class="table table-hover">
     <thead>
-      <th>Id</th>
+      <th>Name</th>
       <th>Docker Image</th>
+      <th>Start Time</th>
       <th>Progress</th>
     </thead>
     <tbody>
     {{#each trialqueue}}
       <tr>
-        <td><a href="{{pathFor route='Trial' trialId=_id}}">{{_id}}</a></td>
+        <td><a href="{{pathFor route='Trial' trialId=_id}}">{{name}}</a></td>
         <td>{{data.docker.image}}</td>
+        <td>{{niceTime start_time}}</td>
         <td>
           <div class="progress" style="height: 20px;">
             <div class="progress-bar" role="progressbar" style="width: {{trialProgress _id}}%;" aria-valuenow="{{trialProgress _id}}" aria-valuemin="0" aria-valuemax="100">{{trialProgress _id}}%</div>
@@ -26,6 +28,7 @@
    <fieldset>
      <legend>Add Trial</legend>
    </fieldset>
+   {{> afQuickField name="name"}}
    {{> afQuickField name="docker_image"}}
    {{> afQuickField name="docker_runtime"}}
    {{> afQuickField name="data_path"}}
@@ -41,15 +44,17 @@
   <div class="collapse" id="collapseTrialHistory">
     <table class="table table-hover">
       <thead>
-        <th>Id</th>
+        <th>Name</th>
         <th>Docker Image</th>
+        <th>Start Time</th>
         <th>End Time</th>
       </thead>
       <tbody>
       {{#each trialhistory}}
         <tr>
-          <td><a href="{{pathFor route='Trial' trialId=_id}}">{{_id}}</a></td>
+          <td><a href="{{pathFor route='Trial' trialId=_id}}">{{name}}</a></td>
           <td>{{data.docker.image}}</td>
+          <td>{{niceTime start_time}}</td>
           <td>{{niceTime end_time}}</td>
         </tr>
       {{/each}}

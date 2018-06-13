@@ -15,6 +15,7 @@ class TestTrialQueue(TestCase):
 
         # Default data
         self.trial_id = self.collection.insert({
+            'name': 'Test trial',
             'start_time': -1,
             'end_time': -1,
             'created_on': datetime.utcnow(),
