@@ -112,6 +112,7 @@ class Experiment:
                     'name': self._container.name,
                     'id': self._container.short_id,
                     'logs': logs,
+                    'results_folder': self._volume_root,
                 }
             }
 
