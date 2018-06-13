@@ -22,6 +22,7 @@ class TestSupervisor(TestCase):
             'end_time': -1,
             'created_on': datetime.utcnow(),
             'priority': 1,
+            'retries': 1,
             'data': {'docker': {'image': 'a_docker_image'}},
             'param_space': {
                 'learning_rate': [0.1, 0.001],
@@ -74,3 +75,19 @@ class TestSupervisor(TestCase):
         self.assertEqual(len(params2), len(out_params))
         for p in params2:
             self.assertIn(p, out_params)
+
+    def test_retry_dead_job(self):
+        workq = self.db.workqueue
+
+        self.assertEqual(workq.find().count(), 0)
+        self.supervisor._process_trials()
+        self.assertEqual(workq.find().count(), 4)
+
+        # Time out all jobs
+        old_time = datetime.utcnow() - timedelta(minutes=300)
+        workq.update_many({}, {'$set': {'last_update': old_time,
+                                        'start_time': old_time,
+                                        'worker': 'worker-1'}})
+
+        self.supervisor._purge_dead_jobs()
+        self.assertEqual(workq.find().count(), 5, 'Should have retried one job.')

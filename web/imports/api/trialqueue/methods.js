@@ -53,7 +53,8 @@ Meteor.methods({
           data: insertDoc.data_path,
         }
       },
-      param_space: param_space
+      param_space: param_space,
+      retries: insertDoc.retries,
     }
 
     return TrialQueue.insert(doc);

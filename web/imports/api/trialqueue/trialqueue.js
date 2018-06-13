@@ -37,7 +37,7 @@ TrialSchema = new SimpleSchema({
   },
   priority: {
     type: SimpleSchema.Integer,
-    defaultValue: -1
+    defaultValue: 0,
   },
   param_space: {
     type: Object,
@@ -46,6 +46,11 @@ TrialSchema = new SimpleSchema({
   data: {
     type: Object,
     blackbox: true
+  },
+  retries: {
+    type: SimpleSchema.Integer,
+    defaultValue: 5,
+    min: 0,
   }
 });
 TrialQueue.attachSchema(TrialSchema);
@@ -97,6 +102,11 @@ export const TrialInsertSchema = new SimpleSchema({
     minCount: 0,
   },
   'docker_environment.$': String,
+  retries: {
+    type: SimpleSchema.Integer,
+    defaultValue: 5,
+    min: 0,
+  },
 }, { check, tracker: Tracker});
 
 TrialInsertSchema.messageBox.messages({

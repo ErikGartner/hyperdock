@@ -20,6 +20,7 @@ class TestTrialQueue(TestCase):
             'end_time': -1,
             'created_on': datetime.utcnow(),
             'priority': 1,
+            'retries': 1,
             'param_space': {
                 'learning_rate': [0.1, 0.001],
                 'solver': ['adam', 'adagrad'],
@@ -55,3 +56,9 @@ class TestTrialQueue(TestCase):
 
         self.assertEqual(self.collection.find({'end_time': -1}).count(), 0,
                          "Shouldn't finish trial before all jobs are done.")
+
+    def test_use_retry_ticker(self):
+        self.assertTrue(self.q.use_retry_ticket(self.trial_id), 'Should allow for retry')
+        self.assertEqual(self.collection.find_one({'_id': self.trial_id})['retries'],
+                         0, "Shouldn't have any retries left.")
+        self.assertFalse(self.q.use_retry_ticket(self.trial_id), 'Should not allow for retry')

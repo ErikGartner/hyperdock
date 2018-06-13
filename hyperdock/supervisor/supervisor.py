@@ -43,7 +43,7 @@ class Supervisor(Thread):
             self._purge_old_workers()
             self._process_trials()
             self.trialqueue.update_trials()
-            self.workqueue.purge_dead_jobs()
+            self._purge_dead_jobs()
             sleep(SLEEP_TIME)
 
     def stop(self):
@@ -105,3 +105,24 @@ class Supervisor(Thread):
         """
         t = datetime.utcnow() - timedelta(seconds=WORKER_TIMEOUT)
         self.worker_collection.remove({'time': {'$lt': t}})
+
+    def _purge_dead_jobs(self):
+        """
+        Removes dead jobs and re-queues them if there are enough retries left.
+        """
+        dead_jobs = self.workqueue.purge_dead_jobs()
+        for job in dead_jobs:
+            if job is None:
+                continue
+
+            retry = self.trialqueue.use_retry_ticket(job['trial'])
+            if not retry:
+                # No more retries
+                return
+
+            self.logger.info('Retried timed out job %s for trial %s' %
+                             (job['_id'], job['trial']))
+            self.workqueue.add_job(job['parameters'],
+                                   job['data'],
+                                   job['trial'],
+                                   job['priority'])

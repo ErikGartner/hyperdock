@@ -41,8 +41,7 @@ class TrialQueue:
 
     def update_trials(self):
         """
-        Call this periodically to mark Trials as finished, and
-        propapage the results from the experiments.
+        Call this periodically to mark Trials as finished.
         """
         end_time = datetime.utcnow()
         trials = self._collection.find({'end_time': -1})
@@ -55,3 +54,15 @@ class TrialQueue:
                     {'end_time': -1, '_id': trial_id},
                     {'$set': {'end_time': end_time}}
                 )
+
+    def use_retry_ticket(self, trial_id):
+        """
+        Checks if the trial has retries left. If so, it decreases the counter
+        and returns True, else return False.
+        """
+        trial = self._collection.find_and_modify(
+            query={'_id': trial_id, 'retries': {'$gt': 0}},
+            update={'$inc': {'retries': -1}},
+            new=True
+        )
+        return True if trial is not None else False

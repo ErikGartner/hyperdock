@@ -90,6 +90,7 @@ class WorkQueue:
                 query={'start_time': {'$ne': -1},
                        'end_time': -1,
                        'last_update': {'$lt': deadline}},
+                sort=[('priority', -1), ('last_update', 1)],
                 update={'$set': {'cancelled': True,
                                  'last_update': now,
                                  'end_time': now,
