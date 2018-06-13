@@ -43,6 +43,7 @@ class Supervisor(Thread):
             self._purge_old_workers()
             self._process_trials()
             self.trialqueue.update_trials()
+            self.workqueue.purge_dead_jobs()
             sleep(SLEEP_TIME)
 
     def stop(self):

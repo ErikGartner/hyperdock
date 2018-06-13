@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 import mongomock
 
-from hyperdock.common.workqueue import WorkQueue
+from hyperdock.common.workqueue import WorkQueue, WORK_TIMEOUT
 
 
 class TestWorkQueue(TestCase):
@@ -64,3 +64,26 @@ class TestWorkQueue(TestCase):
                                {'$set': {'cancelled': True,
                                          'end_time': datetime.utcnow()}})
         self.assertTrue(self.q.is_job_cancelled(self.job_id))
+
+    def test_purge_dead_jobs(self):
+        res = self.q.purge_dead_jobs()
+        self.assertEqual(list(res), [])
+        self.assertEqual(self.collection.find({'cancelled': True}).count(), 0, 'Should not purge new jobs')
+
+        t = datetime.utcnow()
+        self.collection.update_one({'_id': self.job_id}, {'$set': {'start_time': t, 'last_update': t}})
+        res = self.q.purge_dead_jobs()
+        self.assertEqual(res, [])
+        self.assertEqual(self.collection.find({'cancelled': True}).count(), 0, 'Should not purge active jobs')
+
+        job2 = self.q.add_job(self.parameters, self.data, 'trial2')
+
+        t = datetime.utcnow() - timedelta(minutes=(WORK_TIMEOUT + 1))
+        self.collection.update_one({'_id': self.job_id}, {'$set': {'start_time': t, 'last_update': t}})
+        self.collection.update_one({'_id': job2}, {'$set': {'start_time': t, 'last_update': t}})
+
+        res = self.q.purge_dead_jobs()
+        self.assertEqual(self.collection.find({'cancelled': True}).count(), 2, 'Should purge dead jobs')
+        self.assertEqual(res[0]['cancelled'], True)
+        self.assertEqual(res[0]['result']['state'], 'fail')
+        self.assertEqual(len(res), 2, 'Should find and return 2 dead jobs.')

@@ -1,6 +1,8 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from bson.objectid import ObjectId
+
+WORK_TIMEOUT = 300
 
 
 class WorkQueue:
@@ -75,3 +77,27 @@ class WorkQueue:
                                                   {'end_time': t,
                                                    'last_update': t,
                                                    'result': result}})
+
+    def purge_dead_jobs(self):
+        """
+        Returns jobs that have timed out due to worker death and cancel them.
+        """
+        now = datetime.utcnow()
+        deadline = now - timedelta(seconds=WORK_TIMEOUT)
+        jobs = []
+        while True:
+            job = self.collection.find_and_modify(
+                query={'start_time': {'$ne': -1},
+                       'end_time': -1,
+                       'last_update': {'$lt': deadline}},
+                update={'$set': {'cancelled': True,
+                                 'last_update': now,
+                                 'end_time': now,
+                                 'result': {'state': 'fail', 'msg': 'Timed out!'},
+                        }},
+                new=True)
+
+            if job is not None:
+                jobs.append(job)
+            else:
+                return jobs
