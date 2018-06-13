@@ -4,6 +4,7 @@ import os
 import json
 
 import docker
+import requests
 
 from .utils import try_key
 
@@ -54,7 +55,8 @@ class Experiment:
         if self._is_running and self._container is not None:
             try:
                 self._container.stop()
-            except docker.errors.APIError as e:
+            except (docker.errors.APIError,
+                    requests.exceptions.ConnectionError) as e:
                 self.logger.error('Failed to stop container:\n%s' % e)
                 self._result = {'status': 'fail', 'msg': e}
 
@@ -66,7 +68,8 @@ class Experiment:
         if self._container is not None:
             try:
                 self._container.remove()
-            except docker.errors.APIError as e:
+            except (docker.errors.APIError,
+                    requests.exceptions.ConnectionError) as e:
                 self.logger.error('Failed to remove container:\n%s' % e)
             self._container = None
 
@@ -104,7 +107,7 @@ class Experiment:
                 if isinstance(logs, (bytes, bytearray)):
                     logs = logs.decode()
 
-            except Exception as e:
+            except:
                 logs = 'Failed to fetch logs.'
 
             self._last_update = {
@@ -139,7 +142,8 @@ class Experiment:
 
         except (docker.errors.ContainerError,
                 docker.errors.APIError,
-                docker.errors.ImageNotFound) as e:
+                docker.errors.ImageNotFound,
+                requests.exceptions.ConnectionError) as e:
             self.logger.error('Failed to start container:\n%s' % e)
             self._result = {'state': 'fail', 'msg': e}
             return None

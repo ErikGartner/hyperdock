@@ -133,3 +133,11 @@ class TestExperiment(TestCase):
 
         self.assertFalse(experiment.is_running(), 'Should not start.')
         self.assertEqual(experiment.get_result()['state'], 'fail', 'Should have failed.')
+
+    def test_docker_daemon_down(self):
+        down_docker = docker.DockerClient(base_url='tcp://127.0.0.1:9999')
+        self.experiment._docker_client = down_docker
+
+        self.experiment.start()
+        self.assertFalse(self.experiment.is_running(), 'Should not start.')
+        self.assertEqual(self.experiment.get_result()['state'], 'fail', 'Should have failed.')
