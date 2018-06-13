@@ -11,7 +11,7 @@ import docker
 from hyperdock.common.experiment import Experiment
 
 
-@skip('since it requires a Docker installation')
+# @skip('since it requires a Docker installation')
 class TestExperiment(TestCase):
 
     def setUp(self):
