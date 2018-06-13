@@ -141,7 +141,7 @@ class Experiment:
                 docker.errors.APIError,
                 docker.errors.ImageNotFound) as e:
             self.logger.error('Failed to start container:\n%s' % e)
-            self._result = {'status': 'fail', 'msg': e}
+            self._result = {'state': 'fail', 'msg': e}
             return None
 
     def _get_environment(self):

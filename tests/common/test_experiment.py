@@ -125,3 +125,11 @@ class TestExperiment(TestCase):
 
         with self.assertRaises(RuntimeError):
             self.experiment.start()
+
+    def test_invalid_image(self):
+        self.job['data']['docker']['image'] = 'NONE_EXISTANT_IMAE'
+        experiment = Experiment(self.job, self.worker_env)
+        experiment.start()
+
+        self.assertFalse(experiment.is_running(), 'Should not start.')
+        self.assertEqual(experiment.get_result()['state'], 'fail', 'Should have failed.')
