@@ -81,7 +81,14 @@ export const TrialInsertSchema = new SimpleSchema({
     label: 'Parameter Space',
     type: String,
     custom: param_space_validator,
-  }
+  },
+  docker_environment: {
+    label: 'Docker Environment',
+    type: Array,
+    optional: true,
+    minCount: 0,
+  },
+  'docker_environment.$': String,
 }, { check, tracker: Tracker});
 
 TrialInsertSchema.messageBox.messages({

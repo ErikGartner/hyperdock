@@ -45,6 +45,7 @@ Meteor.methods({
         docker: {
           image: insertDoc.docker_image,
           runtime: insertDoc.docker_runtime,
+          environment: insertDoc.docker_environment,
         },
         volumes: {
           results: insertDoc.results_path,
