@@ -41,7 +41,18 @@ Template.workqueue.helpers({
     });
     let variable =  _.pick(object, params);
     return JSON.stringify(variable, null, '  ');
-  }
+  },
+  resultSummary() {
+    if (this.result.state == null) {
+      return 'N/A';
+    } else if (this.result.state == 'ok') {
+      return this.result.loss;
+    } else if (this.result.state =='fail' && this.result.msg != null) {
+      return this.result.msg;
+    } else {
+      return this.result.state;
+    }
+  },
 });
 
 Template.workqueue.events({
