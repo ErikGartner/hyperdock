@@ -1,4 +1,5 @@
 import { WorkQueue } from '/imports/api/workqueue/workqueue.js';
+import { TrialQueue } from '/imports/api/trialqueue/trialqueue.js';
 import { Meteor } from 'meteor/meteor';
 import './workqueue.html';
 
@@ -25,6 +26,22 @@ Template.workqueue.helpers({
     let w = WorkQueue.findOne(this._id);
     return (w.cancelled || w.end_time != -1);
   },
+  onlyVariableParams(object) {
+    let trial = TrialQueue.findOne(this.trial);
+    if (trial == null) {
+      return null;
+    }
+
+    let params = [];
+    _.keys(trial.param_space).forEach(function (key){
+      let value = trial.param_space[key];
+      if (_.isArray(value)) {
+        params.push(key);
+      }
+    });
+    let variable =  _.pick(object, params);
+    return JSON.stringify(variable, null, '  ');
+  }
 });
 
 Template.workqueue.events({

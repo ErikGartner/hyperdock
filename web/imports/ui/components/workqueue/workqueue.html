@@ -26,8 +26,8 @@
         <td>{{niceTime start_time}}</td>
         <td>{{worker}}</td>
         <td>{{update.container.name}}</td>
-        <td>{{json2string parameters}}</td>
-        <td>{{json2string result}}</td>
+        <td><pre><code class="bash">{{onlyVariableParams parameters}}</code></pre></td>
+        <td><pre><code class="bash">{{json2string result}}</code></pre></td>
       </tr>
       <tr class="{{rowColor}} collapse" id="collapseLogs-{{_id}}">
         <td colspan="7">

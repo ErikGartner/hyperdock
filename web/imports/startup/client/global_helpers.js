@@ -4,7 +4,7 @@ Template.registerHelper('json2string', (j) => {
 
 Template.registerHelper('niceTime', (t) => {
   if (t != -1) {
-    return moment(t).format('MMMM Do hh:mm:ss');  
+    return moment(t).format('MMMM Do hh:mm:ss');
   } else {
     return '';
   }
