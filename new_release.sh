@@ -13,9 +13,9 @@ echo "Uploading to PyPI"
 python setup.py sdist upload
 
 echo "Building Docker images"
-docker build -t erikgartner/hyperdock-webui:$VERSION -f docker/Dockerfile.webui web/
-docker build -t erikgartner/hyperdock-supervisor:$VERSION -f docker/Dockerfile.supervisor .
-docker build -t erikgartner/hyperdock-worker:$VERSION -f docker/Dockerfile.worker .
+docker build -t erikgartner/hyperdock-webui:$VERSION -f "docker/Dockerfile.webui" web/
+docker build -t erikgartner/hyperdock-supervisor:$VERSION -f "docker/Dockerfile.supervisor" .
+docker build -t erikgartner/hyperdock-worker:$VERSION -f "docker/Dockerfile.worker" .
 
 echo "Tagging Docker images"
 docker tag erikgartner/hyperdock-supervisor:$VERSION erikgartner/hyperdock-supervisor:latest
