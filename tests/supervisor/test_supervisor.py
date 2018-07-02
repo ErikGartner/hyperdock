@@ -20,6 +20,7 @@ class TestSupervisor(TestCase):
         collection.insert({
             'start_time': -1,
             'end_time': -1,
+            'name': 'trial-name',
             'created_on': datetime.utcnow(),
             'priority': 1,
             'retries': 1,

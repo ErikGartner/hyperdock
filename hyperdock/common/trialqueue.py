@@ -66,3 +66,9 @@ class TrialQueue:
             new=True
         )
         return True if trial is not None else False
+
+    def get_trial(self, trial_id):
+        """
+        Retrieves the trial by id.
+        """
+        return self._collection.find_one({'_id': trial_id})

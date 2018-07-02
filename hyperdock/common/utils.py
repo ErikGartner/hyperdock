@@ -1,4 +1,6 @@
 import logging
+import unicodedata
+import re
 
 
 def try_key(dictionary, default, *keys):
@@ -21,3 +23,14 @@ def setup_logging(level=logging.DEBUG):
     FORMAT = '%(asctime)-15s - %(name)-25s - %(levelname)s - %(threadName)s - %(message)s'
     logging.basicConfig(format=FORMAT)
     logging.getLogger().setLevel(level)
+
+
+def slugify(value):
+    """
+    Normalizes string, converts to lowercase, removes non-alpha characters,
+    and converts spaces to hyphens.
+    """
+    value = str(value)
+    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = re.sub(r'[^\w\s-]', '', value).strip().lower()
+    return re.sub(r'[-\s]+', '-', value)

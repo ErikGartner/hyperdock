@@ -17,7 +17,9 @@ class TestWorkQueue(TestCase):
         self.parameters = 'parameters1'
         self.data = {'docker': {'image': 'a_docker_image'}}
         self.trial_id = 'trial-1'
-        self.job_id = self.q.add_job(self.parameters, self.data, self.trial_id)
+        self.trial_name = 'trial-name-1'
+        self.job_id = self.q.add_job(self.parameters, self.data, self.trial_id,
+                                     self.trial_name)
 
     def test_add_job(self):
         self.assertEqual(self.collection.count(), 1, 'Failed to add to queue')
@@ -32,9 +34,10 @@ class TestWorkQueue(TestCase):
                          -1, msg='Timestamp off',)
         self.assertEqual(self.collection.find_one()['last_update'],
                          -1, msg='Timestamp off',)
-        self.assertEqual(self.collection.find_one()['trial'],
-                         self.trial_id, msg='Incorrect trial id')
 
+        job = self.collection.find_one()
+        self.assertEqual(job['trial'], self.trial_id, msg='Incorrect trial id')
+        self.assertEqual(job['trial_name'], self.trial_name, msg='Incorrect trial name')
 
     def test_take_job(self):
         worker_id = 'worker1'
@@ -76,7 +79,7 @@ class TestWorkQueue(TestCase):
         self.assertEqual(res, [])
         self.assertEqual(self.collection.find({'cancelled': True}).count(), 0, 'Should not purge active jobs')
 
-        job2 = self.q.add_job(self.parameters, self.data, 'trial2')
+        job2 = self.q.add_job(self.parameters, self.data, 'trial2', 'trial2-name')
 
         t = datetime.utcnow() - timedelta(minutes=(WORK_TIMEOUT + 1))
         self.collection.update_one({'_id': self.job_id}, {'$set': {'start_time': t, 'last_update': t}})

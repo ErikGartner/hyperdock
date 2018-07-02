@@ -6,7 +6,7 @@ import json
 import docker
 import requests
 
-from .utils import try_key
+from .utils import try_key, slugify
 
 LOG_TAIL_ROWS = 100
 
@@ -211,7 +211,9 @@ class Experiment:
         # Results folder path on host
         results_folder = try_key(data, 'results', 'volumes', 'results')
         folder_name = 'run_%s' % datetime.utcnow().strftime('%Y-%m-%d_%H.%M.%S.%f')
-        volume_root = os.path.join(results_folder, folder_name)
+        trial_folder = slugify('%s-%s' % (self._queue_job['trial_name'],
+                                          self._queue_job['trial']))
+        volume_root = os.path.join(results_folder, trial_folder, folder_name)
 
         # Ensure path is absolute
         volume_root = os.path.abspath(volume_root)

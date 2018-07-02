@@ -70,7 +70,7 @@ class Supervisor(Thread):
 
         for params in params_list:
             self.workqueue.add_job(params, trial['data'], trial['_id'],
-                                   trial['priority'])
+                                   trial['name'], trial['priority'])
 
     def _expand_parameter_space(self, param_spaces):
         """

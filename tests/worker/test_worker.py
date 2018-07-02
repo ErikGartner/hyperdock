@@ -30,7 +30,7 @@ class TestWorker(TestCase):
     def test_start_experiments(self):
         collection = self.db.workers
         q = WorkQueue(self.db)
-        q.add_job('parameter', {'docker': {'image': 'a_docker_image'}}, 'trial-1')
+        q.add_job('parameter', {'docker': {'image': 'a_docker_image'}}, 'trial-1', 'trial-1-name')
         self.worker._start_new_experiments(experiment_cls=MockExperiment)
         self.assertEqual(len(self.worker.experiments), 1)
 

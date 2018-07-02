@@ -43,6 +43,7 @@ class TestExperiment(TestCase):
             'priority': 1,
             'result': {},
             'trial': 'trial-1',
+            'trial_name': 'ablation-trial-1',
             '_id': 'job-1',
         }
         self.worker_env = ['WORKER_ID=1', 'WORKER_ENV_OK=1']
@@ -92,6 +93,10 @@ class TestExperiment(TestCase):
         update = self.experiment.get_update()
         self.assertIn('container', update)
         self.assertTrue(isinstance(update['container']['logs'], str))
+
+        # Ensure the result folder contains trial name and id
+        self.assertTrue('/%s-%s/' % (self.job['trial_name'], self.job['trial'])
+                        in self.experiment._volume_root, 'Result folder doesnt contain trial name and id')
 
         # Wait for container to exit
         self.container.wait(timeout=10)
