@@ -6,7 +6,7 @@ echo "Releasing version $VERSION"
 sleep 2
 
 echo "Tagging and pushing to Github"
-git tag -a -m "Bump to $VERSION" $VERSION
+git tag -a -m "Release v$VERSION" $VERSION
 git push && git push --tags
 
 echo "Uploading to PyPI"
