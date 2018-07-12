@@ -100,7 +100,7 @@ class Experiment:
         """
         Returns the latest update from the experiment.
         """
-        if self._is_running and self._container is not None:
+        if self._container is not None:
             try:
                 logs = self._container.logs(stdout=True, stderr=True,
                                             tail=LOG_TAIL_ROWS)

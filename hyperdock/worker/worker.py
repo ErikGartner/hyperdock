@@ -76,6 +76,8 @@ class Worker(Thread):
         """
         running_exps = []
         for ex in self.experiments:
+            self._update_experiment(ex)
+
             if self.workqueue.is_job_cancelled(ex.id):
                 # Experiment was cancelled by user
                 ex.cleanup()
@@ -83,7 +85,6 @@ class Worker(Thread):
 
             if ex.is_running():
                 # Update the stay alive
-                self._update_experiment(ex)
                 running_exps.append(ex)
             else:
                 # Wrap up the finished experiment
