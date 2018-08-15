@@ -59,4 +59,18 @@ Meteor.methods({
 
     return TrialQueue.insert(doc);
   },
+
+  'trialqueue.delete'(id) {
+    check(id, String);
+
+    let t = TrialQueue.findOne({_id: id, end_time: {$ne: -1}});
+    if (t == null) {
+      throw new Meteor.Error('trialqueue.delete called with invalid id.');
+    }
+
+    if (Meteor.isServer) {
+      WorkQueue.remove({trial: id});
+      return TrialQueue.remove({_id: id}) > 0;
+    }
+  }
 });

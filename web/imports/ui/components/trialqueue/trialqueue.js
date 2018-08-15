@@ -24,3 +24,16 @@ Template.trialqueue.helpers({
     return TrialQueue;
   },
 });
+
+Template.trialqueue.events({
+  'click .delete-trial': function (event) {
+    let id = $(event.target).data().id;
+    console.log(event);
+
+    Meteor.call('trialqueue.delete', id, (error) => {
+      if (error) {
+        alert(error.error);
+      }
+    });
+  }
+})

@@ -6,10 +6,11 @@
     "test": "meteor test --once --driver-package meteortesting:mocha"
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0-beta.49",
+    "@babel/runtime": "^7.0.0-beta.55",
+    "@fortawesome/fontawesome-free": "^5.2.0",
     "highlight.js": "^9.12.0",
     "meteor-node-stubs": "^0.4.1",
-    "simpl-schema": "^1.5.0"
+    "simpl-schema": "^1.4.3"
   },
   "devDependencies": {
     "chai": "^4.1.2"

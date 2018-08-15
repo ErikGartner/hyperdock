@@ -101,7 +101,9 @@ export const TrialInsertSchema = new SimpleSchema({
     optional: true,
     minCount: 0,
   },
-  'docker_environment.$': String,
+  'docker_environment.$': {
+    type: String
+  },
   retries: {
     type: SimpleSchema.Integer,
     defaultValue: 5,

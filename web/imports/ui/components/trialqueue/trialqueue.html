@@ -45,6 +45,7 @@
   <div class="collapse" id="collapseTrialHistory">
     <table class="table table-hover">
       <thead>
+        <th></th>
         <th>Name</th>
         <th>Docker Image</th>
         <th>Start Time</th>
@@ -53,6 +54,9 @@
       <tbody>
       {{#each trialhistory}}
         <tr>
+          <td>
+            <button type="button" class="delete-trial btn btn-danger" data-id="{{_id}}"><i class="fas fa-trash"></i></button>
+          </td>
           <td><a href="{{pathFor route='Trial' trialId=_id}}">{{name}}</a></td>
           <td>{{data.docker.image}}</td>
           <td>{{niceTime start_time}}</td>
