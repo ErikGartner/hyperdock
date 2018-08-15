@@ -7,6 +7,7 @@ import platform
 
 from ..common.workqueue import WorkQueue
 from ..common.experiment import Experiment
+from hyperdock.version import __version__ as hyperdock_version
 
 SLEEP_TIME = 10
 
@@ -65,6 +66,7 @@ class Worker(Thread):
             'jobs': [e.id for e in self.experiments],
             'env': self.docker_env,
             'host': host,
+            'version': hyperdock_version
         }
         self._mongodb.workers.update_one({'id': self.id}, {'$set': data},
                                          upsert=True)

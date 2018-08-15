@@ -6,6 +6,7 @@ import mongomock
 from hyperdock.worker.worker import Worker
 from hyperdock.common.experiment import MockExperiment
 from hyperdock.common.workqueue import WorkQueue
+from hyperdock import version
 
 
 class TestWorker(TestCase):
@@ -26,6 +27,9 @@ class TestWorker(TestCase):
         self.assertAlmostEquals(collection.find_one()['time'],
                                 datetime.utcnow(), msg='Timestamp off',
                                 delta=timedelta(seconds=5))
+
+        self.assertEqual(collection.find_one()['version'], version.__version__,
+                         'Incorrect version')
 
     def test_start_experiments(self):
         collection = self.db.workers
