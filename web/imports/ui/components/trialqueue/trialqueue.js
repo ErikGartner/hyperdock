@@ -23,6 +23,9 @@ Template.trialqueue.helpers({
   TrialQueue() {
     return TrialQueue;
   },
+  prefilledTrial() {
+    return Router.current().params.query;
+  },
 });
 
 Template.trialqueue.events({

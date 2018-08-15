@@ -24,7 +24,8 @@
     </tbody>
   </table>
 
- {{#autoForm schema=TrialInsertSchema id="insertTrial" type="method" meteormethod="trialqueue.insert" validation="submitThenKeyup"}}
+ {{#autoForm schema=TrialInsertSchema id="insertTrial" type="method" meteormethod="trialqueue.insert" validation="submitThenKeyup"
+   doc=prefilledTrial}}
    <fieldset>
      <legend>Add Trial</legend>
    </fieldset>

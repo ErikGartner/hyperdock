@@ -1,6 +1,7 @@
 <template name="Trial">
 
   <h1 class="display-4">{{name}}
+    <div class="btn btn-primary clone-trial" data-id="{{_id}}">Clone</div>
     {{#if notDone}}
       <div class="btn btn-danger cancel-trial" data-id="{{_id}}">Cancel</div>
     {{/if}}
