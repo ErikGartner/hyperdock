@@ -16,7 +16,7 @@ Template.Trial.helpers({
 
 Template.Trial.events({
   'click .cancel-trial': function (event) {
-    let id = $(event.target).data().id;
+    let id = $(event.currentTarget).data().id;
 
     Meteor.call('trialqueue.cancel', id, (error) => {
       if (error) {
@@ -25,7 +25,7 @@ Template.Trial.events({
     });
   },
   'click .clone-trial': function (event) {
-    let id = $(event.target).data().id;
+    let id = $(event.currentTarget).data().id;
     let t = TrialQueue.findOne(id);
     if (t == undefined) {
       alert('Invalid trial id!');

@@ -57,7 +57,7 @@ Template.workqueue.helpers({
 
 Template.workqueue.events({
   'click .cancel-work': function (event) {
-    let id = $(event.target).data().id;
+    let id = $(event.currentTarget).data().id;
 
     Meteor.call('workqueue.cancel', id, (error) => {
       if (error) {

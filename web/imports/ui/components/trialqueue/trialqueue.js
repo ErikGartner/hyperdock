@@ -30,8 +30,7 @@ Template.trialqueue.helpers({
 
 Template.trialqueue.events({
   'click .delete-trial': function (event) {
-    let id = $(event.target).data().id;
-    console.log(event);
+    let id = $(event.currentTarget).data().id;
 
     Meteor.call('trialqueue.delete', id, (error) => {
       if (error) {
