@@ -5,4 +5,8 @@ FROM python:3.6-alpine
 
 # Setup the experiment. Make sure it reads input params from
 # param.json and writes loss to loss.json
-CMD cat /hyperdock/params.json; echo '{"loss": 0, "state": "ok"}' > /hyperdock/loss.json
+
+# Example function to optimize below:
+ENV FUNCTION="0"
+
+CMD python -c "import json; import os; j = json.loads(open('/hyperdock/params.json').read()); f = os.environ['FUNCTION']; r = eval(f, j); print({\"loss\": r, \"state\": \"ok\"})" > /hyperdock/loss.json

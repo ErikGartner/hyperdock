@@ -110,7 +110,9 @@ For the **Target Image** the following volumes are mounted:
   - `out/` use this to write any other files to the result folder
 - `/data` a read only folder that contains any external data needed
 
-See the [Dockfile template](docker/Dockerfile.template) for an example.
+See the [Dockfile template](docker/Dockerfile.template) for an example. It is available as a demo image named
+`erikgartner/hyperdock-demo:latest`. By default it outputs `0` as its loss but by setting the environment
+variable `FUNCTION` to a python expression (for example `a +  b`) you can compute an arbitrary loss based on the Hyperdock parameters.
 
 #### Mongo database
 To start a Mongo database you can use this simple Docker command or use any normal Mongo instance.
@@ -123,7 +125,6 @@ docker run --name hyperdock-mongo -p 27017:27017 -d mongo
 If you want to develop Hyperdock it is recommended that you use [Pipenv](https://docs.pipenv.org/) to manage the Python version the package dependencies.
 
 The WebUI is built using [Meteor](https://www.meteor.com/) which needs to be installed prior to development.
-
 
 ## License
 Copyright 2018 Erik Gärtner
