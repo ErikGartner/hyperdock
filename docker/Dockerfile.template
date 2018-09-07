@@ -9,4 +9,4 @@ FROM python:3.6-alpine
 # Example function to optimize below:
 ENV FUNCTION="0"
 
-CMD python -c "import json; import os; j = json.loads(open('/hyperdock/params.json').read()); f = os.environ['FUNCTION']; r = eval(f, j); print(json.dumps({\"loss\": r, \"state\": \"ok\"}))" > /hyperdock/loss.json && python -c "import json; print(json.dumps({\"name\": \"Dummy Graph\", \"x_axis\": \"X-Axis\", \"y_axis\": \"Y-Axis\", \"series\": [{\"label\": \"Series 1\", \"x\": [1, 2 ,3], \"y\": [1, 4, 9]}]}))" > /hyperdock/graph.json
+CMD python -c "import json; import os; j = json.loads(open('/hyperdock/params.json').read()); f = os.environ['FUNCTION']; r = eval(f, j); print(json.dumps({\"loss\": r, \"state\": \"ok\"}))" > /hyperdock/loss.json && python -c "import json; print(json.dumps([{\"name\": \"Dummy Graph\", \"x_axis\": \"X-Axis\", \"y_axis\": \"Y-Axis\", \"series\": [{\"label\": \"Series 1\", \"x\": [1, 2 ,3], \"y\": [1, 4, 9]}]}]))" > /hyperdock/graph.json

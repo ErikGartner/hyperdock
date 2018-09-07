@@ -12,16 +12,15 @@ from .utils import try_key, slugify
 
 LOG_TAIL_ROWS = 100
 
-SCHEMA_GRAPH = schema.Schema({
+SCHEMA_GRAPH = schema.Schema([{
     'name': schema.And(str, len),
     'x_axis': str,
     'y_axis': str,
-    'series': schema.And(list, len)
-})
-SCHEMA_SERIES = schema.Schema([{
-    'label': schema.And(str),
-    'x': schema.And(list, len),
-    'y': schema.And(list, len)
+    'series': schema.Schema([{
+        'label': schema.And(str),
+        'x': schema.And(list, len),
+        'y': schema.And(list, len)
+    }])
 }])
 
 
@@ -227,7 +226,6 @@ class Experiment:
                 graph = json.load(f)
 
             graph = SCHEMA_GRAPH.validate(graph)
-            graph['series'] = SCHEMA_SERIES.validate(graph['series'])
         except:
             self.logger.warning('Failed to read %s: %s' %
                                 (graph_path, sys.exc_info()[0]))
