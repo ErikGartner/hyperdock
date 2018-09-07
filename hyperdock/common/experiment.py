@@ -37,6 +37,7 @@ class Experiment:
         self.logger = logging.getLogger('Experiment %s' % self.id)
         self._is_running = False
         self._result = {}
+        self._graph = []
         self._container = None
         self._volumes = []
         self._volume_root = None
