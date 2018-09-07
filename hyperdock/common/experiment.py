@@ -229,7 +229,7 @@ class Experiment:
         except:
             self.logger.warning('Failed to read %s: %s' %
                                 (graph_path, sys.exc_info()[0]))
-            graph = {}
+            graph = []
         return graph
 
     def _setup_volumes(self):
