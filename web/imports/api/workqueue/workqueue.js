@@ -38,6 +38,10 @@ WorkSchema = new SimpleSchema({
     type: Object,
     blackbox: true
   },
+  update: {
+    type: Object,
+    blackbox: true
+  },
   result: {
     type: Object,
     blackbox: true

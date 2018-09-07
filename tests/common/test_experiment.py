@@ -121,12 +121,12 @@ class TestExperiment(TestCase):
                          'Container had not stopped')
 
         # Test the graph reading
-        graph_list = self.experiment._read_graph()
+        graph_list = self.experiment._read_graphs()
         self.assertEqual(len(graph_list), 1)
         graph = graph_list[0]
         self.assertIn('name', graph)
         self.assertIn('series', graph)
-        self.assertListEqual(graph_list, self.experiment._graph)
+        self.assertListEqual(graph_list, self.experiment._graphs)
 
         # Clean up and make sure it is removed
         self.experiment.cleanup()

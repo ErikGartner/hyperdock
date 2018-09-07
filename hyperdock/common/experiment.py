@@ -37,7 +37,7 @@ class Experiment:
         self.logger = logging.getLogger('Experiment %s' % self.id)
         self._is_running = False
         self._result = {}
-        self._graph = []
+        self._graphs = []
         self._container = None
         self._volumes = []
         self._volume_root = None
@@ -130,7 +130,7 @@ class Experiment:
                     'id': self._container.short_id,
                     'logs': logs,
                     'results_folder': self._volume_root,
-                    'graph': self._read_graph(),
+                    'graphs': self._read_graphs(),
                 }
             }
 
@@ -215,23 +215,23 @@ class Experiment:
             except:
                 pass
 
-            self._graph = self._read_graph()
+            self._graphs = self._read_graphs()
 
-    def _read_graph(self):
+    def _read_graphs(self):
         """
         Tries to read and validate the graph from the out folder.
         """
-        graph_path = os.path.join(self._volume_root, 'graph.json')
+        graphs_path = os.path.join(self._volume_root, 'graphs.json')
         try:
-            with open(graph_path, 'r') as f:
-                graph = json.load(f)
+            with open(graphs_path, 'r') as f:
+                graphs = json.load(f)
 
-            graph = SCHEMA_GRAPH.validate(graph)
+            graphs = SCHEMA_GRAPH.validate(graphs)
         except:
             self.logger.warning('Failed to read %s: %s' %
-                                (graph_path, sys.exc_info()[0]))
-            graph = []
-        return graph
+                                (graphs_path, sys.exc_info()[0]))
+            graphs = []
+        return graphs
 
     def _setup_volumes(self):
         """

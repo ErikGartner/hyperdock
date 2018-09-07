@@ -1,7 +1,9 @@
 import { WorkQueue } from '/imports/api/workqueue/workqueue.js';
 import { TrialQueue } from '/imports/api/trialqueue/trialqueue.js';
 import { Meteor } from 'meteor/meteor';
+
 import './workqueue.html';
+import './resultgraph.js';
 
 Template.workqueue.helpers({
   workqueue() {
