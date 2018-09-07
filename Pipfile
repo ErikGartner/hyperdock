@@ -11,6 +11,7 @@ pymongo = "*"
 sklearn = "*"
 scipy = "*"
 numpy = "*"
+schema = "*"
 
 [dev-packages]
 nose = "*"

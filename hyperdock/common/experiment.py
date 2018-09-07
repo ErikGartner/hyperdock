@@ -1,14 +1,28 @@
 import logging
 from datetime import datetime
 import os
+import sys
 import json
 
 import docker
 import requests
+import schema
 
 from .utils import try_key, slugify
 
 LOG_TAIL_ROWS = 100
+
+SCHEMA_GRAPH = schema.Schema({
+    'name': schema.And(str, len),
+    'x_axis': str,
+    'y_axis': str,
+    'series': schema.And(list, len)
+})
+SCHEMA_SERIES = schema.Schema([{
+    'label': schema.And(str),
+    'x': schema.And(list, len),
+    'y': schema.And(list, len)
+}])
 
 
 class Experiment:
@@ -116,6 +130,7 @@ class Experiment:
                     'id': self._container.short_id,
                     'logs': logs,
                     'results_folder': self._volume_root,
+                    'graph': self._read_graph(),
                 }
             }
 
@@ -185,21 +200,39 @@ class Experiment:
             self._result = {'state': 'fail'}
 
         else:
-            docker_logs = self._container.logs(stdout=True, stderr=True)
             try:
+                with open(os.path.join(self._volume_root, 'loss.json'), 'r') as f:
+                    loss = json.load(f)
+                    self._result = loss
+            except:
+                self.logger.error('Failed to read loss')
+                self._result = {'state': 'fail', 'msg': 'Failed to read loss.'}
+
+            try:
+                docker_logs = self._container.logs(stdout=True, stderr=True)
                 with open(os.path.join(self._volume_root, 'docker_log.txt'), 'ab') as f:
                     f.write(docker_logs)
             except:
                 pass
 
-            try:
-                with open(os.path.join(self._volume_root, 'loss.json'), 'r') as f:
-                    loss = json.load(f)
-                    self._result = loss
+            self._graph = self._read_graph()
 
-            except:
-                self.logger.error('Failed to read loss')
-                self._result = {'state': 'fail', 'msg': 'Failed to read loss.'}
+    def _read_graph(self):
+        """
+        Tries to read and validate the graph from the out folder.
+        """
+        graph_path = os.path.join(self._volume_root, 'graph.json')
+        try:
+            with open(graph_path, 'r') as f:
+                graph = json.load(f)
+
+            graph = SCHEMA_GRAPH.validate(graph)
+            graph['series'] = SCHEMA_SERIES.validate(graph['series'])
+        except:
+            self.logger.warning('Failed to read %s: %s' %
+                                (graph_path, sys.exc_info()[0]))
+            graph = {}
+        return graph
 
     def _setup_volumes(self):
         """

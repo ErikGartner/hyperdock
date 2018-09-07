@@ -16,7 +16,7 @@ class TestExperiment(TestCase):
 
     def setUp(self):
         self.docker = docker.from_env()
-        self.image = 'erikgartner/hyperdock-test:latest'
+        self.image = 'erikgartner/hyperdock-demo:latest'
         self.test_folder = mkdtemp(prefix='hyperdock-unittest-result-folder')
 
         self.job = {
@@ -120,6 +120,12 @@ class TestExperiment(TestCase):
         self.assertEqual(self.container.status, 'exited',
                          'Container had not stopped')
 
+        # Test the graph reading
+        graph = self.experiment._read_graph()
+        self.assertIn('name', graph)
+        self.assertIn('series', graph)
+        self.assertDictEqual(graph, self.experiment._graph)
+
         # Clean up and make sure it is removed
         self.experiment.cleanup()
         with self.assertRaises(docker.errors.NotFound):
@@ -132,7 +138,7 @@ class TestExperiment(TestCase):
             self.experiment.start()
 
     def test_invalid_image(self):
-        self.job['data']['docker']['image'] = 'NONE_EXISTANT_IMAE'
+        self.job['data']['docker']['image'] = 'NONE_EXISTANT_IMAGE'
         experiment = Experiment(self.job, self.worker_env)
         experiment.start()
 
