@@ -38,6 +38,7 @@ setup(
         'pbr==4.0.4',
         'pymongo==3.6.1',
         'requests==2.18.4',
+        'schema==0.6.8'
         'scikit-learn==0.19.1',
         'scipy==1.1.0',
         'sentinels==1.0.0',
