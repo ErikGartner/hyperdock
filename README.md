@@ -107,6 +107,7 @@ For the **Target Image** the following volumes are mounted:
 - `/hyperdock/`
   - `loss.json` write the final loss here
   - `params.json` contains the parameters for this run
+  - `graphs.json` optional file that contains graphs that Hyperdock will plot; format described [here](https://github.com/ErikGartner/hyperdock/issues/36)
   - `out/` use this to write any other files to the result folder
 - `/data` a read only folder that contains any external data needed
 
