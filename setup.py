@@ -42,6 +42,7 @@ setup(
         'schema==0.6.8',
         'scikit-learn==0.19.2',
         'scipy==1.1.0',
+        'slackclient==1.2.1',
         'sentinels==1.0.0',
         'six==1.11.0',
         'sklearn==0.0',

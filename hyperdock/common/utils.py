@@ -4,6 +4,7 @@ import re
 import os
 
 import pushover
+from slackclient import SlackClient
 
 
 def try_key(dictionary, default, *keys):
@@ -43,6 +44,9 @@ def send_notifiction(title, msg):
     """
     Send a notification to the preconfigured recipients.
     """
+    log = logging.getLogger('utils.send_notifiction')
+
+    no_errors = True
     pushover_token = os.environ.get('PUSHOVER_API_TOKEN', None)
     pushover_user_key = os.environ.get('PUSHOVER_USER_KEY', None)
     if pushover_token is not None and pushover_user_key is not None:
@@ -50,8 +54,20 @@ def send_notifiction(title, msg):
             client = pushover.Client(pushover_user_key, api_token=pushover_token)
             client.send_message(msg, title=title)
         except (pushover.InitError, pushover.RequestError, pushover.UserError) as e:
-            log = logging.getLogger('utils.send_notifiction')
             log.error('Failed to send Pushover notification: %s' % e)
-            return False
+            no_errors = False
 
-    return True
+    slack_token = os.environ.get('SLACK_API_TOKEN', None)
+    slack_recipient = os.environ.get('SLACK_RECIPIENT', None)
+    if slack_recipient is not None and slack_token is not None:
+        sc = SlackClient(slack_token)
+        res = sc.api_call(
+          'chat.postMessage',
+          channel=slack_recipient,
+          text='*%s:* %s' % (title, msg)
+        )
+        if not res['ok']:
+            no_errors = False
+        log.error('Failed to send Slack notification: %s' % res)
+
+    return no_errors

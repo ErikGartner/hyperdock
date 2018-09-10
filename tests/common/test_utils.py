@@ -29,3 +29,10 @@ class TestUtils(TestCase):
         os.environ['PUSHOVER_API_TOKEN'] = 'INVALID'
         os.environ['PUSHOVER_USER_KEY'] = 'INVALID'
         self.assertFalse(send_notifiction('TEST', 'TEST'), 'Should return false when Pushover is incorrectly configured.')
+
+        del os.environ['PUSHOVER_API_TOKEN']
+        del os.environ['PUSHOVER_USER_KEY']
+
+        os.environ['SLACK_API_TOKEN'] = 'INVALID'
+        os.environ['SLACK_RECIPIENT'] = 'INVALID'
+        self.assertFalse(send_notifiction('TEST', 'TEST'), 'Should return false when Pushover is incorrectly configured.')
