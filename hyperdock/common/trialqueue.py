@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from .utils import send_notifiction
 
 class TrialQueue:
     """
@@ -54,6 +55,8 @@ class TrialQueue:
                     {'end_time': -1, '_id': trial_id},
                     {'$set': {'end_time': end_time}}
                 )
+
+                send_notifiction('Hyperdock trial finished!', trial['name'])
 
     def use_retry_ticket(self, trial_id):
         """

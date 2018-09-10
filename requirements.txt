@@ -10,6 +10,7 @@ mongomock==3.11.1
 numpy==1.15.1
 pbr==4.2.0
 pymongo==3.7.1
+python-pushover==0.4
 requests==2.19.1
 schema==0.6.8
 scikit-learn==0.19.2
@@ -18,4 +19,4 @@ sentinels==1.0.0
 six==1.11.0
 sklearn==0.0
 urllib3==1.23
-websocket-client==0.52.0
+websocket-client==0.53.0

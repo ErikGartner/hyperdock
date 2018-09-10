@@ -1,7 +1,8 @@
 from unittest import TestCase
 from datetime import datetime, timedelta
+import os
 
-from hyperdock.common.utils import try_key, slugify
+from hyperdock.common.utils import try_key, slugify, send_notifiction
 
 
 class TestUtils(TestCase):
@@ -21,3 +22,10 @@ class TestUtils(TestCase):
         good_str = 'this-is-a-bad-_-a-a-o-e-folder-name'
         res = slugify(bad_str)
         self.assertEqual(res, good_str, 'Bad slugified string')
+
+    def test_notification(self):
+        self.assertTrue(send_notifiction('TEST', 'TEST'), 'Should return true when Pushover not configured.')
+
+        os.environ['PUSHOVER_API_TOKEN'] = 'INVALID'
+        os.environ['PUSHOVER_USER_KEY'] = 'INVALID'
+        self.assertFalse(send_notifiction('TEST', 'TEST'), 'Should return false when Pushover is incorrectly configured.')

@@ -1,6 +1,9 @@
 import logging
 import unicodedata
 import re
+import os
+
+import pushover
 
 
 def try_key(dictionary, default, *keys):
@@ -34,3 +37,21 @@ def slugify(value):
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
     value = re.sub(r'[^\w\s-]', '', value).strip().lower()
     return re.sub(r'[-\s]+', '-', value)
+
+
+def send_notifiction(title, msg):
+    """
+    Send a notification to the preconfigured recipients.
+    """
+    pushover_token = os.environ.get('PUSHOVER_API_TOKEN', None)
+    pushover_user_key = os.environ.get('PUSHOVER_USER_KEY', None)
+    if pushover_token is not None and pushover_user_key is not None:
+        try:
+            client = pushover.Client(pushover_user_key, api_token=pushover_token)
+            client.send_message(msg, title=title)
+        except (pushover.InitError, pushover.RequestError, pushover.UserError) as e:
+            log = logging.getLogger('utils.send_notifiction')
+            log.error('Failed to send Pushover notification: %s' % e)
+            return False
+
+    return True

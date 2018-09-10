@@ -12,6 +12,7 @@ sklearn = "*"
 scipy = "*"
 numpy = "*"
 schema = "*"
+python-pushover = "*"
 
 [dev-packages]
 nose = "*"
