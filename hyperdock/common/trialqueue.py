@@ -56,7 +56,7 @@ class TrialQueue:
                     {'$set': {'end_time': end_time}}
                 )
 
-                send_notifiction('Hyperdock trial finished!', trial['name'])
+                send_notifiction('Trial finished', trial['name'])
 
     def use_retry_ticket(self, trial_id):
         """
