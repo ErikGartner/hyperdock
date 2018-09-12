@@ -7,9 +7,9 @@ with open("README.md", "r") as fh:
 setup(
     name='hyperdock',
     version=__version__,
-    description='A simple program for distributed hyperparameter optimization in Docker',
+    description='A distributed hyperparameter optimizer for machine learning that lives in Docker',
     long_description=long_description,
-    keywords='hyperparameter optimization,docker',
+    keywords='hyperparameter,optimization,docker',
     author='Erik Gärtner',
     author_email='erik@gartner.io',
     url='http://github.com/ErikGartner/hyperdock',
