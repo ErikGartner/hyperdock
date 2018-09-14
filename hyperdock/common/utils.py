@@ -68,6 +68,6 @@ def send_notifiction(title, msg):
         )
         if not res['ok']:
             no_errors = False
-        log.error('Failed to send Slack notification: %s' % res)
+            log.error('Failed to send Slack notification: %s' % res)
 
     return no_errors
