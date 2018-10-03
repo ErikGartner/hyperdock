@@ -74,14 +74,18 @@ class Experiment:
                 self.logger.error('Failed to stop container:\n%s' % e)
                 self._result = {'status': 'fail', 'msg': e}
 
+            self._fetch_result()
+
     def cleanup(self):
         """
         Stops and removes temporary files.
         """
-        self.stop()
+        if self.is_running():
+            self.stop()
+
         if self._container is not None:
             try:
-                self._container.remove()
+                self._container.remove(force=True)
             except (docker.errors.APIError,
                     requests.exceptions.ConnectionError) as e:
                 self.logger.error('Failed to remove container:\n%s' % e)
@@ -210,7 +214,7 @@ class Experiment:
 
             try:
                 docker_logs = self._container.logs(stdout=True, stderr=True)
-                with open(os.path.join(self._volume_root, 'docker_log.txt'), 'ab') as f:
+                with open(os.path.join(self._volume_root, 'docker_log.txt'), 'wb') as f:
                     f.write(docker_logs)
             except:
                 pass

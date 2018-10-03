@@ -154,3 +154,17 @@ class TestExperiment(TestCase):
         self.experiment.start()
         self.assertFalse(self.experiment.is_running(), 'Should not start.')
         self.assertEqual(self.experiment.get_result()['state'], 'fail', 'Should have failed.')
+
+    def test_cancel_experiment(self):
+        self.experiment.start()
+        self.container = self.experiment._container
+
+        self.experiment._fetch_result()
+
+        # Cancel experiment by calling cleanup directly
+        self.experiment.cleanup()
+        self.container = self.experiment._container
+
+        # Assert that Docker log was written
+        log_path = os.path.join(self.experiment._volume_root, 'docker_log.txt')
+        self.assertTrue(os.path.isfile(log_path))
