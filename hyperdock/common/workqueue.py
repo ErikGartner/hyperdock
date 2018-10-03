@@ -64,10 +64,10 @@ class WorkQueue:
 
     def is_job_cancelled(self, _id):
         """
-        Checks if a certain job has been explicitly cancelled.
+        Checks if a certain job has been cancelled or all together removed.
         """
-        return (self.collection.find_one({'_id': _id, 'cancelled': True})
-                is not None)
+        return (self.collection.find_one({'_id': _id, 'cancelled': False})
+                is None)
 
     def finish_job(self, _id, result):
         """
