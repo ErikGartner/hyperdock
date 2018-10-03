@@ -35,10 +35,11 @@ Template.resultgraph.onRendered(function () {
         tooltips: {
           mode: 'index',
           intersect: false,
-        },
-        hover: {
-          mode: 'nearest',
-          intersect: true
+          callbacks: {
+            label: function(tooltipItems, data) {
+                return data.datasets[tooltipItems.datasetIndex].label + ': ' + tooltipItems.yLabel;
+            }
+          }
         },
         scales: {
           xAxes: [{
@@ -83,8 +84,13 @@ Template.resultgraph.onRendered(function () {
       data = lodash.zipWith(serie.x, serie.y, function(x, y) {
         return {x: x, y: y};
       });
-      dataset = {label: serie.label, borderColor: '#' + colors[idx], data: data,
-                 showLine: true};
+      dataset = {
+        label: serie.label,
+        borderColor: '#' + colors[idx],
+        backgroundColor: '#' + colors[idx],
+        data: data,
+        showLine: true
+      };
       return dataset;
     });
     chart.data.datasets = datasets;
