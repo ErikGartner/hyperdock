@@ -7,7 +7,7 @@ import './resultgraph.js';
 
 Template.workqueue.helpers({
   workqueue() {
-    return WorkQueue.find({}, {sort: {end_time: -1, start_time: -1}});
+    return WorkQueue.find({}, {sort: {"result.loss": 1, end_time: -1, start_time: -1}});
   },
   rowColor() {
     let w = WorkQueue.findOne(this._id);
