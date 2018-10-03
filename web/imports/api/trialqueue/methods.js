@@ -55,6 +55,7 @@ Meteor.methods({
       },
       param_space: param_space,
       retries: insertDoc.retries,
+      priority: insertDoc.priority,
     }
 
     return TrialQueue.insert(doc);

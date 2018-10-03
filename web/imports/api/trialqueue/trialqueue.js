@@ -109,6 +109,10 @@ export const TrialInsertSchema = new SimpleSchema({
     defaultValue: 5,
     min: 0,
   },
+  priority: {
+    type: SimpleSchema.Integer,
+    defaultValue: 0
+  },
 }, { check, tracker: Tracker});
 
 TrialInsertSchema.messageBox.messages({
