@@ -52,6 +52,7 @@
         <th>Docker Image</th>
         <th>Start Time</th>
         <th>End Time</th>
+        <th>Loss</th>
       </thead>
       <tbody>
       {{#each trialhistory}}
@@ -63,6 +64,7 @@
           <td>{{data.docker.image}}</td>
           <td>{{niceTime start_time}}</td>
           <td>{{niceTime end_time}}</td>
+          <td>{{trialLowestLoss}}</td>
         </tr>
       {{/each}}
       </tbody>

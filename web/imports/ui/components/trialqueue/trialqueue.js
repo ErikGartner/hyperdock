@@ -26,6 +26,19 @@ Template.trialqueue.helpers({
   prefilledTrial() {
     return Router.current().params.query;
   },
+  trialLowestLoss() {
+    losses = WorkQueue.find({trial: this._id, 'result.state': 'ok'}).map((job) => {
+      return job.result.loss;
+    })
+    losses = _.filter(losses, (loss) => {
+      return !isNaN(loss);
+    });
+    if (losses.length > 0) {
+      return _.min(losses);
+    } else {
+      return 'N/A';
+    }
+  }
 });
 
 Template.trialqueue.events({
