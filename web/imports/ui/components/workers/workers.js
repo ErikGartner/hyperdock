@@ -6,4 +6,7 @@ Template.workers.helpers({
   workers() {
     return Workers.find({});
   },
+  nbrJobs() {
+    return this.jobs.length;
+  }
 });
