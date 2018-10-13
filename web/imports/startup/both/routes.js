@@ -10,7 +10,7 @@ Router.route('/', {
   subscriptions: function() {
    return [Meteor.subscribe('workers.all'),
            Meteor.subscribe('trialqueue.all'),
-           Meteor.subscribe('workqueue.all')];
+           Meteor.subscribe('workqueue.all.limited')];
   }
 });
 
