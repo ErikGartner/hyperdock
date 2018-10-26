@@ -29,6 +29,10 @@ Template.workqueue.helpers({
     return (w.cancelled || w.end_time != -1);
   },
   onlyVariableParams(object) {
+    if (object == undefined) {
+      return '';
+    }
+
     let trial = TrialQueue.findOne(this.trial);
     if (trial == null) {
       return null;

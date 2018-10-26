@@ -11,11 +11,11 @@ Template.workers.helpers({
   },
   totalParallelism() {
     let parallelism = Workers.find({}).map(function(w) {return w.parallelism;});
-    return _.reduce(parallelism, function(a, b) {return a+b;});
+    return _.reduce(parallelism, function(a, b) {return a+b;}, 0);
     //_.reduce();
   },
   totalLoad() {
     let load = Workers.find({}).map(function(w) {return w.jobs.length;});
-    return _.reduce(load, function(a, b) {return a+b;});
+    return _.reduce(load, function(a, b) {return a+b;}, 0);
   }
 });
