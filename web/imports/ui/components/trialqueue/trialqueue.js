@@ -27,7 +27,7 @@ Template.trialqueue.helpers({
     return Router.current().params.query;
   },
   trialLowestLoss() {
-    losses = WorkQueue.find({trial: this._id, 'result.state': 'ok'}).map((job) => {
+    let losses = WorkQueue.find({trial: this._id, 'result.state': 'ok'}).map((job) => {
       return job.result.loss;
     })
     losses = _.filter(losses, (loss) => {
@@ -38,6 +38,17 @@ Template.trialqueue.helpers({
     } else {
       return 'N/A';
     }
+  },
+  trialStats() {
+    let activeTrials = TrialQueue.find({end_time: -1}, {sort: {start_time: -1}});
+    let nbrTrials = activeTrials.count();
+
+    let nbrQueuedJobs = _.reduce(activeTrials.map(function (doc) {
+      let jobs = WorkQueue.find({trial: doc._id, end_time: -1});
+      return jobs.count();
+    }), function (a, b) { return a + b;}, 0);
+
+    return {nbrTrials: nbrTrials, nbrQueuedJobs: nbrQueuedJobs};
   }
 });
 
