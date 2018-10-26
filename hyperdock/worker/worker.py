@@ -158,7 +158,8 @@ class Worker(Thread):
                 if container is not None:
                     self.logger.info('Orphan state=%s, trying to kill it.'
                                      % (container.status))
-                    docker_client.containers.get(docker_id).kill()
+                    container.kill()
+                    container.remove(force=True)
             except docker.errors.APIError as e:
                 self.logger.error('Failed to kill %s: %s' % (docker_id, e))
             finally:
