@@ -5,6 +5,8 @@ import secrets
 from datetime import datetime
 import platform
 
+import docker
+
 from ..common.workqueue import WorkQueue
 from ..common.experiment import Experiment
 from hyperdock.version import __version__ as hyperdock_version
@@ -39,6 +41,7 @@ class Worker(Thread):
 
         while self._running:
             self._register_worker()
+            self._kill_oprhans()
             self._monitor_experiments()
             self._start_new_experiments()
             sleep(SLEEP_TIME)
@@ -137,3 +140,28 @@ class Worker(Thread):
         Generates a unique worker id.
         """
         return 'worker-%s' % secrets.token_hex(8)
+
+    def _kill_orphans(self):
+        """
+        Looks for orphaned jobs on the machine and if found kills them.
+        """
+        docker_client = docker.from_env()
+        containers = docker_client.containers.list(all=True, sparse=True)
+        container_ids = containers = [c.id for c in containers]
+
+        orphans = self.workqueue.check_for_orphans(container_ids)
+        for (docker_id, job_id) in orphans:
+            try:
+                self.logger.info('Orphan found: docker_id=%s, job_id=%s.'
+                                 % (docker_id, job_id))
+                container = docker_client.containers.get(docker_id)
+                if container is not None:
+                    self.logger.info('Orphan state=%s, trying to kill it.'
+                                     % (container.status))
+                    docker_client.containers.get(docker_id).kill()
+            except Exception as e:
+                self.logger.error('Failed to kill %s: %s' % (docker_id, e))
+            finally:
+                self.workqueue.not_orphaned(job_id)
+
+        return len(orphans)

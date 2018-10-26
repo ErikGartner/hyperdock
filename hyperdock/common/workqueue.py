@@ -51,6 +51,7 @@ class WorkQueue:
             'trial_name': trial_name,
             '_id': str(ObjectId()),
             'cancelled': False,
+            'orphaned': False,
         })
         return id
 
@@ -93,6 +94,7 @@ class WorkQueue:
                        'last_update': {'$lt': deadline}},
                 sort=[('priority', -1), ('last_update', 1)],
                 update={'$set': {'cancelled': True,
+                                 'orphaned': True,
                                  'last_update': now,
                                  'end_time': now,
                                  'result': {'state': 'fail', 'msg': 'Timed out!'},
@@ -103,3 +105,22 @@ class WorkQueue:
                 jobs.append(job)
             else:
                 return jobs
+
+    def check_for_orphans(self, id_list):
+        """
+        Checks if a list of Docker container ids are marked as orphans.
+        Returns a list of (Docker id, experiment id) tuples.
+        """
+        jobs = self.collection.find({'orphaned': True,
+                                     'last_update.container.long_id': {'$in': id_list}})
+        return [(j['last_update']['container']['long_id'], j['_id']) for j in list(jobs)]
+
+    def not_orphaned(self, _id):
+        """
+        Marks a job as not orphaned.
+        """
+        job = self.collection.find_and_modify(
+            query={'_id': _id},
+            update={'$set': {'orphaned': False}},
+            new=True)
+        return job is not None

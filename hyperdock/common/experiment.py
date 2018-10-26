@@ -132,6 +132,7 @@ class Experiment:
                 'container':  {
                     'name': self._container.name,
                     'id': self._container.short_id,
+                    'long_id': self._container.id,
                     'logs': logs,
                     'results_folder': self._volume_root,
                     'graphs': self._read_graphs(),

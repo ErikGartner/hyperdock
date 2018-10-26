@@ -83,3 +83,5 @@ class TestSupervisor(HyperdockBaseTest):
 
         self.supervisor._purge_dead_jobs()
         self.assertEqual(self.work_col.find().count(), 5, 'Should have retried one job.')
+        self.assertEqual(self.work_col.find({'cancelled': True, 'orphaned': True}).count(),
+                         4, 'Should have marked jobs as cancelled and orphaned')

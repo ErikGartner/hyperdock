@@ -81,3 +81,41 @@ class TestWorkQueue(HyperdockBaseTest):
         self.assertEqual(res[0]['cancelled'], True)
         self.assertEqual(res[0]['result']['state'], 'fail')
         self.assertEqual(len(res), 2, 'Should find and return 2 dead jobs.')
+
+    def test_orphan_handling(self):
+        docker_id = '123'
+
+        # Reset work queue
+        self.work_col.remove({})
+
+        # Add non-orphaned job
+        self.job['orphaned'] = False
+        self.job['last_update'] = {
+            'container':  {
+                'long_id': docker_id,
+            }
+        }
+        self.work_col.insert(self.job)
+
+        self.assertEqual(len(self.workqueue.check_for_orphans([docker_id])),
+                         0, "Shouldn't report as orphan")
+
+        # Reset work queue
+        self.work_col.remove({})
+
+        # Add orphaned job
+        self.job['orphaned'] = True
+        self.job['last_update'] = {
+            'container':  {
+                'long_id': docker_id,
+            }
+        }
+        self.work_col.insert(self.job)
+
+        orphans = self.workqueue.check_for_orphans([docker_id])
+        self.assertEqual(len(orphans), 1, "Should report as orphan")
+
+
+        self.workqueue.not_orphaned(orphans[0][1])
+        self.assertEqual(len(self.workqueue.check_for_orphans([docker_id])),
+                         0, "Shouldn't report as orphan")

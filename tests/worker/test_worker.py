@@ -46,3 +46,44 @@ class TestWorker(HyperdockBaseTest):
                                 {'_id': exp.id})['end_time'],
                                 datetime.utcnow(), msg='Timestamp off',
                                 delta=timedelta(seconds=5))
+
+    def test_kill_orphans(self):
+
+        # Start docker container
+        self.experiment.start()
+        self.container = self.experiment._container
+        self.container.pause()
+        self.container.reload()
+        docker_id = self.container.id
+
+        self.assertEqual(self.container.status, 'paused', 'Container must not have exited.')
+
+        # Reset work queue
+        self.work_col.remove({})
+
+        # Set the connected job as orphaned
+        self.job['orphaned'] = False
+        self.job['last_update'] = {
+            'container':  {
+                'long_id': docker_id,
+            }
+        }
+        self.work_col.insert(self.job)
+
+        self.assertEqual(self.worker._kill_orphans(), 0, 'Should not kill any containers')
+
+        # Reset work queue
+        self.work_col.remove({})
+
+        # Set the connected job as orphaned
+        self.job['orphaned'] = True
+        self.job['last_update'] = {
+            'container':  {
+                'long_id': docker_id,
+            }
+        }
+        self.work_col.insert(self.job)
+
+        self.assertEqual(self.worker._kill_orphans(), 1, 'Should kill the container')
+        self.container.reload()
+        self.assertEqual(self.container.status, 'exited', 'Should actually killed container')
