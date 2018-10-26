@@ -3,62 +3,45 @@ from datetime import datetime, timedelta
 
 import mongomock
 
+from ..hyperdock_basetest import HyperdockBaseTest
 from hyperdock.common.trialqueue import TrialQueue
 
 
-class TestTrialQueue(TestCase):
+class TestTrialQueue(HyperdockBaseTest):
 
     def setUp(self):
-        self.db = mongomock.MongoClient().db
-        self.q = TrialQueue(self.db)
-        self.collection = self.db.trialqueue
-
-        # Default data
-        self.trial_id = self.collection.insert({
-            'name': 'Test trial',
-            'start_time': -1,
-            'end_time': -1,
-            'created_on': datetime.utcnow(),
-            'priority': 1,
-            'retries': 1,
-            'param_space': {
-                'learning_rate': [0.1, 0.001],
-                'solver': ['adam', 'adagrad'],
-            },
-        })
+        super().setUp()
 
     def test_next_trial(self):
-        self.assertEqual(self.collection.find({'start_time': -1}).count(), 1)
-        trial = self.q.next_trial()
-        self.assertEqual(self.collection.find({'start_time': -1}).count(), 0,
+        self.assertEqual(self.trial_col.find({'start_time': -1}).count(), 1)
+        trial = self.trialq.next_trial()
+        self.assertEqual(self.trial_col.find({'start_time': -1}).count(), 0,
                          'Work not dequeued.')
-        self.assertEqual(self.q.next_trial(), None, 'Work queue not empty')
+        self.assertEqual(self.trialq.next_trial(), None, 'Work queue not empty')
 
     def test_update_trials(self):
-        wq = self.db.workqueue
-        # Insert dummy job
-        job_id = wq.insert({'trial': self.trial_id, 'end_time': -1})
-        self.q.update_trials()
+
+        self.trialq.update_trials()
 
         # Test that update_trials doesn't do anything before all jobs are finished.
-        self.assertEqual(wq.find({'end_time': -1}).count(), 1,
+        self.assertEqual(self.work_col.find({'end_time': -1}).count(), 1,
                          "Shouldn't finish trial before all jobs are done.")
-        self.assertEqual(self.collection.find({'end_time': -1}).count(), 1,
+        self.assertEqual(self.trial_col.find({'end_time': -1}).count(), 1,
                          "Shouldn't finish trial before all jobs are done.")
 
         # Set job finished
-        wq.update({'_id': job_id}, {'$set': {'end_time': datetime.utcnow()}})
-        self.assertEqual(wq.find({'end_time': -1}).count(), 0,
+        self.work_col.update({'_id': self.job_id}, {'$set': {'end_time': datetime.utcnow()}})
+        self.assertEqual(self.work_col.find({'end_time': -1}).count(), 0,
                          'All jobs should be finished.')
 
         # Call processing
-        self.q.update_trials()
+        self.trialq.update_trials()
 
-        self.assertEqual(self.collection.find({'end_time': -1}).count(), 0,
+        self.assertEqual(self.trial_col.find({'end_time': -1}).count(), 0,
                          "Shouldn't finish trial before all jobs are done.")
 
     def test_use_retry_ticker(self):
-        self.assertTrue(self.q.use_retry_ticket(self.trial_id), 'Should allow for retry')
-        self.assertEqual(self.collection.find_one({'_id': self.trial_id})['retries'],
+        self.assertTrue(self.trialq.use_retry_ticket(self.trial_id), 'Should allow for retry')
+        self.assertEqual(self.trial_col.find_one({'_id': self.trial_id})['retries'],
                          0, "Shouldn't have any retries left.")
-        self.assertFalse(self.q.use_retry_ticket(self.trial_id), 'Should not allow for retry')
+        self.assertFalse(self.trialq.use_retry_ticket(self.trial_id), 'Should not allow for retry')

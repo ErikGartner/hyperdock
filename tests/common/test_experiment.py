@@ -8,52 +8,18 @@ import json
 
 import docker
 
+from ..hyperdock_basetest import HyperdockBaseTest
 from hyperdock.common.experiment import Experiment
 
 
-# @skip('since it requires a Docker installation')
-class TestExperiment(TestCase):
+
+class TestExperiment(HyperdockBaseTest):
 
     def setUp(self):
-        self.docker = docker.from_env()
-        self.image = 'erikgartner/hyperdock-demo:latest'
-        self.test_folder = mkdtemp(prefix='hyperdock-unittest-result-folder')
-
-        self.job = {
-            'created_on': datetime.utcnow(),
-            'start_time': datetime.utcnow(),
-            'end_time': -1,
-            'data': {
-                'docker': {
-                    'image': self.image,
-                    'environment': [
-                        'NVIDIA_VISIBLE_DEVICES=1',
-                    ],
-                },
-                'volumes': {
-                    'results': self.test_folder,
-                }
-            },
-            'parameters': {
-                'a': 1,
-                'b': 2,
-            },
-            'worker': 'worker-1',
-            'last_update': -1,
-            'priority': 1,
-            'result': {},
-            'trial': 'trial-1',
-            'trial_name': 'ablation-trial-1',
-            '_id': 'job-1',
-        }
-        self.worker_env = ['WORKER_ID=1', 'WORKER_ENV_OK=1']
-        self.experiment = Experiment(self.job, self.worker_env)
-        self.container = None
+        super().setUp()
 
     def tearDown(self):
-        if self.container is not None:
-            self.container.remove(force=True)
-        shutil.rmtree(self.test_folder)
+        super().tearDown()
 
     def test_start_container(self):
         self.container = self.experiment._start_container(self.image)

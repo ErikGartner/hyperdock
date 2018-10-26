@@ -3,36 +3,24 @@ from datetime import datetime, timedelta
 
 import mongomock
 
+from ..hyperdock_basetest import HyperdockBaseTest
 from hyperdock.supervisor.supervisor import Supervisor
 from hyperdock.common.experiment import MockExperiment
 from hyperdock.common.workqueue import WorkQueue
 from hyperdock.common.trialqueue import TrialQueue
 
 
-class TestSupervisor(TestCase):
+class TestSupervisor(HyperdockBaseTest):
 
     def setUp(self):
-        self.db = mongomock.MongoClient().db
-        self.supervisor = Supervisor(self.db)
-
-        collection = self.db.trialqueue
-        # Default data
-        collection.insert({
-            'start_time': -1,
-            'end_time': -1,
-            'name': 'trial-name',
-            'created_on': datetime.utcnow(),
-            'priority': 1,
-            'retries': 1,
-            'data': {'docker': {'image': 'a_docker_image'}},
-            'param_space': {
-                'learning_rate': [0.1, 0.001],
-                'solver': ['adam', 'adagrad'],
-            },
-        })
+        super().setUp()
 
     def test_process_trials(self):
-        collection = self.db.trialqueue
+        collection = self.trial_col
+
+        # Reset workqueue
+        self.work_col.remove({})
+
         self.assertEqual(collection.find({'start_time': -1}).count(), 1,
                          'Empty before start')
 
@@ -78,17 +66,20 @@ class TestSupervisor(TestCase):
             self.assertIn(p, out_params)
 
     def test_retry_dead_job(self):
-        workq = self.db.workqueue
+        self.work_col = self.work_col
 
-        self.assertEqual(workq.find().count(), 0)
+        # Reset self.work_colueue
+        self.work_col.remove({})
+
+        self.assertEqual(self.work_col.find().count(), 0)
         self.supervisor._process_trials()
-        self.assertEqual(workq.find().count(), 4)
+        self.assertEqual(self.work_col.find().count(), 4)
 
         # Time out all jobs
         old_time = datetime.utcnow() - timedelta(minutes=300)
-        workq.update_many({}, {'$set': {'last_update': old_time,
+        self.work_col.update_many({}, {'$set': {'last_update': old_time,
                                         'start_time': old_time,
                                         'worker': 'worker-1'}})
 
         self.supervisor._purge_dead_jobs()
-        self.assertEqual(workq.find().count(), 5, 'Should have retried one job.')
+        self.assertEqual(self.work_col.find().count(), 5, 'Should have retried one job.')

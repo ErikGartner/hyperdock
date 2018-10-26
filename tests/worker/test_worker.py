@@ -3,18 +3,14 @@ from datetime import datetime, timedelta
 
 import mongomock
 
+from ..hyperdock_basetest import HyperdockBaseTest
 from hyperdock.worker.worker import Worker
 from hyperdock.common.experiment import MockExperiment
 from hyperdock.common.workqueue import WorkQueue
 from hyperdock import version
 
 
-class TestWorker(TestCase):
-
-    def setUp(self):
-        self.db = mongomock.MongoClient().db
-        self.worker_env = []
-        self.worker = Worker(self.db, self.worker_env)
+class TestWorker(HyperdockBaseTest):
 
     def test_register_worker(self):
         collection = self.db.workers
