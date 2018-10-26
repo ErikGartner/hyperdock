@@ -2,6 +2,7 @@ from unittest import TestCase
 from datetime import datetime, timedelta
 
 import mongomock
+import docker
 
 from ..hyperdock_basetest import HyperdockBaseTest
 from hyperdock.worker.worker import Worker
@@ -85,5 +86,5 @@ class TestWorker(HyperdockBaseTest):
         self.work_col.insert(self.job)
 
         self.assertEqual(self.worker._kill_orphans(), 1, 'Should kill the container')
-        self.container.reload()
-        self.assertEqual(self.container.status, 'exited', 'Should actually killed container')
+        with self.assertRaises(docker.errors.NotFound):
+            self.docker.containers.get(docker_id)

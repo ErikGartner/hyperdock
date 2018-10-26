@@ -113,5 +113,8 @@ class HyperdockBaseTest(TestCase):
 
     def tearDown(self):
         if self.container is not None:
-            self.container.remove(force=True)
+            try:
+                self.container.remove(force=True)
+            except docker.errors.NotFound:
+                pass
         shutil.rmtree(self.test_folder)
