@@ -159,7 +159,7 @@ class Worker(Thread):
                     self.logger.info('Orphan state=%s, trying to kill it.'
                                      % (container.status))
                     docker_client.containers.get(docker_id).kill()
-            except Exception as e:
+            except docker.errors.APIError as e:
                 self.logger.error('Failed to kill %s: %s' % (docker_id, e))
             finally:
                 self.workqueue.not_orphaned(job_id)
