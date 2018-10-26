@@ -20,6 +20,13 @@ def try_key(dictionary, default, *keys):
         return default
 
 
+def in_docker():
+    """
+    Checks if Hyperdock is running in its Docker image.
+    """
+    return os.environ.get('HYPERDOCK_IN_DOCKER', 'false').lower() == 'true'
+
+
 def setup_logging(level=logging.INFO):
     """
     Setups the format string and config for the Python logging module.

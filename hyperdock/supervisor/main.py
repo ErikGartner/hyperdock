@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-import os
-
 import click
 from pymongo import MongoClient
 
@@ -14,10 +12,7 @@ def launch_supervisor(mongodb):
     utils.setup_logging()
     database = MongoClient(mongodb).get_default_database()
 
-    # Checks to see if it is running in Docker
-    in_docker = os.environ.get('HYPERDOCK_IN_DOCKER', 'false').lower() == 'true'
-
-    supervisor = Supervisor(database, in_docker)
+    supervisor = Supervisor(database, utils.in_docker())
     supervisor.start()
 
 
