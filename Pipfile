@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 docker = "*"
 click = "*"
-mongomock = "*"
 pymongo = "*"
 sklearn = "*"
 scipy = "*"
@@ -17,6 +16,7 @@ slackclient = "*"
 
 [dev-packages]
 nose = "*"
+mongomock = "*"
 
 [requires]
 python_version = "3.6"
