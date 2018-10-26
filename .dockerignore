@@ -7,3 +7,4 @@ extra
 /results
 /web/.meteor/local
 /web/node_modules
+new_release.sh
