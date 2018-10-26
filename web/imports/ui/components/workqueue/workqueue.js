@@ -1,5 +1,6 @@
 import { WorkQueue } from '/imports/api/workqueue/workqueue.js';
 import { TrialQueue } from '/imports/api/trialqueue/trialqueue.js';
+import { Workers } from '/imports/api/workers/workers.js';
 import { Meteor } from 'meteor/meteor';
 
 import './workqueue.html';
@@ -57,6 +58,14 @@ Template.workqueue.helpers({
       return this.result.msg;
     } else {
       return this.result.state;
+    }
+  },
+  getHost(id) {
+    let worker = Workers.findOne({id: id});
+    if (worker == undefined) {
+      return 'N/A';
+    } else {
+      return worker.host;
     }
   },
 });

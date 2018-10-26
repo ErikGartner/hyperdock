@@ -5,6 +5,7 @@
     <thead>
       <th>Actions</th>
       <th>Worker</th>
+      <th>Host</th>
       <th>Start Time</th>
       <th>Container</th>
       <th>Result</th>
@@ -20,6 +21,7 @@
           {{/if}}
           <a class="btn btn-primary" data-toggle="collapse" href="#collapseLogs-{{_id}}" role="button" aria-expanded="false" aria-controls="collapseLogs-{{_id}}">Info</a></td>
         <td>{{worker}}</td>
+        <td>{{getHost worker}}</td>
         <td>{{niceTime start_time}}</td>
         <td>{{update.container.name}}</td>
         <td>{{resultSummary}}</td>
