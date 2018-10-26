@@ -20,7 +20,7 @@ def try_key(dictionary, default, *keys):
         return default
 
 
-def setup_logging(level=logging.DEBUG):
+def setup_logging(level=logging.INFO):
     """
     Setups the format string and config for the Python logging module.
     """
