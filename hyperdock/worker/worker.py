@@ -41,7 +41,7 @@ class Worker(Thread):
 
         while self._running:
             self._register_worker()
-            self._kill_oprhans()
+            self._kill_orphans()
             self._monitor_experiments()
             self._start_new_experiments()
             sleep(SLEEP_TIME)
