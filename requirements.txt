@@ -21,3 +21,4 @@ sklearn==0.0
 slackclient==1.3.0
 urllib3==1.24
 websocket-client==0.53.0
+psutil==5.4.8
