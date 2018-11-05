@@ -2,10 +2,13 @@ import logging
 import unicodedata
 import re
 import os
+from time import sleep
 
+import requests
 import pushover
 from slackclient import SlackClient
 
+logger = logging.getLogger('utils')
 
 def try_key(dictionary, default, *keys):
     """
@@ -51,8 +54,6 @@ def send_notifiction(title, msg):
     """
     Send a notification to the preconfigured recipients.
     """
-    log = logging.getLogger('utils.send_notifiction')
-
     no_errors = True
     pushover_token = os.environ.get('PUSHOVER_API_TOKEN', None)
     pushover_user_key = os.environ.get('PUSHOVER_USER_KEY', None)
@@ -61,7 +62,7 @@ def send_notifiction(title, msg):
             client = pushover.Client(pushover_user_key, api_token=pushover_token)
             client.send_message(msg, title=title)
         except (pushover.InitError, pushover.RequestError, pushover.UserError) as e:
-            log.error('Failed to send Pushover notification: %s' % e)
+            logger.error('Failed to send Pushover notification: %s' % e)
             no_errors = False
 
     slack_token = os.environ.get('SLACK_API_TOKEN', None)
@@ -75,6 +76,27 @@ def send_notifiction(title, msg):
         )
         if not res['ok']:
             no_errors = False
-            log.error('Failed to send Slack notification: %s' % res)
+            logger.error('Failed to send Slack notification: %s' % res)
 
     return no_errors
+
+
+def tryd(func, *args):
+    """
+    Tries a Docker call that might fail due to underlying issues in the
+    connectetion to the Daemon. After repeated failures the error is propagated.
+    """
+    retries = 5
+    last_error = None
+    while retries > 0:
+        try:
+            res = func(*args)
+            return res
+        except (requests.exceptions.RequestException) as e:
+            logger.debug('Failed docker call %s: %s' % (func, e))
+            last_error = e
+            retries -= 1
+        sleep(0.5)
+
+    logger.error('Docker call %s failed after several tries: %s' % (func, last_error))
+    raise last_error

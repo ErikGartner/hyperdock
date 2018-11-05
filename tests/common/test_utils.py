@@ -2,10 +2,13 @@ from unittest import TestCase
 from datetime import datetime, timedelta
 import os
 
+import docker
+
+from ..hyperdock_basetest import HyperdockBaseTest
 from hyperdock.common.utils import *
 
 
-class TestUtils(TestCase):
+class TestUtils(HyperdockBaseTest):
 
     def test_try_key(self):
         d = {
@@ -39,3 +42,10 @@ class TestUtils(TestCase):
 
     def test_setup_logging(self):
         setup_logging()
+
+    def test_tryd(self):
+        tryd(self.docker.containers.list)
+        self.docker = client = docker.DockerClient(base_url='unix://var/run/docker0000.sock')
+
+        with self.assertRaises(requests.exceptions.RequestException):
+            tryd(self.docker.containers.list)
