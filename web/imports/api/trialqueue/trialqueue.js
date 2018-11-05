@@ -49,7 +49,7 @@ TrialSchema = new SimpleSchema({
   },
   retries: {
     type: SimpleSchema.Integer,
-    defaultValue: 5,
+    defaultValue: 100,
     min: 0,
   }
 });
