@@ -2,7 +2,7 @@ from unittest import TestCase
 from datetime import datetime, timedelta
 import os
 
-from hyperdock.common.utils import try_key, slugify, send_notifiction
+from hyperdock.common.utils import *
 
 
 class TestUtils(TestCase):
@@ -36,3 +36,6 @@ class TestUtils(TestCase):
         os.environ['SLACK_API_TOKEN'] = 'INVALID'
         os.environ['SLACK_RECIPIENT'] = 'INVALID'
         self.assertFalse(send_notifiction('TEST', 'TEST'), 'Should return false when Pushover is incorrectly configured.')
+
+    def test_setup_logging(self):
+        setup_logging()

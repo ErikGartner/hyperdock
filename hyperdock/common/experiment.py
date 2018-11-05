@@ -127,6 +127,7 @@ class Experiment:
 
             except:
                 logs = 'Failed to fetch logs.'
+                self.logger.warning('Failed to fetch logs')
 
             self._last_update = {
                 'container':  {
@@ -205,22 +206,32 @@ class Experiment:
             self._result = {'state': 'fail'}
 
         else:
-            try:
-                with open(os.path.join(self._volume_root, 'loss.json'), 'r') as f:
-                    loss = json.load(f)
-                    self._result = loss
-            except:
-                self.logger.error('Failed to read loss')
-                self._result = {'state': 'fail', 'msg': 'Failed to read loss.'}
-
-            try:
-                docker_logs = self._container.logs(stdout=True, stderr=True)
-                with open(os.path.join(self._volume_root, 'docker_log.txt'), 'wb') as f:
-                    f.write(docker_logs)
-            except:
-                pass
-
+            self._result = self._read_loss()
             self._graphs = self._read_graphs()
+            self._read_docker_logs()
+
+    def _read_loss(self):
+        """
+        Tries to read the loss from the experiment.
+        """
+        try:
+            with open(os.path.join(self._volume_root, 'loss.json'), 'r') as f:
+                loss = json.load(f)
+                return loss
+        except:
+            self.logger.warning('Failed to read loss')
+            return {'state': 'fail', 'msg': 'Failed to read loss.'}
+
+    def _read_docker_logs(self):
+        """
+        Tries to write the docker container logs to the docker_logs.txt file.
+        """
+        try:
+            docker_logs = self._container.logs(stdout=True, stderr=True)
+            with open(os.path.join(self._volume_root, 'docker_log.txt'), 'wb') as f:
+                f.write(docker_logs)
+        except:
+            self.logger.warning('Failed to read loss')
 
     def _read_graphs(self):
         """
@@ -233,8 +244,8 @@ class Experiment:
 
             graphs = SCHEMA_GRAPH.validate(graphs)
         except:
-            self.logger.warning('Failed to read %s: %s' %
-                                (graphs_path, sys.exc_info()[0]))
+            self.logger.debug('Failed to read %s: %s' %
+                              (graphs_path, sys.exc_info()[0]))
             graphs = []
         return graphs
 
