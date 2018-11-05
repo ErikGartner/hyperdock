@@ -5,9 +5,12 @@ import { TrialQueue } from '../../../api/trialqueue/trialqueue.js';
 
 Template.Trial.helpers({
   progress() {
-    let not_done = WorkQueue.find({trial: this._id, end_time: -1}).count();
-    let all = WorkQueue.find({trial: this._id}).count();
-    return 100 * (1.0 - not_done / all);
+    let all = WorkQueue.find({trial: this._id, cancelled: false}).count();
+    if (all < 1) {
+      return 0;
+    }
+    let notDone = WorkQueue.find({trial: this._id, end_time: -1, cancelled: false}).count();
+    return 100 * (1.0 - notDone / all);
   },
   notDone() {
     return this.end_time == -1;
