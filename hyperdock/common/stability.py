@@ -19,7 +19,7 @@ def tryd(func, *args, **kwargs):
     Tries a Docker call that might fail due to underlying issues in the
     connectetion to the Daemon. After repeated failures the error is propagated.
     """
-    retries = 5
+    retries = 10
     last_error = None
     while retries > 0:
         try:
