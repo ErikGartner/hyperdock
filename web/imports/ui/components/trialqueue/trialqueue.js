@@ -7,7 +7,7 @@ Template.trialqueue.helpers({
   trialProgress(id) {
     let all = WorkQueue.find({trial: id, cancelled: false}).count();
     if (all < 1) {
-      return 100;
+      return 0;
     }
     let notDone = WorkQueue.find({trial: id, end_time: -1, cancelled: false}).count();
     return 100 * (1.0 - notDone / all);

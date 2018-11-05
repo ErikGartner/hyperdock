@@ -41,7 +41,7 @@ Template.Trial.events({
       docker_environment: t.data.docker.environment,
       param_space: JSON.stringify(t.param_space, null, '  '),
       priority: t.priority,
-      retries: 5, // We set it to 5 since we don't know original value.
+      retries: 100, // We set it to 100 since we don't know original value.
     };
 
     Router.go('Home', {}, {query: trial_spec});
