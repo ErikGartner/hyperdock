@@ -154,7 +154,7 @@ class Worker(Thread):
         try:
             containers = tryd(self._docker_client.containers.list, all=True,
                               sparse=True)
-            container_ids = containers = [c.id for c in containers]
+            container_ids = [c.id for c in containers]
         except docker.errors.APIError as e:
             self.logger.warning('Failed to list containers: %s' % e)
             return 0
