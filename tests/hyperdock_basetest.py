@@ -105,6 +105,7 @@ class HyperdockBaseTest(TestCase):
             'trial_name': self.trial_name,
             'cancelled': False,
             'orphaned': False,
+            'update': {}
         }
 
         self.job_id = self.work_col.insert(self.job)

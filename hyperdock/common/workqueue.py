@@ -112,8 +112,8 @@ class WorkQueue:
         Returns a list of (Docker id, experiment id) tuples.
         """
         jobs = self.collection.find({'orphaned': True,
-                                     'last_update.container.long_id': {'$in': id_list}})
-        return [(j['last_update']['container']['long_id'], j['_id']) for j in list(jobs)]
+                                     'update.container.long_id': {'$in': id_list}})
+        return [(j['update']['container']['long_id'], j['_id']) for j in list(jobs)]
 
     def not_orphaned(self, _id):
         """

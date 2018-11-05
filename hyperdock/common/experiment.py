@@ -45,7 +45,7 @@ class Experiment:
         self._docker_client = docker.from_env()
         self.has_started = False
         self.worker_env = worker_env
-        self._last_update = {}
+        self._update = {}
 
     def start(self):
         """
@@ -128,7 +128,7 @@ class Experiment:
                 logs = 'Failed to fetch logs.'
                 self.logger.warning('Failed to fetch logs: %s' % e)
 
-            self._last_update = {
+            self._update = {
                 'container':  {
                     'name': self._container.name,
                     'id': self._container.short_id,
@@ -139,7 +139,7 @@ class Experiment:
                 }
             }
 
-        return self._last_update
+        return self._update
 
     def _start_container(self, image):
         """

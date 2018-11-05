@@ -64,7 +64,7 @@ class TestWorker(HyperdockBaseTest):
 
         # Set the connected job as orphaned
         self.job['orphaned'] = False
-        self.job['last_update'] = {
+        self.job['update'] = {
             'container':  {
                 'long_id': docker_id,
             }
@@ -78,7 +78,7 @@ class TestWorker(HyperdockBaseTest):
 
         # Set the connected job as orphaned
         self.job['orphaned'] = True
-        self.job['last_update'] = {
+        self.job['update'] = {
             'container':  {
                 'long_id': docker_id,
             }

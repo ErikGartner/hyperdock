@@ -90,7 +90,7 @@ class TestWorkQueue(HyperdockBaseTest):
 
         # Add non-orphaned job
         self.job['orphaned'] = False
-        self.job['last_update'] = {
+        self.job['update'] = {
             'container':  {
                 'long_id': docker_id,
             }
@@ -105,7 +105,7 @@ class TestWorkQueue(HyperdockBaseTest):
 
         # Add orphaned job
         self.job['orphaned'] = True
-        self.job['last_update'] = {
+        self.job['update'] = {
             'container':  {
                 'long_id': docker_id,
             }
