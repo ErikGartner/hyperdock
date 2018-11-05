@@ -26,32 +26,33 @@ setup(
     packages=find_packages(),
     include_package_data=False,
     install_requires=[
-        'certifi==2018.8.24',
-        'chardet==3.0.4',
-        'click==6.7',
-        'docker-pycreds==0.3.0',
-        'docker==3.5.0',
-        'idna==2.7',
-        'mock==2.0.0',
-        'mongomock==3.11.1',
-        'numpy==1.15.1',
-        'pbr==4.2.0',
-        'pymongo==3.7.1',
-        'python-pushover==0.4',
-        'requests==2.19.1',
-        'schema==0.6.8',
-        'scikit-learn==0.19.2',
-        'scipy==1.1.0',
-        'slackclient==1.2.1',
+        'nose==1.3.7',
         'sentinels==1.0.0',
         'six==1.11.0',
-        'sklearn==0.0',
-        'urllib3==1.23',
+        'certifi==2018.10.15',
+        'chardet==3.0.4',
+        'click==7.0
+        'docker-pycreds==0.3.0',
+        'docker==3.5.1',
+        'idna==2.7
+        'numpy==1.15.3',
+        'pymongo==3.7.2',
+        'python-pushover==0.4
+        'requests==2.20.0',
+        'schema==0.6.8',
+        'scikit-learn==0.20.0',
+        'scipy==1.1.0',
+        'six==1.11.0',
+        'sklearn==0.0
+        'slackclient==1.3.0',
+        'urllib3==1.24
         'websocket-client==0.53.0',
+        'psutil==5.4.8',
     ],
     extras_require={
         'tests': [
             'nose',
+            'mongomock==3.13.0',
         ],
     },
     entry_points={
