@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import json
+import logging
 
 import click
 from pymongo import MongoClient
@@ -12,8 +13,9 @@ from ..common import utils
 @click.option('--mongodb', default='mongodb://localhost:27017/hyperdock', help='The URI to the MongoDB.')
 @click.option('--env', default='[]', help='Environment variables to set in the Target image. Use Docker list format.')
 @click.option('--parallelism', default=1, help='Maximum number of simulteanous experiments running.')
-def launch_worker(mongodb, env, parallelism):
-    utils.setup_logging()
+@click.option('--loglevel', default='INFO', help='Set the loglevel as a string, e.g. INFO')
+def launch_worker(mongodb, env, parallelism, loglevel):
+    utils.setup_logging(logging.getLevelName(loglevel))
 
     # Create database connection
     database = MongoClient(mongodb).get_default_database()
