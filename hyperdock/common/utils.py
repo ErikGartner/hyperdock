@@ -2,7 +2,6 @@ import logging
 import unicodedata
 import re
 import os
-from time import sleep
 
 import requests
 import pushover
@@ -79,24 +78,3 @@ def send_notifiction(title, msg):
             logger.error('Failed to send Slack notification: %s' % res)
 
     return no_errors
-
-
-def tryd(func, *args):
-    """
-    Tries a Docker call that might fail due to underlying issues in the
-    connectetion to the Daemon. After repeated failures the error is propagated.
-    """
-    retries = 5
-    last_error = None
-    while retries > 0:
-        try:
-            res = func(*args)
-            return res
-        except (requests.exceptions.RequestException) as e:
-            logger.debug('Failed docker call %s: %s' % (func, e))
-            last_error = e
-            retries -= 1
-        sleep(0.5)
-
-    logger.error('Docker call %s failed after several tries: %s' % (func, last_error))
-    raise last_error

@@ -7,6 +7,7 @@ import os
 import json
 
 import docker
+import requests
 
 from ..hyperdock_basetest import HyperdockBaseTest
 from hyperdock.common.experiment import Experiment
@@ -117,7 +118,8 @@ class TestExperiment(HyperdockBaseTest):
         down_docker = docker.DockerClient(base_url='tcp://127.0.0.1:9999')
         self.experiment._docker_client = down_docker
 
-        self.experiment.start()
+        with self.assertRaises(requests.exceptions.RequestException):
+            self.experiment.start()
         self.assertFalse(self.experiment.is_running(), 'Should not start.')
         self.assertEqual(self.experiment.get_result()['state'], 'fail', 'Should have failed.')
 

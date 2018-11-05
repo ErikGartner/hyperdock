@@ -42,10 +42,3 @@ class TestUtils(HyperdockBaseTest):
 
     def test_setup_logging(self):
         setup_logging()
-
-    def test_tryd(self):
-        tryd(self.docker.containers.list)
-        self.docker = client = docker.DockerClient(base_url='unix://var/run/docker0000.sock')
-
-        with self.assertRaises(requests.exceptions.RequestException):
-            tryd(self.docker.containers.list)

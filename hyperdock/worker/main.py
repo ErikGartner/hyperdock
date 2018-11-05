@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import json
 import logging
+import sys
+import traceback
 
 import click
 from pymongo import MongoClient
@@ -17,6 +19,8 @@ from ..common import utils
 def launch_worker(mongodb, env, parallelism, loglevel):
     utils.setup_logging(logging.getLevelName(loglevel))
 
+    logger = logging.getLogger('Main')
+
     # Create database connection
     database = MongoClient(mongodb).get_default_database()
 
@@ -25,9 +29,19 @@ def launch_worker(mongodb, env, parallelism, loglevel):
     if not isinstance(docker_env, list):
         raise ValueError('Environment must be in Docker list format.')
 
-    # Start worker
     worker = Worker(database, docker_env, parallelism, utils.in_docker())
-    worker.start()
+
+    try:
+        # Start worker
+        worker.start()
+    except:
+        logger.error('Fatal error: %s, %s' % (
+            sys.exc_info()[0],
+            traceback.print_exc
+        ))
+    finally:
+        # Perform immediate shutdown of all experiments
+        worker._shutdown()
 
 
 if __name__ == '__main__':

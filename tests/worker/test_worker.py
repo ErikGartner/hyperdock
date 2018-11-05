@@ -88,3 +88,7 @@ class TestWorker(HyperdockBaseTest):
         self.assertEqual(self.worker._kill_orphans(), 1, 'Should kill the container')
         with self.assertRaises(docker.errors.NotFound):
             self.docker.containers.get(docker_id)
+
+    def test_shutdown(self):
+        # Check for raised errors
+        self.worker._shutdown()

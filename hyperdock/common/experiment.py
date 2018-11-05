@@ -9,6 +9,7 @@ import requests
 import schema
 
 from .utils import try_key, slugify
+from .stability import tryd
 
 LOG_TAIL_ROWS = 100
 
@@ -70,12 +71,10 @@ class Experiment:
         """
         if self._is_running and self._container is not None:
             try:
-                self._container.stop()
-            except (docker.errors.APIError,
-                    requests.exceptions.ConnectionError) as e:
+                tryd(self._container.stop)
+            except (docker.errors.APIError) as e:
                 self.logger.error('Failed to stop container:\n%s' % e)
                 self._result = {'status': 'fail', 'msg': e}
-
             self._fetch_result()
 
     def cleanup(self):
@@ -87,9 +86,8 @@ class Experiment:
 
         if self._container is not None:
             try:
-                self._container.remove(force=True)
-            except (docker.errors.APIError,
-                    requests.exceptions.ConnectionError) as e:
+                tryd(self._container.remove, force=True)
+            except (docker.errors.APIError) as e:
                 self.logger.error('Failed to remove container:\n%s' % e)
             self._container = None
 
@@ -122,14 +120,13 @@ class Experiment:
         """
         if self._container is not None:
             try:
-                logs = self._container.logs(stdout=True, stderr=True,
-                                            tail=LOG_TAIL_ROWS)
+                logs = tryd(self._container.logs, stdout=True, stderr=True,
+                            tail=LOG_TAIL_ROWS)
                 if isinstance(logs, (bytes, bytearray)):
                     logs = logs.decode()
-
-            except:
+            except (docker.errors.APIError) as e:
                 logs = 'Failed to fetch logs.'
-                self.logger.warning('Failed to fetch logs')
+                self.logger.warning('Failed to fetch logs: %s' % e)
 
             self._last_update = {
                 'container':  {
@@ -152,25 +149,23 @@ class Experiment:
             runtime = try_key(self._queue_job['data'], '', 'docker', 'runtime')
             environment = self._get_environment()
             volumes = self._volumes
-            container = self._docker_client.containers.run(
-                image=image,
-                tty=False,
-                detach=True,
-                environment=self._get_environment(),
-                runtime=runtime,
-                log_config={'type': 'json-file'},
-                stdout=True,
-                stderr=True,
-                volumes=self._volumes,
-            )
+            container = tryd(self._docker_client.containers.run,
+                             image=image,
+                             tty=False,
+                             detach=True,
+                             environment=self._get_environment(),
+                             runtime=runtime,
+                             log_config={'type': 'json-file'},
+                             stdout=True,
+                             stderr=True,
+                             volumes=self._volumes)
             self.logger.info('Started container %s, environment: %s, volumes: %s'
                              % (container, environment, volumes))
             return container
 
         except (docker.errors.ContainerError,
                 docker.errors.APIError,
-                docker.errors.ImageNotFound,
-                requests.exceptions.ConnectionError) as e:
+                docker.errors.ImageNotFound) as e:
             self.logger.error('Failed to start container:\n%s' % e)
             self._result = {'state': 'fail', 'msg': e}
             return None
@@ -200,7 +195,7 @@ class Experiment:
         if self._container is None:
             return False
         else:
-            self._container.reload()
+            tryd(self._container.reload)
             return self._container.status == 'running'
 
     def _fetch_result(self):
@@ -233,7 +228,7 @@ class Experiment:
         Tries to write the docker container logs to the docker_logs.txt file.
         """
         try:
-            docker_logs = self._container.logs(stdout=True, stderr=True)
+            docker_logs = tryd(self._container.logs, stdout=True, stderr=True)
             with open(os.path.join(self._volume_root, 'docker_log.txt'), 'wb') as f:
                 f.write(docker_logs)
         except:

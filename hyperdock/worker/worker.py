@@ -4,14 +4,16 @@ from time import sleep
 import secrets
 from datetime import datetime
 import platform
+import sys
 
 import docker
 
+from ..common.stability import tryd
 from ..common.workqueue import WorkQueue
 from ..common.experiment import Experiment
 from hyperdock.version import __version__ as hyperdock_version
 
-SLEEP_TIME = 10
+SLEEP_TIME = 15
 
 
 class Worker(Thread):
@@ -20,6 +22,7 @@ class Worker(Thread):
         super().__init__(name='Worker')
 
         self._mongodb = mongodb
+        self._docker_client = docker.from_env()
         self.id = self._generate_id()
         self.logger = logging.getLogger('Worker %s' % self.id)
         self._running = True
@@ -127,12 +130,15 @@ class Worker(Thread):
     def _shutdown(self):
         """
         Performs an immediate but graceful shutdown of the worker and
-        experiments.
+        experiments. Note we do note mark job as finished so it will count
+        as a dropped job to be requeued.
         """
         for ex in self.experiments:
-            ex.stop()
-            res = ex.get_result()
-            self.workqueue.finish_job(ex.id, res)
+            try:
+                ex.cleanup()
+            except:
+                self.logger.error('Failed to stop experiment during shutdown: %s',
+                                  sys.exc_info()[0])
         self.experiments = []
 
     def _generate_id(self):
@@ -145,21 +151,25 @@ class Worker(Thread):
         """
         Looks for orphaned jobs on the machine and if found kills them.
         """
-        docker_client = docker.from_env()
-        containers = docker_client.containers.list(all=True, sparse=True)
-        container_ids = containers = [c.id for c in containers]
+        try:
+            containers = tryd(self._docker_client.containers.list, all=True,
+                              sparse=True)
+            container_ids = containers = [c.id for c in containers]
+        except docker.errors.APIError as e:
+            self.logger.warning('Failed to list containers: %s' % e)
+            return 0
 
         orphans = self.workqueue.check_for_orphans(container_ids)
         for (docker_id, job_id) in orphans:
             try:
                 self.logger.info('Orphan found: docker_id=%s, job_id=%s.'
                                  % (docker_id, job_id))
-                container = docker_client.containers.get(docker_id)
+                container = tryd(self._docker_client.containers.get, docker_id)
                 if container is not None:
                     self.logger.info('Orphan state=%s, trying to kill it.'
                                      % (container.status))
-                    container.kill()
-                    container.remove(force=True)
+                    tryd(container.kill)
+                    tryd(container.remove, force=True)
             except docker.errors.APIError as e:
                 self.logger.error('Failed to kill %s: %s' % (docker_id, e))
             finally:
