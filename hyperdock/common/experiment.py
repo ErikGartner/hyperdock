@@ -50,6 +50,8 @@ class Experiment:
         """
         Start the experiment.
         """
+        self.logger.info('Starting experiment!')
+
         if self.has_started:
             raise RuntimeError('This experiment has already been executed.')
         self.has_started = True
@@ -148,6 +150,8 @@ class Experiment:
         """
         try:
             runtime = try_key(self._queue_job['data'], '', 'docker', 'runtime')
+            environment = self._get_environment()
+            volumes = self._volumes
             container = self._docker_client.containers.run(
                 image=image,
                 tty=False,
@@ -159,6 +163,8 @@ class Experiment:
                 stderr=True,
                 volumes=self._volumes,
             )
+            self.logger.info('Started container %s, environment: %s, volumes: %s'
+                             % (container, environment, volumes))
             return container
 
         except (docker.errors.ContainerError,
@@ -231,7 +237,7 @@ class Experiment:
             with open(os.path.join(self._volume_root, 'docker_log.txt'), 'wb') as f:
                 f.write(docker_logs)
         except:
-            self.logger.warning('Failed to read loss')
+            self.logger.warning('Failed to read/write docker logs: %s' % sys.exc_info()[0])
 
     def _read_graphs(self):
         """
@@ -241,7 +247,6 @@ class Experiment:
         try:
             with open(graphs_path, 'r') as f:
                 graphs = json.load(f)
-
             graphs = SCHEMA_GRAPH.validate(graphs)
         except:
             self.logger.debug('Failed to read %s: %s' %
