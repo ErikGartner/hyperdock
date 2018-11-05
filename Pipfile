@@ -13,6 +13,7 @@ numpy = "*"
 schema = "*"
 python-pushover = "*"
 slackclient = "*"
+psutil = "*"
 
 [dev-packages]
 nose = "*"

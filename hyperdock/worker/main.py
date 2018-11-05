@@ -3,12 +3,14 @@ import json
 import logging
 import sys
 import traceback
+import os
 
 import click
 from pymongo import MongoClient
 
 from .worker import Worker
 from ..common import utils
+from ..common import stability
 
 
 @click.command()
@@ -34,15 +36,14 @@ def launch_worker(mongodb, env, parallelism, loglevel):
     try:
         # Start worker
         worker.start()
+        ex_code = os.EX_OK
     except:
-        logger.error('Fatal error: %s, %s' % (
-            sys.exc_info()[0],
-            traceback.print_exc
-        ))
+        stability.print_crash_analysis()
+        ex_code = os.EX_SOFTWARE
     finally:
         # Perform immediate shutdown of all experiments
         worker._shutdown()
-
+    sys.exit(ex_code)
 
 if __name__ == '__main__':
     launch_worker()
