@@ -110,7 +110,6 @@ class Supervisor(Thread):
         Removes dead jobs and re-queues them if there are enough retries left.
         """
         dead_jobs = self.workqueue.purge_dead_jobs()
-        self.logger.info('Purged dead jobs: %s' % dead_jobs)
         for job in dead_jobs:
             if job is None:
                 continue
