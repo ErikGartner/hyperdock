@@ -33,7 +33,7 @@ def setup_logging(level=logging.INFO):
     """
     Setups the format string and config for the Python logging module.
     """
-    FORMAT = '%(asctime)-15s - %(levelname)s - %(name)-25s - %(threadName)s [%(filename)s:%(lineno)s - %(funcName)20s()]:\n%(message)s\n'
+    FORMAT = '[%(asctime)-15s - %(levelname)s - %(name)s in %(filename)s:%(lineno)s - %(funcName)s()]: %(message)s\n'
     logging.basicConfig(format=FORMAT)
     logging.getLogger().setLevel(level)
 
