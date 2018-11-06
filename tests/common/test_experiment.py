@@ -136,3 +136,15 @@ class TestExperiment(HyperdockBaseTest):
         # Assert that Docker log was written
         log_path = os.path.join(self.experiment._volume_root, 'docker_log.txt')
         self.assertTrue(os.path.isfile(log_path))
+
+    def test_handling_of_removed_container(self):
+        self.experiment.start()
+        self.container = self.experiment._container
+        self.assertTrue(self.experiment.is_running())
+
+        self.container.remove(force=True)
+        self.assertFalse(self.experiment.is_running())
+
+        self.experiment.cleanup()
+        self.assertEqual(self.experiment.get_result()['state'], 'fail')
+        self.container = None

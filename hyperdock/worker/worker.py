@@ -2,14 +2,14 @@ from threading import Thread
 import logging
 from time import sleep
 import secrets
-from datetime import datetime
+from datetime import datetime, timedelta
 import platform
 import sys
 
 import docker
 
-from ..common.stability import tryd
-from ..common.workqueue import WorkQueue
+from ..common.stability import tryd, print_crash_analysis
+from ..common.workqueue import WorkQueue, WORK_TIMEOUT
 from ..common.experiment import Experiment
 from hyperdock.version import __version__ as hyperdock_version
 
@@ -31,8 +31,19 @@ class Worker(Thread):
         self.max_experiments = parallelism
         self.docker_env = docker_env
         self.in_docker = in_docker
+        self.last_loop_finished = None
 
     def run(self):
+        """
+        Starts the main loop and catches all errors to do a small post mortem.
+        """
+        try:
+            self._run()
+        except:
+            print_crash_analysis()
+            worker._shutdown()
+
+    def _run(self):
         """
         The main loop of the worker.
         It does the following:
@@ -43,11 +54,16 @@ class Worker(Thread):
         self.logger.info('Started main loop')
 
         while self._running:
+            self.last_loop_finished = datetime.now()
             self._register_worker()
-            self._kill_orphans()
             self._monitor_experiments()
+            self._kill_orphans()
             self._start_new_experiments()
             sleep(SLEEP_TIME)
+
+            diff = datetime.now() - self.last_loop_finished
+            if diff > timedelta(seconds=0.5 * WORK_TIMEOUT):
+                self.logger.warning('Loop time was dangerously long: %s' % diff)
 
         self._shutdown()
 

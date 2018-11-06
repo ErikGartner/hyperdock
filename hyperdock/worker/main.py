@@ -10,7 +10,6 @@ from pymongo import MongoClient
 
 from .worker import Worker
 from ..common import utils
-from ..common import stability
 
 
 @click.command()
@@ -32,18 +31,8 @@ def launch_worker(mongodb, env, parallelism, loglevel):
         raise ValueError('Environment must be in Docker list format.')
 
     worker = Worker(database, docker_env, parallelism, utils.in_docker())
+    worker.start()
 
-    try:
-        # Start worker
-        worker.start()
-        ex_code = os.EX_OK
-    except:
-        stability.print_crash_analysis()
-        ex_code = os.EX_SOFTWARE
-    finally:
-        # Perform immediate shutdown of all experiments
-        worker._shutdown()
-    sys.exit(ex_code)
 
 if __name__ == '__main__':
     launch_worker()

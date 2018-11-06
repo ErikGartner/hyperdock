@@ -158,7 +158,8 @@ class Experiment:
                              log_config={'type': 'json-file'},
                              stdout=True,
                              stderr=True,
-                             volumes=self._volumes)
+                             volumes=self._volumes,
+                             hostname=str(self.id))
             self.logger.info('Started container %s, environment: %s, volumes: %s'
                              % (container, environment, volumes))
             return container
@@ -195,7 +196,12 @@ class Experiment:
         if self._container is None:
             return False
         else:
-            tryd(self._container.reload)
+            try:
+                tryd(self._container.reload)
+            except (docker.errors.ContainerError,
+                    docker.errors.APIError) as e:
+                self.logger.warning('Failed to get status of container: %s' % e)
+                return False
             return self._container.status == 'running'
 
     def _fetch_result(self):
@@ -218,7 +224,7 @@ class Experiment:
         try:
             with open(os.path.join(self._volume_root, 'loss.json'), 'r') as f:
                 loss = json.load(f)
-                return loss
+            return loss
         except:
             self.logger.warning('Failed to read loss')
             return {'state': 'fail', 'msg': 'Failed to read loss.'}

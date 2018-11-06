@@ -6,10 +6,9 @@ from datetime import datetime, timedelta
 from sklearn.model_selection import ParameterGrid
 
 from ..common.trialqueue import TrialQueue
-from ..common.workqueue import WorkQueue
+from ..common.workqueue import WorkQueue, WORK_TIMEOUT
 
 SLEEP_TIME = 15
-WORKER_TIMEOUT = 300
 
 
 class Supervisor(Thread):
@@ -103,7 +102,7 @@ class Supervisor(Thread):
         The supervisor checks the latests registered workers and cleans up
         timed out workers.
         """
-        t = datetime.utcnow() - timedelta(seconds=WORKER_TIMEOUT)
+        t = datetime.utcnow() - timedelta(seconds=WORK_TIMEOUT)
         self.worker_collection.remove({'time': {'$lt': t}})
 
     def _purge_dead_jobs(self):
@@ -111,6 +110,7 @@ class Supervisor(Thread):
         Removes dead jobs and re-queues them if there are enough retries left.
         """
         dead_jobs = self.workqueue.purge_dead_jobs()
+        self.logger.info('Purged dead jobs: %s' % dead_jobs)
         for job in dead_jobs:
             if job is None:
                 continue

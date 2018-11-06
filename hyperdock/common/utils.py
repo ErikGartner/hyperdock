@@ -9,6 +9,7 @@ from slackclient import SlackClient
 
 logger = logging.getLogger('utils')
 
+
 def try_key(dictionary, default, *keys):
     """
     Tries to get all keys in a nested dictionary.

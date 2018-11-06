@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from bson.objectid import ObjectId
 
-WORK_TIMEOUT = 300
+WORK_TIMEOUT = 600
 
 
 class WorkQueue:
@@ -95,7 +95,6 @@ class WorkQueue:
                 sort=[('priority', -1), ('last_update', 1)],
                 update={'$set': {'cancelled': True,
                                  'orphaned': True,
-                                 'last_update': now,
                                  'end_time': now,
                                  'result': {'state': 'fail', 'msg': 'Timed out!'},
                         }},
