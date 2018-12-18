@@ -312,7 +312,7 @@ class MockExperiment(Experiment):
     It runs for one check then finishes. Returns a loss of 1.0.
     """
 
-    def __init__(self, job, worker_env):
+    def __init__(self, job, worker_env, privileged):
         super().__init__(job, worker_env)
         self.running = False
         self.failure = False

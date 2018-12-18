@@ -141,7 +141,8 @@ class Worker(Thread):
             if job is None:
                 break
 
-            experiment = experiment_cls(job, self.docker_env)
+            experiment = experiment_cls(job, self.docker_env,
+                                        privileged=self.privileged)
             experiment.start()
             self.experiments.append(experiment)
 
