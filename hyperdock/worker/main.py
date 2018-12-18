@@ -13,11 +13,12 @@ from ..common import utils
 
 
 @click.command()
-@click.option('--mongodb', default='mongodb://localhost:27017/hyperdock', help='The URI to the MongoDB.')
+@click.option('--mongodb', show_default=True, default='mongodb://localhost:27017/hyperdock', help='The URI to the MongoDB.')
 @click.option('--env', default='[]', help='Environment variables to set in the Target image. Use Docker list format.')
-@click.option('--parallelism', default=1, help='Maximum number of simulteanous experiments running.')
-@click.option('--loglevel', default='INFO', help='Set the loglevel as a string, e.g. INFO')
-def launch_worker(mongodb, env, parallelism, loglevel):
+@click.option('--parallelism', show_default=True, default=1, type=int, help='Maximum number of simulteanous experiments running.')
+@click.option('--loglevel', show_default=True, default='INFO', help='Set the loglevel as a string, e.g. INFO')
+@click.option('--privileged', is_flag=True, help='Run experiments as privileged containers')
+def launch_worker(mongodb, env, parallelism, loglevel, privileged):
     utils.setup_logging(logging.getLevelName(loglevel))
 
     logger = logging.getLogger('Main')
@@ -30,7 +31,8 @@ def launch_worker(mongodb, env, parallelism, loglevel):
     if not isinstance(docker_env, list):
         raise ValueError('Environment must be in Docker list format.')
 
-    worker = Worker(database, docker_env, parallelism, utils.in_docker())
+    worker = Worker(database, docker_env, parallelism, utils.in_docker(),
+                    privileged)
     worker.start()
 
 

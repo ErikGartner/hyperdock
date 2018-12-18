@@ -30,7 +30,7 @@ class Experiment:
     Class managing an experiment.
     """
 
-    def __init__(self, job, worker_env):
+    def __init__(self, job, worker_env, privileged=False):
         super().__init__()
 
         self._queue_job = job
@@ -43,6 +43,7 @@ class Experiment:
         self._volumes = []
         self._volume_root = None
         self._docker_client = docker.from_env()
+        self._privileged = privileged
         self.has_started = False
         self.worker_env = worker_env
         self._update = {}
@@ -158,6 +159,7 @@ class Experiment:
                              log_config={'type': 'json-file'},
                              stdout=True,
                              stderr=True,
+                             privileged=self._privileged,
                              volumes=self._volumes,
                              hostname=str(self.id))
             self.logger.info('Started container %s, environment: %s, volumes: %s'

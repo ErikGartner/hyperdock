@@ -9,8 +9,8 @@ from ..common import utils
 
 
 @click.command()
-@click.option('--mongodb', default='mongodb://localhost:27017/hyperdock', help='The URI to the MongoDB.')
-@click.option('--loglevel', default='INFO', help='Set the loglevel as a string, e.g. INFO')
+@click.option('--mongodb', show_default=True, default='mongodb://localhost:27017/hyperdock', help='The URI to the MongoDB.')
+@click.option('--loglevel', show_default=True, default='INFO', help='Set the loglevel as a string, e.g. INFO')
 def launch_supervisor(mongodb, loglevel):
     utils.setup_logging(logging.getLevelName(loglevel))
     database = MongoClient(mongodb).get_default_database()

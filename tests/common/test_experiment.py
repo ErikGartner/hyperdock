@@ -148,3 +148,18 @@ class TestExperiment(HyperdockBaseTest):
         self.experiment.cleanup()
         self.assertEqual(self.experiment.get_result()['state'], 'fail')
         self.container = None
+
+    def test_privileged(self):
+        self.experiment._privileged = True
+        self.experiment.start()
+        self.container = self.experiment._container
+        self.container.reload()
+        self.assertTrue(self.container.attrs['HostConfig']['Privileged'],
+                        'Container was not started as privileged!')
+
+    def test_not_privileged(self):
+        self.experiment.start()
+        self.container = self.experiment._container
+        self.container.reload()
+        self.assertFalse(self.container.attrs['HostConfig']['Privileged'],
+                         'Container was started as privileged!')
