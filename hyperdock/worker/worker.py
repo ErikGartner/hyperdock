@@ -43,7 +43,7 @@ class Worker(Thread):
             self._run()
         except:
             print_crash_analysis()
-            worker._shutdown()
+            self._shutdown()
 
     def _run(self):
         """
