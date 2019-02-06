@@ -34,7 +34,7 @@ Fixes are never backported, instead all fixes are only applied forward as descri
 Since these guidelines were adapted a Hyperdock commit should follow the below template.
 
 ```
-[type]: [short desciption] #[Github issue number]
+[type]: [short description] #[Github issue number]
 
 [
   Multiline Detailed explanation
