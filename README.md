@@ -147,14 +147,13 @@ docker run --name hyperdock-mongo -p 27017:27017 -d mongo
 ```
 
 ## Developing
-If you want to develop Hyperdock use [Pipenv](https://docs.pipenv.org/) to manage the Python version and the package dependencies.
 
-The WebUI is built using [Meteor](https://www.meteor.com/) which needs to be installed prior to development.
+Hyperdock welcomes new contributors and pull-requests, but please start by reading the contribution [guidelines](CONTRIBUTING.md). If you don't know where to start, sending a message to contributors is a good start!
 
-Read also the contribution [guidelines](CONTRIBUTING.md)
+Hyperdock uses [Pipenv](https://docs.pipenv.org/) to manage the Python version and the package dependencies. The WebUI is built using [Meteor](https://www.meteor.com/) which needs to be installed prior to development.
 
 ## License
-Copyright 2018 Erik Gärtner
+Copyright 2016-2019 Erik Gärtner
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
