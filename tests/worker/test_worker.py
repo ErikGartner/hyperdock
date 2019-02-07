@@ -41,7 +41,7 @@ class TestWorker(HyperdockBaseTest):
         """
         test worker run loop and stopping it
         """
-        self._sleep_time = 0.1
+        self.worker._sleep_time = 0.1
         self.worker._register_worker = mock.MagicMock()
         self.worker._monitor_experiments = mock.MagicMock()
         self.worker._kill_orphans = mock.MagicMock()
