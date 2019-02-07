@@ -13,6 +13,19 @@ from hyperdock import version
 
 class TestWorker(HyperdockBaseTest):
 
+    def test_run(self):
+        """
+        Test worker.run()
+        """
+        self.worker._run = mock.MagicMock()
+        self.worker._shutdown = mock.MagicMock()
+
+        self.assertFalse(self.worker._running,
+                         'Worker should not be marked as running before start')
+
+        self.worker.run()
+        self.worker._run.assert_called()
+
     def test_register_worker(self):
         """
         test registering of active worker
