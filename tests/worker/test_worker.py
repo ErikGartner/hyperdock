@@ -15,7 +15,7 @@ class TestWorker(HyperdockBaseTest):
 
     def test_run(self):
         """
-        Test worker.run()
+        test worker.run()
         """
         self.worker._run = mock.MagicMock()
         self.worker._shutdown = mock.MagicMock()
@@ -36,6 +36,35 @@ class TestWorker(HyperdockBaseTest):
 
         self.worker.run()
         self.worker._shutdown.assert_called()
+
+    def test_run_loop_and_stopping(self):
+        """
+        test worker run loop and stopping it
+        """
+        self._sleep_time = 0.1
+        self.worker._register_worker = mock.MagicMock()
+        self.worker._monitor_experiments = mock.MagicMock()
+        self.worker._kill_orphans = mock.MagicMock()
+        self.worker._start_new_experiments = mock.MagicMock()
+        self.worker._shutdown = mock.MagicMock()
+
+        self.worker.start()
+        self.assertTrue(self.worker._running,
+                        'Worker be should start when running thread')
+
+        self.worker._register_worker.assert_called_with()
+        self.worker._monitor_experiments.assert_called_with()
+        self.worker._kill_orphans.assert_called_with()
+        self.worker._start_new_experiments.assert_called_with()
+
+        self.worker.stop()
+        self.worker.join(15)
+
+        self.worker._shutdown.assert_called_with()
+
+        self.assertFalse(self.worker.is_alive(), 'Thread should have exited')
+        self.assertFalse(self.worker._running,
+                         'Worker should be marked as not running after stopped')
 
     def test_register_worker(self):
         """

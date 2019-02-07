@@ -34,6 +34,7 @@ class Worker(Thread):
         self.in_docker = in_docker
         self.last_loop_finished = None
         self.privileged = privileged
+        self._sleep_time = SLEEP_TIME
 
     def run(self):
         """
@@ -62,7 +63,7 @@ class Worker(Thread):
             self._monitor_experiments()
             self._kill_orphans()
             self._start_new_experiments()
-            sleep(SLEEP_TIME)
+            sleep(self._sleep_time)
 
             diff = datetime.now() - self.last_loop_finished
             if diff > timedelta(seconds=0.5 * WORK_TIMEOUT):
