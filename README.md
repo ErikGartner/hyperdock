@@ -67,6 +67,12 @@ docker run -it \
            --mongodb mongodb://hyperdock-mongo:27017/hyperdock
 ```
 
+Or run it on your host with Python >= 3.6 and install with pip:
+```bash
+pip install hyperdock
+hyperdock-worker --mongodb mongodb://localhost:27017/hyperdock
+```
+
 #### Options
 
 - `-v $(pwd):$(pwd)` mirrors the path structure from the host in to  the Docker container. This is needed since the paths must be the the same when the worker starts the Target Image and mounts the data and results folders.
