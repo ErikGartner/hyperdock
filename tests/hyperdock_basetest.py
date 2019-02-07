@@ -1,10 +1,11 @@
 from unittest import TestCase, skip
 from datetime import datetime, timedelta
 from time import sleep
-from tempfile import mkdtemp
+import tempfile
 import shutil
 import os
 import json
+import platform
 
 import docker
 
@@ -44,7 +45,11 @@ class HyperdockBaseTest(TestCase):
     def setup_docker(self):
         self.docker = docker.from_env()
         self.image = 'erikgartner/hyperdock-demo:latest'
-        self.test_folder = mkdtemp(prefix='hyperdock-unittest-result-folder')
+
+        # Fix issue with the tmp dir on macos
+        dir = '/tmp' if platform.system() == 'Darwin' else tempfile.gettempdir()
+        self.test_folder = tempfile.mkdtemp(prefix='hyperdock-unittest-result-folder',
+                                            dir='/tmp')
 
     def setup_trialqueue(self):
         self.trialq = TrialQueue(self.db)
