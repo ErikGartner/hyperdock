@@ -12,8 +12,8 @@
 
 Hyperdock is a framework for hyperparameter search that can be used to optimized any target as long as that target can be run in a Docker container. That means that the target can be written in any language, use any framework or run on any operating system as long as it can be made into a Docker image.
 
+The figure below shows the Hyperdock system and its main components.
 ![Hyperdock diagram](extra/diagram.png)
-*The figure above shows the Hyperdock system and its main components.*
 
 The *Hyperdock Web UI* is the main interface for the end-users from where they can specify *trials* (a *target Docker image* and the hyperparameter space to search over). All trials, their status and results are stored in a *Mongo database*.
 
