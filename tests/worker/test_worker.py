@@ -60,9 +60,8 @@ class TestWorker(HyperdockBaseTest):
         self.worker.stop()
         self.worker.join(15)
 
-        self.worker._shutdown.assert_called_with()
-
         self.assertFalse(self.worker.is_alive(), 'Thread should have exited')
+        self.worker._shutdown.assert_called_with()
         self.assertFalse(self.worker._running,
                          'Worker should be marked as not running after stopped')
 
