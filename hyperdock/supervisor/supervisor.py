@@ -28,6 +28,7 @@ class Supervisor(Thread):
         self.worker_collection = mongodb.workers
         self.in_docker = in_docker
         self._running = False
+        self._sleep_time = SLEEP_TIME
 
     def run(self):
         """
@@ -44,7 +45,7 @@ class Supervisor(Thread):
             self._process_trials()
             self.trialqueue.update_trials()
             self._purge_dead_jobs()
-            sleep(SLEEP_TIME)
+            sleep(self._sleep_time)
 
     def stop(self):
         """

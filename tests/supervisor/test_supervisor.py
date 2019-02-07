@@ -29,7 +29,7 @@ class TestSupervisor(HyperdockBaseTest):
                         'Supervisor should not be marked as running before started')
 
         # Start thread
-        Supervisor.SLEEP_TIME = 1
+        self.supervisor._sleep_time = 1
         self.supervisor.start()
 
         self.assertTrue(self.supervisor.is_alive(),
@@ -43,6 +43,30 @@ class TestSupervisor(HyperdockBaseTest):
         self.supervisor._purge_dead_jobs.assert_called()
 
         self.supervisor._running = False
+
+    def test_stop(self):
+        """
+        test stopping supervisor
+        """
+
+        self.supervisor._purge_old_workers = mock.MagicMock()
+        self.supervisor._process_trials = mock.MagicMock()
+        self.supervisor.trialqueue.update_trials = mock.MagicMock()
+        self.supervisor._purge_dead_jobs = mock.MagicMock()
+
+        # Start thread
+        self.supervisor._sleep_time = 1
+        self.supervisor.start()
+
+        self.assertTrue(self.supervisor._running,
+                        'Supervisor should be running')
+
+        self.supervisor.stop()
+        self.supervisor.join(20)
+        self.assertFalse(self.supervisor.is_alive(),
+                         'Supervisor should have stopped')
+        self.assertFalse(self.supervisor._running,
+                         'Supervisor should not be marked as running')
 
     def test_process_trials(self):
         """
