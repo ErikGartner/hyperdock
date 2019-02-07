@@ -35,12 +35,26 @@ class TestStability(HyperdockBaseTest):
             tryd(self.docker.containers.list)
 
     def test_trym(self):
-        trym(self.db.workqueue.find, {})
+        """
+        trym should call the function
+        """
+        return_value = 'some-api-response'
+        mongo_function = mock.MagicMock(return_value=return_value)
+        result = trym(mongo_function, {})
 
-        # # Invalid socket test, very slow!
-        # self.db = MongoClient('localhost', 11111).hyperdock
-        # with self.assertRaises(pymongo.errors.PyMongoError):
-        #     trym(self.db.workqueue.insert, {'a': 'b'})
+        # Asserts that the API was actually called
+        self.assertEqual(result, return_value)
+        mongo_function.assert_called_with({})
+
+    def test_trym_error(self):
+        """
+        trym should retry and throw error on failure
+        """
+        mongo_function = mock.MagicMock(side_effect=pymongo.errors.PyMongoError())
+
+        with self.assertRaises(pymongo.errors.PyMongoError):
+            trym(mongo_function, {})
+        mongo_function.assert_called_with({})
 
     def test_print_crash_analysis(self):
         # Make sure it doesn't contain any syntax errors
