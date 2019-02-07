@@ -1,4 +1,4 @@
-from unittest import TestCase, skip
+from unittest import TestCase, skip, mock
 from datetime import datetime, timedelta
 from time import sleep
 from tempfile import mkdtemp
@@ -108,6 +108,27 @@ class TestExperiment(HyperdockBaseTest):
 
         with self.assertRaises(RuntimeError):
             self.experiment.start()
+
+    def test_stop(self):
+        """
+        test stopping of running experiment
+        """
+        self.experiment.start()
+        self.container = self.experiment._container
+
+        # Mock the stop function in the Docker API
+        stop_function = self.container.stop
+        self.container.stop = mock.MagicMock()
+        self.experiment._fetch_result = mock.MagicMock()
+
+        self.experiment.stop()
+        # Checks that stop is called on container
+        self.container.stop.assert_called()
+        # Check that stop fetches results from container
+        self.experiment._fetch_result.assert_called()
+
+        # Stop real container
+        stop_function()
 
     def test_invalid_image(self):
         """
