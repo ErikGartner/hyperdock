@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, mock
 from datetime import datetime, timedelta
 
 import mongomock
@@ -102,5 +102,9 @@ class TestWorker(HyperdockBaseTest):
         """
         test worker.shudown()
         """
-        # Check for raised errors
+        self.experiment.cleanup = mock.MagicMock()
+        self.worker.experiments = [self.experiment]
+
         self.worker._shutdown()
+
+        self.experiment.cleanup.assert_called()
