@@ -13,6 +13,9 @@ class TestWorkQueue(HyperdockBaseTest):
         super().setUp()
 
     def test_add_job(self):
+        """
+        test adding a job to workqueue
+        """
         self.assertEqual(self.work_col.count(), 1, 'Failed to add to queue')
         self.assertEqual(self.work_col.find_one()['parameters'], self.parameters,
                          'Incorrect parameters')
@@ -31,6 +34,9 @@ class TestWorkQueue(HyperdockBaseTest):
         self.assertEqual(job['trial_name'], self.trial_name, msg='Incorrect trial name')
 
     def test_take_job(self):
+        """
+        test taking a job from workqueue
+        """
         worker_id = 'worker1'
         job = self.workqueue.assign_next_job(worker_id)
 
@@ -53,6 +59,9 @@ class TestWorkQueue(HyperdockBaseTest):
                                 delta=timedelta(seconds=5))
 
     def test_is_job_cancelled(self):
+        """
+        test checking if workqueue job is cancelled
+        """
         self.assertFalse(self.workqueue.is_job_cancelled(self.job_id))
         self.work_col.update({'_id': self.job_id},
                                {'$set': {'cancelled': True,
@@ -60,6 +69,9 @@ class TestWorkQueue(HyperdockBaseTest):
         self.assertTrue(self.workqueue.is_job_cancelled(self.job_id))
 
     def test_purge_dead_jobs(self):
+        """
+        test puring all dead jobs from workqueue
+        """
         res = self.workqueue.purge_dead_jobs()
         self.assertEqual(list(res), [])
         self.assertEqual(self.work_col.find({'cancelled': True}).count(), 0, 'Should not purge new jobs')
@@ -83,6 +95,9 @@ class TestWorkQueue(HyperdockBaseTest):
         self.assertEqual(len(res), 2, 'Should find and return 2 dead jobs.')
 
     def test_orphan_handling(self):
+        """
+        test requeing of orphaned jobs
+        """
         docker_id = '123'
 
         # Reset work queue
