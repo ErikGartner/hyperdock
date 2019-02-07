@@ -56,6 +56,12 @@ class TestStability(HyperdockBaseTest):
             trym(mongo_function, {})
         mongo_function.assert_called_with({})
 
-    def test_print_crash_analysis(self):
-        # Make sure it doesn't contain any syntax errors
-        print_crash_analysis()
+    def test_crash_analysis(self):
+        """
+        crash_analysis should return a string with system information
+
+        Note this function is hard to test since it returns live information
+        from the system.
+        """
+        msg = crash_analysis()
+        self.assertRegexpMatches(msg, r'Time: \d+', 'Should contain time stamp')

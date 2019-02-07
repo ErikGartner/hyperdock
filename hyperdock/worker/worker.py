@@ -8,7 +8,7 @@ import sys
 
 import docker
 
-from ..common.stability import tryd, print_crash_analysis
+from ..common.stability import tryd, crash_analysis
 from ..common.workqueue import WorkQueue, WORK_TIMEOUT
 from ..common.experiment import Experiment
 from hyperdock.version import __version__ as hyperdock_version
@@ -42,7 +42,7 @@ class Worker(Thread):
         try:
             self._run()
         except:
-            print_crash_analysis()
+            print(crash_analysis(), file=sys.stderr, flush=True)
             self._shutdown()
 
     def _run(self):

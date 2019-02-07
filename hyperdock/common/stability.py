@@ -61,12 +61,26 @@ def trym(func, *args, **kwargs):
     raise last_error
 
 
-def print_crash_analysis():
-    print()
-    print('========= Crash Analysis =========')
-    print('Time: %s' % datetime.datetime.now())
-    print('Last error: %s' % sys.exc_info()[0])
-    print('Stack trace: \n%s' % traceback.print_exc())
-    print('Cpu usage: %s' % psutil.cpu_percent(percpu=True))
-    print('Memory usage:', psutil.virtual_memory())
-    print()
+def crash_analysis():
+    """
+    This function gathers relevant data upon a worker crash.
+    """
+
+    msg = """
+========= Crash Analysis =========
+Time: {}
+Last error:
+{}
+Stack trace:
+{}
+CPU usage:
+{}
+Memory usage:
+{}
+==================================
+    """.format(datetime.datetime.now(),
+               sys.exc_info()[0],
+               traceback.print_exc(),
+               psutil.cpu_percent(percpu=True),
+               psutil.virtual_memory())
+    return msg
