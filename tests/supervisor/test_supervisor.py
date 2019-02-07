@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, mock
 from datetime import datetime, timedelta
 
 import mongomock
@@ -14,6 +14,35 @@ class TestSupervisor(HyperdockBaseTest):
 
     def setUp(self):
         super().setUp()
+
+    def test_start(self):
+        """
+        test the main loop of the supervisor
+        """
+
+        self.supervisor._purge_old_workers = mock.MagicMock()
+        self.supervisor._process_trials = mock.MagicMock()
+        self.supervisor.trialqueue.update_trials = mock.MagicMock()
+        self.supervisor._purge_dead_jobs = mock.MagicMock()
+
+        self.assertFalse(self.supervisor._running,
+                        'Supervisor should not be marked as running before started')
+
+        # Start thread
+        Supervisor.SLEEP_TIME = 1
+        self.supervisor.start()
+
+        self.assertTrue(self.supervisor.is_alive(),
+                        'Supervisor should be running')
+        self.assertTrue(self.supervisor._running,
+                        'Supervisor should be marked as running')
+
+        self.supervisor._purge_old_workers.assert_called()
+        self.supervisor._process_trials.assert_called()
+        self.supervisor.trialqueue.update_trials.assert_called()
+        self.supervisor._purge_dead_jobs.assert_called()
+
+        self.supervisor._running = False
 
     def test_process_trials(self):
         """
