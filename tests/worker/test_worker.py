@@ -14,6 +14,9 @@ from hyperdock import version
 class TestWorker(HyperdockBaseTest):
 
     def test_register_worker(self):
+        """
+        test registering of active worker
+        """
         collection = self.db.workers
         self.assertEqual(collection.count(), 0, 'Not empty before start')
 
@@ -29,6 +32,9 @@ class TestWorker(HyperdockBaseTest):
                          'Incorrect version')
 
     def test_start_experiments(self):
+        """
+        test start_experiment function in worker
+        """
         collection = self.db.workers
         q = WorkQueue(self.db)
         q.add_job('parameter', {'docker': {'image': 'a_docker_image'}}, 'trial-1', 'trial-1-name')
@@ -49,6 +55,9 @@ class TestWorker(HyperdockBaseTest):
                                 delta=timedelta(seconds=5))
 
     def test_kill_orphans(self):
+        """
+        test that worker kills orphaned jobs
+        """
 
         # Start docker container
         self.experiment.start()
@@ -90,5 +99,8 @@ class TestWorker(HyperdockBaseTest):
             self.docker.containers.get(docker_id)
 
     def test_shutdown(self):
+        """
+        test worker.shudown()
+        """
         # Check for raised errors
         self.worker._shutdown()
