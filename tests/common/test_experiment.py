@@ -130,6 +130,25 @@ class TestExperiment(HyperdockBaseTest):
         # Stop real container
         stop_function()
 
+    def test_cleanup(self):
+        """
+        test experiment.cleanup()
+        """
+        self.experiment.start()
+        self.container = self.experiment._container
+
+        remove_function = self.container.remove
+        self.container.remove = mock.MagicMock()
+        self.experiment.cleanup()
+
+        # Ensure remove function was called
+        self.container.remove.assert_called_with(force=True)
+
+        self.assertFalse(self.experiment._is_running,
+                         'Experiment should not be running after cleanup')
+
+        remove_function()
+
     def test_invalid_image(self):
         """
         ensure starting invalid Docker image fails gracefully

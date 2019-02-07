@@ -91,6 +91,7 @@ class Experiment:
             except (docker.errors.APIError) as e:
                 self.logger.error('Failed to remove container:\n%s' % e)
             self._container = None
+            self._is_running = False
 
     def is_running(self):
         """
