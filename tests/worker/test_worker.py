@@ -26,6 +26,17 @@ class TestWorker(HyperdockBaseTest):
         self.worker.run()
         self.worker._run.assert_called()
 
+    def test_error_in_run(self):
+        """
+        worker.run() should call _shutdown on error
+        this should call _shutdown
+        """
+        self.worker._run = mock.MagicMock(side_effect=Exception())
+        self.worker._shutdown = mock.MagicMock()
+
+        self.worker.run()
+        self.worker._shutdown.assert_called()
+
     def test_register_worker(self):
         """
         test registering of active worker
