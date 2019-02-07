@@ -47,6 +47,7 @@ Types are:
  - *doc* - the commit updates the documentation
  - *build* - the commit adds to the build process
  - *rel* - the commit introduces a new release
+ - *refact* - the commit refactors code without adding functionality
 
 ### Dependencies
 
