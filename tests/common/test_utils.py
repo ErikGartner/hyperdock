@@ -11,6 +11,10 @@ from hyperdock.common.utils import *
 class TestUtils(HyperdockBaseTest):
 
     def test_try_key(self):
+        """
+        try key should return value from (nested) dictionary if exists
+        else it should return None
+        """
         d = {
             'a': {'b': [4]}
         }
@@ -21,12 +25,19 @@ class TestUtils(HyperdockBaseTest):
         self.assertEqual(try_key(d, None), d, 'Should return dict')
 
     def test_slugify(self):
+        """
+        slugify should make unsafe strings safe for paths
+        """
         bad_str = 'this is a / bad . _ å ä ö é folder \ name'
         good_str = 'this-is-a-bad-_-a-a-o-e-folder-name'
         res = slugify(bad_str)
         self.assertEqual(res, good_str, 'Bad slugified string')
 
     def test_notification(self):
+        """
+        send_notifiction should send notification is properly configured
+        else it should just fail silently
+        """
         self.assertTrue(send_notifiction('TEST', 'TEST'), 'Should return true when Pushover not configured.')
 
         os.environ['PUSHOVER_API_TOKEN'] = 'INVALID'
