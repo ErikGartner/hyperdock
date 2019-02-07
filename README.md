@@ -152,9 +152,11 @@ Hyperdock welcomes new contributors and pull-requests, but please start by readi
 
 Hyperdock uses [Pipenv](https://docs.pipenv.org/) to manage the Python version and the package dependencies. The WebUI is built using [Meteor](https://www.meteor.com/) which needs to be installed prior to development.
 
+Hyperdock uses [Travis](https://travis-ci.com/) for test monitoring, continuous integration and continuous deployment.
+
 ### Testing
 
-Hyperdock uses [nose](https://nose.readthedocs.io) as the test runner for the Python package. *Note* that the test machine needs a working Docker installation that doesn't require sudo. Always run the tests locally before testing.
+Hyperdock uses [nose](https://nose.readthedocs.io) as the test runner for the Python package. *Note* that the test machine needs a working Docker installation that doesn't require sudo. Always run the tests locally before pushing.
 
 ```bash
 # Install packages and development packages with the correct Python version
