@@ -13,6 +13,9 @@ class TestTrialQueue(HyperdockBaseTest):
         super().setUp()
 
     def test_next_trial(self):
+        """
+        test dequeuing the next trial in the queue
+        """
         self.assertEqual(self.trial_col.find({'start_time': -1}).count(), 1)
         trial = self.trialq.next_trial()
         self.assertEqual(self.trial_col.find({'start_time': -1}).count(), 0,
@@ -20,6 +23,9 @@ class TestTrialQueue(HyperdockBaseTest):
         self.assertEqual(self.trialq.next_trial(), None, 'Work queue not empty')
 
     def test_update_trials(self):
+        """
+        test updating the state of the trials
+        """
 
         self.trialq.update_trials()
 
@@ -41,6 +47,9 @@ class TestTrialQueue(HyperdockBaseTest):
                          "Shouldn't finish trial before all jobs are done.")
 
     def test_use_retry_ticker(self):
+        """
+        test the retry ticket for a trial
+        """
         self.assertTrue(self.trialq.use_retry_ticket(self.trial_id), 'Should allow for retry')
         self.assertEqual(self.trial_col.find_one({'_id': self.trial_id})['retries'],
                          0, "Shouldn't have any retries left.")
