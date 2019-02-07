@@ -16,6 +16,12 @@ class TestSupervisor(HyperdockBaseTest):
         super().setUp()
 
     def test_process_trials(self):
+        """
+        test process_trials method
+
+        should dequeue the oldest non-processed trial and create
+        jobs from it and add those to the workqueue
+        """
         collection = self.trial_col
 
         # Reset workqueue
@@ -38,6 +44,11 @@ class TestSupervisor(HyperdockBaseTest):
                          'Missing parameter combination')
 
     def test_purge_old_workers(self):
+        """
+        test purge_old_workers method
+
+        should remove time-out workers from the worker collection
+        """
         collection = self.db.workers
         collection.insert({'id': 'test-worker-old', 'time': datetime(year=1,
                                                                      month=1,
@@ -51,6 +62,10 @@ class TestSupervisor(HyperdockBaseTest):
                                          'Incorrect purge')
 
     def test_expand_parameter_space(self):
+        """
+        test expansion of parameter space into parameter sets
+        """
+
         space1 = {'a': [1, 2], 'b': 1}
         params1 = [{'a': 1, 'b': 1}, {'a': 2, 'b': 1}]
         out_params = self.supervisor._expand_parameter_space(space1)
@@ -66,9 +81,15 @@ class TestSupervisor(HyperdockBaseTest):
             self.assertIn(p, out_params)
 
     def test_retry_dead_job(self):
+        """
+        test retrying of dead jobs
+
+        jobs that have timed out should be retried given enough tickets
+        """
+
         self.work_col = self.work_col
 
-        # Reset self.work_colueue
+        # Reset self.work_col
         self.work_col.remove({})
 
         self.assertEqual(self.work_col.find().count(), 0)
