@@ -34,11 +34,12 @@ class TestExperiment(HyperdockBaseTest):
                          'Container did not exit')
 
     def test_start(self):
+        """
+        test experiment.start()
+        """
         self.experiment.start()
         self.container = self.experiment._container
 
-        # Make sure it has started. Not that if it exits quickly we might miss
-        # it.
         self.assertTrue(self.experiment.is_running(), 'Container didnt start')
 
         # Ensure correct image
@@ -109,6 +110,9 @@ class TestExperiment(HyperdockBaseTest):
             self.experiment.start()
 
     def test_invalid_image(self):
+        """
+        ensure starting invalid Docker image fails gracefully
+        """
         self.job['data']['docker']['image'] = 'NONE_EXISTANT_IMAGE'
         experiment = Experiment(self.job, self.worker_env)
         experiment.start()
@@ -117,6 +121,10 @@ class TestExperiment(HyperdockBaseTest):
         self.assertEqual(experiment.get_result()['state'], 'fail', 'Should have failed.')
 
     def test_docker_daemon_down(self):
+        """
+        ensure that starting experiment without Docker daemon fails
+        correctly
+        """
         down_docker = docker.DockerClient(base_url='tcp://127.0.0.1:9999')
         self.experiment._docker_client = down_docker
 
@@ -126,6 +134,9 @@ class TestExperiment(HyperdockBaseTest):
         self.assertEqual(self.experiment.get_result()['state'], 'fail', 'Should have failed.')
 
     def test_cancel_experiment(self):
+        """
+        test experiment cancelling
+        """
         self.experiment.start()
         self.container = self.experiment._container
 
@@ -140,6 +151,9 @@ class TestExperiment(HyperdockBaseTest):
         self.assertTrue(os.path.isfile(log_path))
 
     def test_handling_of_removed_container(self):
+        """
+        test handling of externally removed container
+        """
         self.experiment.start()
         self.container = self.experiment._container
         self.assertTrue(self.experiment.is_running())
@@ -152,6 +166,9 @@ class TestExperiment(HyperdockBaseTest):
         self.container = None
 
     def test_privileged(self):
+        """
+        test starting job as privileged container
+        """
         self.experiment._privileged = True
         self.experiment.start()
         self.container = self.experiment._container
@@ -160,6 +177,9 @@ class TestExperiment(HyperdockBaseTest):
                         'Container was not started as privileged!')
 
     def test_not_privileged(self):
+        """
+        test starting job as not privileged container
+        """
         self.experiment.start()
         self.container = self.experiment._container
         self.container.reload()
