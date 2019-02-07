@@ -26,7 +26,7 @@ class Worker(Thread):
         self._docker_client = docker.from_env()
         self.id = self._generate_id()
         self.logger = logging.getLogger('Worker %s' % self.id)
-        self._running = True
+        self._running = False
         self.workqueue = WorkQueue(mongodb)
         self.experiments = []
         self.max_experiments = parallelism
@@ -39,6 +39,7 @@ class Worker(Thread):
         """
         Starts the main loop and catches all errors to do a small post mortem.
         """
+        self._running = True
         try:
             self._run()
         except:
