@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, mock
 from datetime import datetime, timedelta
 import os
 
@@ -12,12 +12,26 @@ from hyperdock.common.stability import *
 class TestStability(HyperdockBaseTest):
 
     def test_tryd(self):
-        tryd(self.docker.containers.list)
+        """
+        tryd function should call function
+        """
+        return_value = 'some-api-response'
+        docker_function = mock.MagicMock(return_value=return_value)
+        result = tryd(docker_function)
 
-        # Invalid socket
+        # Asserts that the API was actually called
+        self.assertEqual(result, return_value)
+        docker_function.assert_called_with()
+
+    def test_tryd_error(self):
+        """
+        tryd should retry and throw errors
+        """
+        # Test with invalid Docker connection
         self.docker = client = docker.DockerClient(base_url='unix://var/run/docker0000.sock')
 
-        with self.assertRaises(requests.exceptions.RequestException):
+        with self.assertRaises(requests.exceptions.RequestException,
+                               msg='Should throw error after failed retries!'):
             tryd(self.docker.containers.list)
 
     def test_trym(self):
