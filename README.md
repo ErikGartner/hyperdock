@@ -109,7 +109,7 @@ curl https://install.meteor.com/ | sh
 cd web/
 meteor npm install
 
-# Set Mongo Database URI
+# Set Mongo Database URL
 export MONGO_URL=mongodb://localhost:27017/hyperdock
 
 # Start WebUI
@@ -117,16 +117,25 @@ meteor run
 ```
 
 ### Target Image
-For the **Target Image** the following volumes are mounted:
+
+Each optimization target needs a *target image*. This image can be dynamic (i.e. checkout the latest source from Github) but preferably should be reproducible, for example by always checking out a specific commit.
+
+When running the container the target should:
+
+1. Read the parameters
+2. Evaluate the target program
+3. Write the loss / results and then exit (with error code 0).
+
+Communication between Hyperdock and the target program is handle through a few special files and folders that are mounted and populated by Hyperdock.
 
 - `/hyperdock/`
-  - `loss.json` write the final loss here
-  - `params.json` contains the parameters for this run
-  - `graphs.json` optional file that contains graphs that Hyperdock will plot; format described [here](https://github.com/ErikGartner/hyperdock/issues/36)
-  - `out/` use this to write any other files to the result folder
+  - `loss.json` write the loss here; format described [here](https://github.com/ErikGartner/hyperdock/wiki/Loss)
+  - `params.json` parameters for the run
+  - `graphs.json` optional file, contains graphs for Web UI plots; format described [here](https://github.com/ErikGartner/hyperdock/issues/36)
+  - `out/` persistent folder, use this to write any other files to the result folder
 - `/data` a read only folder that contains any external data needed
 
-See the [Dockfile template](docker/Dockerfile.template) for an example. It is available as a demo image named
+See the [Dockfile template](docker/Dockerfile.template) for an example. It is available as a Docker image named
 `erikgartner/hyperdock-demo:latest`. By default it outputs `0` as its loss but by setting the environment
 variable `FUNCTION` to a python expression (for example `a +  b`) you can compute an arbitrary loss based on the Hyperdock parameters.
 
@@ -137,10 +146,12 @@ To start a Mongo database you can use this simple Docker command or use any norm
 docker run --name hyperdock-mongo -p 27017:27017 -d mongo
 ```
 
-## Building
-If you want to develop Hyperdock it is recommended that you use [Pipenv](https://docs.pipenv.org/) to manage the Python version the package dependencies.
+## Developing
+If you want to develop Hyperdock use [Pipenv](https://docs.pipenv.org/) to manage the Python version and the package dependencies.
 
 The WebUI is built using [Meteor](https://www.meteor.com/) which needs to be installed prior to development.
+
+Read also the contribution [guidelines](CONTRIBUTING.md)
 
 ## License
 Copyright 2018 Erik Gärtner
