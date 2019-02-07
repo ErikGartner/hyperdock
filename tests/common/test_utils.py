@@ -41,4 +41,12 @@ class TestUtils(HyperdockBaseTest):
         self.assertFalse(send_notifiction('TEST', 'TEST'), 'Should return false when Pushover is incorrectly configured.')
 
     def test_setup_logging(self):
-        setup_logging()
+        """
+        setup_logging should set logging level
+        """
+        import logging
+        setup_logging(logging.CRITICAL)
+
+        logger = logging.getLogger()
+        self.assertEqual(logger.level, logging.CRITICAL,
+                         'Incorrect logging level')
