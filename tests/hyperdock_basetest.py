@@ -21,6 +21,11 @@ from hyperdock.common.trialqueue import TrialQueue
 
 
 class HyperdockBaseTest(TestCase):
+    """
+    This super class provides support for setting up the Hyperdock
+    testing environment with Docker, mongo and default test data.
+    It also tear downs these automatically.
+    """
 
     def setUp(self):
         self.setup_mongo()
