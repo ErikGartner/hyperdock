@@ -27,7 +27,7 @@ class Supervisor(Thread):
         self.workqueue = WorkQueue(mongodb)
         self.worker_collection = mongodb.workers
         self.in_docker = in_docker
-        self._running = True
+        self._running = False
 
     def run(self):
         """
@@ -37,6 +37,7 @@ class Supervisor(Thread):
         experiments.
         """
         self.logger.info('Started main loop')
+        self._running = True
 
         while self._running:
             self._purge_old_workers()
