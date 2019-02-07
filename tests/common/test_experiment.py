@@ -13,7 +13,6 @@ from ..hyperdock_basetest import HyperdockBaseTest
 from hyperdock.common.experiment import Experiment
 
 
-
 class TestExperiment(HyperdockBaseTest):
 
     def setUp(self):
@@ -23,13 +22,16 @@ class TestExperiment(HyperdockBaseTest):
         super().tearDown()
 
     def test_start_container(self):
+        """
+        test start_container works with Docker API
+        """
         self.container = self.experiment._start_container(self.image)
         self.assertIsNotNone(self.container, 'Error starting container')
 
         self.container.wait(timeout=10)
         self.container.reload()
         self.assertEqual(self.container.status, 'exited',
-                         'Container had not stopped')
+                         'Container did not exit')
 
     def test_start(self):
         self.experiment.start()
