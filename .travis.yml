@@ -25,6 +25,7 @@ deploy:
   on:
     branch: master
     tags: true
+    python: '3.6'
   skip_existing: true
 - provider: script
   skip_cleanup: true
@@ -32,6 +33,7 @@ deploy:
   on:
     branch: master
     tags: true
+    python: '3.6'
 env:
   global:
   - secure: CgaXRu1OoDiI2oahxqajNliQl709PwsxmizCPZd3tMCtA6tNm8SBT5ddOo/I17t9Aql7K+GO3Hdwv1tcsFNiuz/TtJfRxir1gMubvV599zFXn6xvo/i5M2U+UAT6w33esda0RECnsofPqZpBEs2KJWaPd6EA9bRe7s4c72/wTMjwpES8YKxdQt/wWRrCXIX/rM5y9OEnjS0IASIdNiF7wT5iRNhAYwPLDzxp3QrU7rJ6Ot+yu06WaqW6STWxWm28Gv+2NWo9dO/OhQLXDVwbysO3LH1NjiKcAUHyGPX4cKslSYRNdNUM2viJuStvHKAk6Pbhfh7i8gp1CsM22GAaqvcNFoYl8cuVQCDJ7+wcxrGRwtpO6cjo+SD7z6c6ZTpY69sdJWpoO8TR37oAUBbLV99C8aYG3bwglTb0nAWzjLUKqw2RGKUeL+6koA0rg6wrgXKrtdRd5jX3JFOPI3u1bznpuoW+xrZsI1/0hkMF1ZRD4Am8h25wF+OnkAmDOUdZxXD8es2WCI2u6jL8MWWYc7UbnoRA+CDAJHQj/cdHuWR5r3kCkapp87kwZeUrXDn8qhTXPFLQ01ezb3nDhONApPJo1lK2V/4YQQeqsmO0Al2wwHFX5JcoI+inqQ4IZ3Pk0raFu0WPobHK1BWAAZZEUvvm8UKL19Sy5GaeeEI4Bfc=
