@@ -8,9 +8,9 @@ Router.configure({
 Router.route('/', {
   name: 'Home',
   subscriptions: function() {
-   return [Meteor.subscribe('workers.all'),
-           Meteor.subscribe('trialqueue.all'),
-           Meteor.subscribe('workqueue.all.limited')];
+    return [Meteor.subscribe('workers.all'),
+            Meteor.subscribe('trialqueue.finished', 10),
+            Meteor.subscribe('trialqueue.active')];
   }
 });
 

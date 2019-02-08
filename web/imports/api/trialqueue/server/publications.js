@@ -5,8 +5,30 @@ import { TrialQueue } from '../trialqueue.js';
 import { WorkQueue } from '../../workqueue/workqueue.js';
 import { Workers } from '/imports/api/workers/workers.js';
 
-Meteor.publish('trialqueue.all', function () {
-  return TrialQueue.find();
+publishComposite('trialqueue.finished', function (limit) {
+  return {
+    find() {
+      return TrialQueue.find({end_time: {$ne: -1}}, {sort: {end_time: -1}, limit: limit});
+    },
+    children: [{
+      find(trial) {
+        return WorkQueue.find({'trial': trial._id}, {fields: { update: 0, parameters: 0 }});
+      }
+    }]
+  };
+});
+
+publishComposite('trialqueue.active', function () {
+  return {
+    find() {
+      return TrialQueue.find({end_time: -1}, {sort: {start_time: 1}});
+    },
+    children: [{
+      find(trial) {
+        return WorkQueue.find({'trial': trial._id}, {fields: { update: 0, parameters: 0 }});
+      }
+    }]
+  };
 });
 
 publishComposite('trial',  function (_id) {

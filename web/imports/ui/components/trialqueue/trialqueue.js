@@ -64,5 +64,9 @@ Template.trialqueue.events({
         alert(error.error);
       }
     });
+  },
+
+  'click #load-trials': function (event) {
+    Meteor.subscribe('trialqueue.finished', TrialQueue.find().count() + 10);
   }
 })
