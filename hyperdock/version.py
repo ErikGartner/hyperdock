@@ -1,4 +1,4 @@
-__version__ = '0.15.0'  # NOQA
+__version__ = '0.15.1'  # NOQA
 
 
 if __name__ == '__main__':
