@@ -8,7 +8,10 @@ import './resultgraph.js';
 
 Template.workqueue.helpers({
   workqueue() {
-    return WorkQueue.find({}, {sort: {"result.loss": 1, end_time: -1, start_time: -1}});
+    trialId = Router.current().params.trialId;
+    return WorkQueue.find({trial: trialId}, {sort: {"result.loss": 1,
+                                                    end_time: -1,
+                                                    start_time: -1}});
   },
   rowColor() {
     let w = WorkQueue.findOne(this._id);
