@@ -67,6 +67,6 @@ Template.trialqueue.events({
   },
 
   'click #load-trials': function (event) {
-    Meteor.subscribe('trialqueue.finished', TrialQueue.find().count() + 10);
+    Session.set('nbr-finished-trials', Session.get('nbr-finished-trials') + 10);
   }
 })

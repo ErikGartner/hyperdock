@@ -32,3 +32,4 @@ underscore@1.0.10
 reywood:publish-composite
 iron:router
 momentjs:moment
+session

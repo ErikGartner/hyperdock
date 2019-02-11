@@ -1,5 +1,6 @@
-import { TrialQueue } from '../../api/trialqueue/trialqueue.js';
+import { Tracker } from 'meteor/tracker'
 
+import { TrialQueue } from '../../api/trialqueue/trialqueue.js';
 
 Router.configure({
   layoutTemplate: 'ApplicationLayout'
@@ -8,9 +9,12 @@ Router.configure({
 Router.route('/', {
   name: 'Home',
   subscriptions: function() {
-    return [Meteor.subscribe('workers.all'),
-            Meteor.subscribe('trialqueue.finished', 10),
-            Meteor.subscribe('trialqueue.active')];
+    Session.set('nbr-finished-trials', 10);
+    Tracker.autorun(() => {
+      Meteor.subscribe('workers.all'),
+      Meteor.subscribe('trialqueue.finished', Session.get('nbr-finished-trials')),
+      Meteor.subscribe('trialqueue.active')
+    });
   }
 });
 
