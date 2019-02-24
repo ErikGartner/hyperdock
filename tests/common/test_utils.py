@@ -36,20 +36,25 @@ class TestUtils(HyperdockBaseTest):
     def test_notification(self):
         """
         send_notifiction should send notification is properly configured
-        else it should just fail silently
+        else it should fail silently and return False. Not that
+        it should only return False on errors for a properly configured
+        client.
         """
-        self.assertTrue(send_notifiction('TEST', 'TEST'), 'Should return true when Pushover not configured.')
+        self.assertTrue(send_notifiction('TEST', 'TEST'),
+                        'Should return True when Pushover not configured.')
 
         os.environ['PUSHOVER_API_TOKEN'] = 'INVALID'
         os.environ['PUSHOVER_USER_KEY'] = 'INVALID'
-        self.assertFalse(send_notifiction('TEST', 'TEST'), 'Should return false when Pushover is incorrectly configured.')
+        self.assertTrue(send_notifiction('TEST', 'TEST'),
+                         'Should return True when Pushover is incorrectly configured.')
 
         del os.environ['PUSHOVER_API_TOKEN']
         del os.environ['PUSHOVER_USER_KEY']
 
         os.environ['SLACK_API_TOKEN'] = 'INVALID'
         os.environ['SLACK_RECIPIENT'] = 'INVALID'
-        self.assertFalse(send_notifiction('TEST', 'TEST'), 'Should return false when Pushover is incorrectly configured.')
+        self.assertTrue(send_notifiction('TEST', 'TEST'),
+                        'Should return True when Pushover is incorrectly configured.')
 
     def test_setup_logging(self):
         """
