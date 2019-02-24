@@ -22,7 +22,7 @@ class TestSupervisor(HyperdockBaseTest):
 
         self.supervisor._purge_old_workers = mock.MagicMock()
         self.supervisor._process_trials = mock.MagicMock()
-        self.supervisor.trialqueue.update_trials = mock.MagicMock()
+        self.supervisor._trialqueue.update_trials = mock.MagicMock()
         self.supervisor._purge_dead_jobs = mock.MagicMock()
 
         self.assertFalse(self.supervisor._running,
@@ -39,7 +39,7 @@ class TestSupervisor(HyperdockBaseTest):
 
         self.supervisor._purge_old_workers.assert_called()
         self.supervisor._process_trials.assert_called()
-        self.supervisor.trialqueue.update_trials.assert_called()
+        self.supervisor._trialqueue.update_trials.assert_called()
         self.supervisor._purge_dead_jobs.assert_called()
 
         self.supervisor._running = False
@@ -51,7 +51,7 @@ class TestSupervisor(HyperdockBaseTest):
 
         self.supervisor._purge_old_workers = mock.MagicMock()
         self.supervisor._process_trials = mock.MagicMock()
-        self.supervisor.trialqueue.update_trials = mock.MagicMock()
+        self.supervisor._trialqueue.update_trials = mock.MagicMock()
         self.supervisor._purge_dead_jobs = mock.MagicMock()
 
         # Start thread

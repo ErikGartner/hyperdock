@@ -20,12 +20,12 @@ class Supervisor(Thread):
     def __init__(self, mongodb, in_docker=False):
         super().__init__(name='Supervisor')
 
-        self.logger = logging.getLogger('Supervisor')
+        self._logger = logging.getLogger('Supervisor')
         self._mongodb = mongodb
-        self.trialqueue = TrialQueue(mongodb)
-        self.workqueue = WorkQueue(mongodb)
-        self.worker_collection = mongodb.workers
-        self.in_docker = in_docker
+        self._trialqueue = TrialQueue(mongodb)
+        self._workqueue = WorkQueue(mongodb)
+        self._worker_collection = mongodb.workers
+        self._in_docker = in_docker
         self._running = False
         self._sleep_time = SLEEP_TIME
 
@@ -36,13 +36,13 @@ class Supervisor(Thread):
         If it finds a trial it will process it by queuing new
         experiments.
         """
-        self.logger.info('Started main loop')
+        self._logger.info('Started main loop')
         self._running = True
 
         while self._running:
             self._purge_old_workers()
             self._process_trials()
-            self.trialqueue.update_trials()
+            self._trialqueue.update_trials()
             self._purge_dead_jobs()
             sleep(self._sleep_time)
 
@@ -56,10 +56,10 @@ class Supervisor(Thread):
         """
         Dequeues the trial queue and create experiments.
         """
-        trial = self.trialqueue.next_trial()
+        trial = self._trialqueue.next_trial()
         while trial is not None:
             self._process_trial(trial)
-            trial = self.trialqueue.next_trial()
+            trial = self._trialqueue.next_trial()
 
     def _process_trial(self, trial):
         """
@@ -69,7 +69,7 @@ class Supervisor(Thread):
         params_list = self._expand_parameter_space(trial['param_space'])
 
         for params in params_list:
-            self.workqueue.add_job(params, trial['data'], trial['_id'],
+            self._workqueue.add_job(params, trial['data'], trial['_id'],
                                    trial['name'], trial['priority'])
 
     def _expand_parameter_space(self, param_spaces):
@@ -85,25 +85,25 @@ class Supervisor(Thread):
         timed out workers.
         """
         t = datetime.utcnow() - timedelta(seconds=WORK_TIMEOUT)
-        self.worker_collection.remove({'time': {'$lt': t}})
+        self._worker_collection.remove({'time': {'$lt': t}})
 
     def _purge_dead_jobs(self):
         """
         Removes dead jobs and re-queues them if there are enough retries left.
         """
-        dead_jobs = self.workqueue.purge_dead_jobs()
+        dead_jobs = self._workqueue.purge_dead_jobs()
         for job in dead_jobs:
             if job is None:
                 continue
 
-            retry = self.trialqueue.use_retry_ticket(job['trial'])
+            retry = self._trialqueue.use_retry_ticket(job['trial'])
             if not retry:
                 # No more retries
                 return
 
-            self.logger.info('Retried timed out job %s for trial %s' %
+            self._logger.info('Retried timed out job %s for trial %s' %
                              (job['_id'], job['trial']))
-            self.workqueue.add_job(job['parameters'],
+            self._workqueue.add_job(job['parameters'],
                                    job['data'],
                                    job['trial'],
                                    job['priority'])
