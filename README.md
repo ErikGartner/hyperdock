@@ -5,6 +5,7 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/erikgartner/hyperdock-supervisor.svg?style=for-the-badge)](https://hub.docker.com/r/erikgartner/hyperdock-supervisor/)
 [![Travis](https://img.shields.io/travis/ErikGartner/hyperdock.svg?style=for-the-badge)](https://travis-ci.org/ErikGartner/hyperdock)
 [![Codecov](https://img.shields.io/codecov/c/github/ErikGartner/hyperdock.svg?style=for-the-badge)](https://codecov.io/gh/ErikGartner/hyperdock)
+![Code Climate coverage (letter)](https://img.shields.io/codeclimate/coverage-letter/erikgartner/hyperdock.svg?style=for-the-badge)
 
 *A simple framework for distributed hyperparameter optimization in Docker.*
 
