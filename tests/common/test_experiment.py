@@ -227,3 +227,25 @@ class TestExperiment(HyperdockBaseTest):
         self.container.reload()
         self.assertFalse(self.container.attrs['HostConfig']['Privileged'],
                          'Container was started as privileged!')
+
+    def test_get_environment(self):
+        """
+        test environment variables to be set in the container.
+        """
+        # List format
+        worker_env = self.experiment.worker_env
+        self.experiment._queue_job['data']['docker']['environment'] = ['A=B', 'C=2']
+        res = self.experiment._get_environment()
+        self.assertSetEqual(set(res), set(worker_env + ['A=B', 'C=2']),
+                            "Environment doesn't contain correct variables")
+
+        # Dict format
+        self.experiment._queue_job['data']['docker']['environment'] = {'A': 'B', 'C': 2}
+        res = self.experiment._get_environment()
+        self.assertSetEqual(set(res), set(worker_env + ['A=B', 'C=2']),
+                            "Environment doesn't contain correct variables")
+
+        with self.assertRaises(ValueError):
+            # Should throw error on invalid data type. Should be list/dict
+            self.experiment._queue_job['data']['docker']['environment'] = 123
+            res = self.experiment._get_environment()
