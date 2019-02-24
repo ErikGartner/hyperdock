@@ -15,7 +15,7 @@ class WorkQueue:
         super().__init__()
 
         self._mongodb = mongodb
-        self.collection = mongodb.workqueue
+        self._collection = mongodb.workqueue
 
     def assign_next_job(self, worker_id):
         """
@@ -23,7 +23,7 @@ class WorkQueue:
         Returns the object from the mongodb.
         """
         t = datetime.utcnow()
-        job = self.collection.find_and_modify(
+        job = self._collection.find_and_modify(
             query={'start_time': -1, 'cancelled': False},
             sort=[('priority', -1), ('created_on', 1)],
             update={'$set': {'start_time': t,
@@ -37,7 +37,7 @@ class WorkQueue:
         """
         Adds new work to the workqueue.
         """
-        id = self.collection.insert({
+        id = self._collection.insert({
             'start_time': -1,
             'end_time': -1,
             'last_update': -1,
@@ -60,14 +60,14 @@ class WorkQueue:
         Marks the job as alive and post an update from the job.
         """
         t = datetime.utcnow()
-        self.collection.update({'_id': _id}, {'$set': {'last_update': t,
+        self._collection.update({'_id': _id}, {'$set': {'last_update': t,
                                                        'update': update}})
 
     def is_job_cancelled(self, _id):
         """
         Checks if a certain job has been cancelled or all together removed.
         """
-        return (self.collection.find_one({'_id': _id, 'cancelled': False})
+        return (self._collection.find_one({'_id': _id, 'cancelled': False})
                 is None)
 
     def finish_job(self, _id, result):
@@ -75,7 +75,7 @@ class WorkQueue:
         Marks the job as finished and attach the result.
         """
         t = datetime.utcnow()
-        self.collection.update_one({'_id': _id}, {'$set':
+        self._collection.update_one({'_id': _id}, {'$set':
                                                   {'end_time': t,
                                                    'last_update': t,
                                                    'result': result}})
@@ -88,7 +88,7 @@ class WorkQueue:
         deadline = now - timedelta(seconds=WORK_TIMEOUT)
         jobs = []
         while True:
-            job = self.collection.find_and_modify(
+            job = self._collection.find_and_modify(
                 query={'start_time': {'$ne': -1},
                        'end_time': -1,
                        'last_update': {'$lt': deadline}},
@@ -110,7 +110,7 @@ class WorkQueue:
         Checks if a list of Docker container ids are marked as orphans.
         Returns a list of (Docker id, experiment id) tuples.
         """
-        jobs = self.collection.find({'orphaned': True,
+        jobs = self._collection.find({'orphaned': True,
                                      'update.container.long_id': {'$in': id_list}})
         return [(j['update']['container']['long_id'], j['_id']) for j in list(jobs)]
 
@@ -118,7 +118,7 @@ class WorkQueue:
         """
         Marks a job as not orphaned.
         """
-        job = self.collection.find_and_modify(
+        job = self._collection.find_and_modify(
             query={'_id': _id},
             update={'$set': {'orphaned': False}},
             new=True)
