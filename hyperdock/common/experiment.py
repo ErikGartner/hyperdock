@@ -33,9 +33,10 @@ class Experiment:
     def __init__(self, job, worker_env, privileged=False):
         super().__init__()
 
-        self._queue_job = job
+        self.has_started = False
         self.id = job['_id']
-        self.logger = logging.getLogger('Experiment %s' % self.id)
+        self._queue_job = job
+        self._logger = logging.getLogger('Experiment %s' % self.id)
         self._is_running = False
         self._result = {}
         self._graphs = []
@@ -44,15 +45,14 @@ class Experiment:
         self._volume_root = None
         self._docker_client = docker.from_env()
         self._privileged = privileged
-        self.has_started = False
-        self.worker_env = worker_env
+        self._worker_env = worker_env
         self._update = {}
 
     def start(self):
         """
         Start the experiment.
         """
-        self.logger.info('Starting experiment!')
+        self._logger.info('Starting experiment!')
 
         if self.has_started:
             raise RuntimeError('This experiment has already been executed.')
@@ -74,7 +74,7 @@ class Experiment:
             try:
                 tryd(self._container.stop)
             except (docker.errors.APIError) as e:
-                self.logger.error('Failed to stop container:\n%s' % e)
+                self._logger.error('Failed to stop container:\n%s' % e)
                 self._result = {'status': 'fail', 'msg': e}
             self._fetch_result()
 
@@ -89,7 +89,7 @@ class Experiment:
             try:
                 tryd(self._container.remove, force=True)
             except (docker.errors.APIError) as e:
-                self.logger.error('Failed to remove container:\n%s' % e)
+                self._logger.error('Failed to remove container:\n%s' % e)
             self._container = None
             self._is_running = False
 
@@ -128,7 +128,7 @@ class Experiment:
                     logs = logs.decode()
             except (docker.errors.APIError) as e:
                 logs = 'Failed to fetch logs.'
-                self.logger.warning('Failed to fetch logs: %s' % e)
+                self._logger.warning('Failed to fetch logs: %s' % e)
 
             self._update = {
                 'container':  {
@@ -163,14 +163,14 @@ class Experiment:
                              privileged=self._privileged,
                              volumes=self._volumes,
                              hostname=str(self.id))
-            self.logger.info('Started container %s, environment: %s, volumes: %s'
+            self._logger.info('Started container %s, environment: %s, volumes: %s'
                              % (container, environment, volumes))
             return container
 
         except (docker.errors.ContainerError,
                 docker.errors.APIError,
                 docker.errors.ImageNotFound) as e:
-            self.logger.error('Failed to start container:\n%s' % e)
+            self._logger.error('Failed to start container:\n%s' % e)
             self._result = {'state': 'fail', 'msg': e}
             return None
 
@@ -189,7 +189,7 @@ class Experiment:
                 env.append('%s=%s' % (k, v))
         else:
             raise ValueError('Invalid environment in job spec: %s' % job_env)
-        env.extend(self.worker_env)
+        env.extend(self._worker_env)
         return env
 
     def _check_container_running(self):
@@ -203,7 +203,7 @@ class Experiment:
                 tryd(self._container.reload)
             except (docker.errors.ContainerError,
                     docker.errors.APIError) as e:
-                self.logger.warning('Failed to get status of container: %s' % e)
+                self._logger.warning('Failed to get status of container: %s' % e)
                 return False
             return self._container.status == 'running'
 
@@ -229,7 +229,7 @@ class Experiment:
                 loss = json.load(f)
             return loss
         except:
-            self.logger.warning('Failed to read loss')
+            self._logger.warning('Failed to read loss')
             return {'state': 'fail', 'msg': 'Failed to read loss.'}
 
     def _read_docker_logs(self):
@@ -241,7 +241,7 @@ class Experiment:
             with open(os.path.join(self._volume_root, 'docker_log.txt'), 'wb') as f:
                 f.write(docker_logs)
         except:
-            self.logger.warning('Failed to read/write docker logs: %s' % sys.exc_info()[0])
+            self._logger.warning('Failed to read/write docker logs: %s' % sys.exc_info()[0])
 
     def _read_graphs(self):
         """
@@ -253,7 +253,7 @@ class Experiment:
                 graphs = json.load(f)
             graphs = SCHEMA_GRAPH.validate(graphs)
         except:
-            self.logger.debug('Failed to read %s: %s' %
+            self._logger.debug('Failed to read %s: %s' %
                               (graphs_path, sys.exc_info()[0]))
             graphs = []
         return graphs

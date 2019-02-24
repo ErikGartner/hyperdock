@@ -233,7 +233,7 @@ class TestExperiment(HyperdockBaseTest):
         test environment variables to be set in the container.
         """
         # List format
-        worker_env = self.experiment.worker_env
+        worker_env = self.experiment._worker_env
         self.experiment._queue_job['data']['docker']['environment'] = ['A=B', 'C=2']
         res = self.experiment._get_environment()
         self.assertSetEqual(set(res), set(worker_env + ['A=B', 'C=2']),
