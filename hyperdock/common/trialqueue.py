@@ -2,6 +2,7 @@ from datetime import datetime
 
 from .utils import send_notifiction
 
+
 class TrialQueue:
     """
     A simple MongoDB priority work queue that handles the queue

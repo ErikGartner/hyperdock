@@ -3,7 +3,7 @@ import unicodedata
 import re
 import os
 
-from .notification import Slack, Pushover
+from .notification import Slack, Pushover, valid_services
 
 logger = logging.getLogger('utils')
 
@@ -52,11 +52,6 @@ def send_notifiction(title, msg):
     """
     Send a notification to the preconfigured recipients.
     """
-    no_errors = True
-    if Pushover.verify_credentials():
-        no_errors &= Pushover().send_message(title, msg)
-
-    if Slack.verify_credentials():
-        no_errors &= Slack().send_message(title, msg)
-
-    return no_errors
+    services = valid_services()
+    results = [s.send_message(title, msg) for s in services]
+    return all(results)
