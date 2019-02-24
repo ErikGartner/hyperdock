@@ -36,6 +36,8 @@ class TestExperiment(HyperdockBaseTest):
     def test_start(self):
         """
         test experiment.start()
+        essentially start() calls many other private methods making this
+        unit test almost an integration test.
         """
         self.experiment.start()
         self.container = self.experiment._container
