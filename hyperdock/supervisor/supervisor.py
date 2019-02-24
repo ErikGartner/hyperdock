@@ -3,10 +3,9 @@ import logging
 from time import sleep
 from datetime import datetime, timedelta
 
-from sklearn.model_selection import ParameterGrid
-
 from ..common.trialqueue import TrialQueue
 from ..common.workqueue import WorkQueue, WORK_TIMEOUT
+from .search import Grid
 
 SLEEP_TIME = 15
 
@@ -78,26 +77,7 @@ class Supervisor(Thread):
         Takes a parameter space configuration and expands it to all combinations.
         Either a dictionary or a list of dictionaries.
         """
-        if not isinstance(param_spaces, list):
-            param_spaces = [param_spaces]
-
-        params_list = []
-        for param_space in param_spaces:
-            fixed_params = {}
-            variable_params = {}
-            for k, v in param_space.items():
-                if isinstance(v, list):
-                    variable_params[k] = v
-                else:
-                    fixed_params[k] = v
-
-            params = list(ParameterGrid(variable_params))
-            for param_set in params:
-                param_set.update(fixed_params)
-
-            params_list.extend(params)
-
-        return params_list
+        return Grid.expand(param_spaces)
 
     def _purge_old_workers(self):
         """
