@@ -91,15 +91,15 @@ class TestWorker(HyperdockBaseTest):
         q = WorkQueue(self.db)
         q.add_job('parameter', {'docker': {'image': 'a_docker_image'}}, 'trial-1', 'trial-1-name')
         self.worker._start_new_experiments(experiment_cls=MockExperiment)
-        self.assertEqual(len(self.worker.experiments), 1)
+        self.assertEqual(len(self.worker._experiments), 1)
 
-        exp = self.worker.experiments[0]
+        exp = self.worker._experiments[0]
 
         # Two calls required to finish MockExperiment
         self.worker._monitor_experiments()
         self.worker._monitor_experiments()
 
-        self.assertEqual(len(self.worker.experiments), 0)
+        self.assertEqual(len(self.worker._experiments), 0)
         self.assertEqual(exp.get_result(), {'state': 'ok', 'loss': 1})
         self.assertAlmostEquals(self.db.workqueue.find_one(
                                 {'_id': exp.id})['end_time'],
@@ -155,7 +155,7 @@ class TestWorker(HyperdockBaseTest):
         test worker.shudown()
         """
         self.experiment.cleanup = mock.MagicMock()
-        self.worker.experiments = [self.experiment]
+        self.worker._experiments = [self.experiment]
 
         self.worker._shutdown()
 
