@@ -5,7 +5,7 @@ import mongomock
 
 from ..hyperdock_basetest import HyperdockBaseTest
 from hyperdock.supervisor.supervisor import Supervisor
-from hyperdock.common.experiment import MockExperiment
+from ..common.mockexperiment import MockExperiment
 from hyperdock.common.workqueue import WorkQueue
 from hyperdock.common.trialqueue import TrialQueue
 

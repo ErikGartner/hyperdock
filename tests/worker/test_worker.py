@@ -6,7 +6,7 @@ import docker
 
 from ..hyperdock_basetest import HyperdockBaseTest
 from hyperdock.worker.worker import Worker
-from hyperdock.common.experiment import MockExperiment
+from ..common.mockexperiment import MockExperiment
 from hyperdock.common.workqueue import WorkQueue
 from hyperdock import version
 
