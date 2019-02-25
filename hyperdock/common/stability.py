@@ -12,7 +12,10 @@ import pymongo
 import psutil
 import docker
 
+from .config import config
+
 logger = logging.getLogger('stability')
+cfg = config()
 
 
 def tryd(func, *args, **kwargs):
@@ -21,8 +24,8 @@ def tryd(func, *args, **kwargs):
     connectetion to the Daemon. After repeated failures the error is propagated.
     """
     return retry(func,
-                 5,
-                 1,
+                 cfg['STABILITY']['RETRY']['RETRIES'],
+                 cfg['STABILITY']['RETRY']['SLEEP_TIME'],
                  (requests.exceptions.RequestException, ),
                  *args,
                  **kwargs)
@@ -33,10 +36,9 @@ def trym(func, *args, **kwargs):
     Tries a mongo operation that might fail due to underlying issues in the
     connectetion to the database. After repeated failures the error is propagated.
     """
-    print(args, kwargs)
     return retry(func,
-                 5,
-                 1,
+                 cfg['STABILITY']['RETRY']['RETRIES'],
+                 cfg['STABILITY']['RETRY']['SLEEP_TIME'],
                  (pymongo.errors.PyMongoError, ),
                  *args,
                  **kwargs)
