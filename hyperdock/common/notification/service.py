@@ -12,10 +12,10 @@ class Service():
         Checks if the service is properly set-up
         Returns True or False
         """
-        pass
+        raise NotImplementedError
 
     def send(self, title, msg):
         """
         Send a message. Returns False on error else True
         """
-        pass
+        raise NotImplementedError
