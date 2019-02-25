@@ -20,24 +20,12 @@ def tryd(func, *args, **kwargs):
     Tries a Docker call that might fail due to underlying issues in the
     connectetion to the Daemon. After repeated failures the error is propagated.
     """
-    retries = 5
-    last_error = None
-    while retries > 0:
-        try:
-            return func(*args, **kwargs)
-        except docker.errors.DockerException as e:
-            # We shouldn't retry when the Docker API give errors
-            raise e
-        except (requests.exceptions.RequestException) as e:
-            # On network issues we should retry
-            logger.debug('Failed docker call %s: %s' % (func, e))
-            last_error = e
-            retries -= 1
-        sleep(1)
-
-    logger.error('Docker call %s failed after several tries: %s' % (func,
-                                                                    last_error))
-    raise last_error
+    return retry(func,
+                 5,
+                 1,
+                 (requests.exceptions.RequestException, ),
+                 *args,
+                 **kwargs)
 
 
 def trym(func, *args, **kwargs):
@@ -45,18 +33,31 @@ def trym(func, *args, **kwargs):
     Tries a mongo operation that might fail due to underlying issues in the
     connectetion to the database. After repeated failures the error is propagated.
     """
-    retries = 5
+    print(args, kwargs)
+    return retry(func,
+                 5,
+                 1,
+                 (pymongo.errors.PyMongoError, ),
+                 *args,
+                 **kwargs)
+
+
+def retry(func, nbr_retries, sleep_time, errors, *args, **kwargs):
+    """
+    Retries an instable and error prone function.
+    """
     last_error = None
-    while retries > 0:
+    while nbr_retries >= 0:
         try:
             return func(*args, **kwargs)
-        except (pymongo.errors.PyMongoError) as e:
-            logger.debug('Failed mongo operation %s: %s' % (func, e))
+        except errors as e:
+            logger.debug('Failed to call %s: %s' % (func, e))
             last_error = e
-            retries -= 1
-        sleep(1)
+            nbr_retries -= 1
 
-    logger.error('Mongo operation %s failed after several tries: %s' %
+        sleep(sleep_time)
+
+    logger.error('Function %s failed after several tries: %s' %
                  (func, last_error))
     raise last_error
 

@@ -56,6 +56,23 @@ class TestStability(HyperdockBaseTest):
             trym(mongo_function, {})
         mongo_function.assert_called_with({})
 
+    def test_retry(self):
+        """
+        retry should retry the functions n times then raise if still error
+        """
+        mock_func = mock.MagicMock(side_effect=NotImplementedError)
+
+        with self.assertRaises(NotImplementedError):
+            retry(mock_func, 2, 0.01, (NotImplementedError, ), 13)
+        mock_func.assert_called_with(13)
+        self.assertEqual(mock_func.call_count, 3)
+
+    def test_trym_error(self):
+        """
+        trym should retry and throw error on failure
+        """
+        pass
+
     def test_crash_analysis(self):
         """
         crash_analysis should return a string with system information
