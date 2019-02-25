@@ -66,18 +66,11 @@ class Supervisor(Thread):
         Takes a trial experiment, expands the parameter space and
         adds experiments to the work queue.
         """
-        params_list = self._expand_parameter_space(trial['param_space'])
+        params_list = Grid.expand(trial['param_space'])
 
         for params in params_list:
             self._workqueue.add_job(params, trial['data'], trial['_id'],
                                    trial['name'], trial['priority'])
-
-    def _expand_parameter_space(self, param_spaces):
-        """
-        Takes a parameter space configuration and expands it to all combinations.
-        Either a dictionary or a list of dictionaries.
-        """
-        return Grid.expand(param_spaces)
 
     def _purge_old_workers(self):
         """

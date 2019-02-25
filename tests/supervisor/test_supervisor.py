@@ -114,25 +114,6 @@ class TestSupervisor(HyperdockBaseTest):
         self.assertEqual(collection.find({'id': 'test-worker-new'}).count(), 1,
                                          'Incorrect purge')
 
-    def test_expand_parameter_space(self):
-        """
-        test expansion of parameter space into parameter sets
-        """
-
-        space1 = {'a': [1, 2], 'b': 1}
-        params1 = [{'a': 1, 'b': 1}, {'a': 2, 'b': 1}]
-        out_params = self.supervisor._expand_parameter_space(space1)
-        self.assertEqual(len(params1), len(out_params))
-        for p in params1:
-            self.assertIn(p, out_params)
-
-        space2 = [{'a': [1, 2], 'b': 1}, {'c': 1, 'b': 2}]
-        params2 = [{'a': 1, 'b': 1}, {'a': 2, 'b': 1}, {'c': 1, 'b': 2}]
-        out_params = self.supervisor._expand_parameter_space(space2)
-        self.assertEqual(len(params2), len(out_params))
-        for p in params2:
-            self.assertIn(p, out_params)
-
     def test_retry_dead_job(self):
         """
         test retrying of dead jobs
