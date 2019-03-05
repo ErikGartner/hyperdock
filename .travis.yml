@@ -1,15 +1,14 @@
 language: python
 python:
 - '3.6'
-- 3.7.1
+- '3.7.1'
 dist: xenial
 sudo: required
 sevices:
 - docker
 install:
-- pip install -r requirements.txt
-- pip install coverage
-- pip install codecov
+- pip install pipenv
+- pipenv install --system --ignore-pipfile --dev
 script:
 - nosetests --with-coverage -vse test/
 after_success:

@@ -19,6 +19,8 @@ pyyaml = "*"
 [dev-packages]
 nose = "*"
 mongomock = "*"
+coverage = "*"
+codecov = "*"
 
 [requires]
 python_version = "3.6"
