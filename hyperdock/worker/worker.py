@@ -26,7 +26,7 @@ class Worker(Thread):
         self._docker_client = docker.from_env()
         self.id = self._generate_id()
         self.host = self._get_hostname(in_docker)
-        self._logger = logging.getLogger("Worker %s" % self.id)
+        self._logger = logging.getLogger(self.id)
         self._running = False
         self._workqueue = WorkQueue(mongodb)
         self._experiments = []
@@ -83,7 +83,6 @@ class Worker(Thread):
         Updates the worker list with this worker.
         Also used as a keep-alive message.
         """
-
         data = {
             "id": self.id,
             "time": datetime.utcnow(),
@@ -94,6 +93,7 @@ class Worker(Thread):
             "version": hyperdock_version,
         }
         self._mongodb.workers.update_one({"id": self.id}, {"$set": data}, upsert=True)
+        self._logger.info("Alive message sent: {}".format(data))
 
     def _get_hostname(self, in_docker=False):
         """
@@ -222,4 +222,4 @@ class Worker(Thread):
         return len(orphans)
 
     def __str__(self):
-        return "Worker {}".format(self.id)
+        return self.id
