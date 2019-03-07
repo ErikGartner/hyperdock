@@ -25,6 +25,7 @@ class Worker(Thread):
         self._mongodb = mongodb
         self._docker_client = docker.from_env()
         self.id = self._generate_id()
+        self.host = self._get_hostname(in_docker)
         self._logger = logging.getLogger("Worker %s" % self.id)
         self._running = False
         self._workqueue = WorkQueue(mongodb)
@@ -82,8 +83,6 @@ class Worker(Thread):
         Updates the worker list with this worker.
         Also used as a keep-alive message.
         """
-        host_name = platform.node()
-        host = "(Docker) %s" % host_name if self._in_docker else host_name
 
         data = {
             "id": self.id,
@@ -91,10 +90,30 @@ class Worker(Thread):
             "parallelism": self._max_experiments,
             "jobs": [e.id for e in self._experiments],
             "env": self._docker_env,
-            "host": host,
+            "host": self.host,
             "version": hyperdock_version,
         }
         self._mongodb.workers.update_one({"id": self.id}, {"$set": data}, upsert=True)
+
+    def _get_hostname(self, in_docker=False):
+        """
+        Fetches a user friendly hostname for the container
+        """
+        hostname = platform.node()
+
+        if in_docker:
+            # Determine container name
+            try:
+                with open("/proc/self/cgroup", "r") as f:
+                    line = f.readline()
+
+                id = line.rsplit("/", 1)[1].strip()
+                name = self._docker_client.containers.get(id).name
+                hostname = "({}) {}".format(name, hostname)
+            except:
+                self._logger.warning("Failed to fetch Worker's container name")
+
+        return hostname
 
     def _monitor_experiments(self):
         """

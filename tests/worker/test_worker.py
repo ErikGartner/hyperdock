@@ -1,5 +1,6 @@
 from unittest import TestCase, mock
 from datetime import datetime, timedelta
+import platform
 
 import mongomock
 import docker
@@ -169,3 +170,10 @@ class TestWorker(HyperdockBaseTest):
         self.worker._shutdown()
 
         self.experiment.cleanup.assert_called()
+
+    def test_get_hostname(self):
+        """
+        test resolving worker name
+        """
+        name = self.worker._get_hostname()
+        self.assertEqual(name, platform.node())
