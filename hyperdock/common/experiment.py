@@ -60,7 +60,7 @@ class Experiment:
         """
         Start the experiment.
         """
-        self._logger.info("Starting experiment!")
+        self._logger.info("Starting: {}".format(self._queue_job))
 
         if self.has_started:
             raise RuntimeError("This experiment has already been executed.")
@@ -175,8 +175,13 @@ class Experiment:
                 hostname=str(self.id),
             )
             self._logger.info(
-                "Started container %s, environment: %s, volumes: %s"
-                % (container, environment, volumes)
+                "Started container ({}, {}) with environment: {}, volumes: {}, privileged: {}".format(
+                    container.name,
+                    container.name,
+                    environment,
+                    volumes,
+                    self._privileged,
+                )
             )
             return container
 
