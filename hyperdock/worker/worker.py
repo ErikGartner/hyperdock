@@ -17,15 +17,15 @@ SLEEP_TIME = 15
 
 
 class Worker(Thread):
-
-    def __init__(self, mongodb, docker_env, parallelism=1, in_docker=False,
-                 privileged=False):
-        super().__init__(name='Worker')
+    def __init__(
+        self, mongodb, docker_env, parallelism=1, in_docker=False, privileged=False
+    ):
+        super().__init__(name="Worker")
 
         self._mongodb = mongodb
         self._docker_client = docker.from_env()
         self.id = self._generate_id()
-        self._logger = logging.getLogger('Worker %s' % self.id)
+        self._logger = logging.getLogger("Worker %s" % self.id)
         self._running = False
         self._workqueue = WorkQueue(mongodb)
         self._experiments = []
@@ -55,7 +55,7 @@ class Worker(Thread):
             - Check for experiments to finish
             - Check for new work
         """
-        self._logger.info('Started main loop')
+        self._logger.info("Started main loop")
 
         while self._running:
             self._last_loop_finished = datetime.now()
@@ -67,7 +67,7 @@ class Worker(Thread):
 
             diff = datetime.now() - self._last_loop_finished
             if diff > timedelta(seconds=0.5 * WORK_TIMEOUT):
-                self._logger.warning('Loop time was dangerously long: %s' % diff)
+                self._logger.warning("Loop time was dangerously long: %s" % diff)
 
         self._shutdown()
 
@@ -83,19 +83,18 @@ class Worker(Thread):
         Also used as a keep-alive message.
         """
         host_name = platform.node()
-        host = '(Docker) %s' % host_name if self._in_docker else host_name
+        host = "(Docker) %s" % host_name if self._in_docker else host_name
 
         data = {
-            'id': self.id,
-            'time': datetime.utcnow(),
-            'parallelism': self._max_experiments,
-            'jobs': [e.id for e in self._experiments],
-            'env': self._docker_env,
-            'host': host,
-            'version': hyperdock_version
+            "id": self.id,
+            "time": datetime.utcnow(),
+            "parallelism": self._max_experiments,
+            "jobs": [e.id for e in self._experiments],
+            "env": self._docker_env,
+            "host": host,
+            "version": hyperdock_version,
         }
-        self._mongodb.workers.update_one({'id': self.id}, {'$set': data},
-                                         upsert=True)
+        self._mongodb.workers.update_one({"id": self.id}, {"$set": data}, upsert=True)
 
     def _monitor_experiments(self):
         """
@@ -143,8 +142,9 @@ class Worker(Thread):
             if job is None:
                 break
 
-            experiment = experiment_cls(job, self._docker_env,
-                                        privileged=self._privileged)
+            experiment = experiment_cls(
+                job, self._docker_env, privileged=self._privileged
+            )
             experiment.start()
             self._experiments.append(experiment)
 
@@ -158,41 +158,45 @@ class Worker(Thread):
             try:
                 ex.cleanup()
             except:
-                self._logger.error('Failed to stop experiment during shutdown: %s',
-                                  sys.exc_info()[0])
+                self._logger.error(
+                    "Failed to stop experiment during shutdown: %s", sys.exc_info()[0]
+                )
         self._experiments = []
 
     def _generate_id(self):
         """
         Generates a unique worker id.
         """
-        return 'worker-%s' % secrets.token_hex(8)
+        return "worker-%s" % secrets.token_hex(8)
 
     def _kill_orphans(self):
         """
         Looks for orphaned jobs on the machine and if found kills them.
         """
         try:
-            containers = tryd(self._docker_client.containers.list, all=True,
-                              sparse=True)
+            containers = tryd(
+                self._docker_client.containers.list, all=True, sparse=True
+            )
             container_ids = [c.id for c in containers]
         except docker.errors.APIError as e:
-            self._logger.warning('Failed to list containers: %s' % e)
+            self._logger.warning("Failed to list containers: %s" % e)
             return 0
 
         orphans = self._workqueue.check_for_orphans(container_ids)
         for (docker_id, job_id) in orphans:
             try:
-                self._logger.info('Orphan found: docker_id=%s, job_id=%s.'
-                                 % (docker_id, job_id))
+                self._logger.info(
+                    "Orphan found: docker_id=%s, job_id=%s." % (docker_id, job_id)
+                )
                 container = tryd(self._docker_client.containers.get, docker_id)
                 if container is not None:
-                    self._logger.info('Orphan state=%s, trying to kill it.'
-                                     % (container.status))
+                    self._logger.info(
+                        "Orphan state=%s, trying to kill it." % (container.status)
+                    )
                     tryd(container.kill)
                     tryd(container.remove, force=True)
             except docker.errors.APIError as e:
-                self._logger.error('Failed to kill %s: %s' % (docker_id, e))
+                self._logger.error("Failed to kill %s: %s" % (docker_id, e))
             finally:
                 self._workqueue.not_orphaned(job_id)
 

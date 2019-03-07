@@ -6,7 +6,6 @@ import hyperdock.common.notification
 
 
 class TestNotiticationInit(TestCase):
-
     def tearDown(self):
         # Reset cached list of valid services
         hyperdock.common.notification._VALID_SERVICES = None
@@ -17,7 +16,7 @@ class TestNotiticationInit(TestCase):
         """
         self.assertListEqual(valid_services(), [])
 
-    @mock.patch('hyperdock.common.notification.Pushover')
+    @mock.patch("hyperdock.common.notification.Pushover")
     def test_valid_services(self, mock_class):
         """
         test that valid_services returns valid services

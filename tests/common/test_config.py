@@ -9,7 +9,6 @@ import yaml
 
 
 class TestConfig(TestCase):
-
     def tearDown(self):
         for key in DEFAULT_CONFIG:
             if key in os.environ:
@@ -27,15 +26,15 @@ class TestConfig(TestCase):
         """
         cfg = {}
         for key in DEFAULT_CONFIG:
-            cfg[key] = 'test'
-            os.environ[key] = 'test'
+            cfg[key] = "test"
+            os.environ[key] = "test"
         self.assertDictEqual(config(force_reload=True), cfg)
 
     def test_read_invalid_yaml(self):
         """
         invalid yaml should be skipped silently
         """
-        self.assertDictEqual(config('LICENSE', force_reload=True), DEFAULT_CONFIG)
+        self.assertDictEqual(config("LICENSE", force_reload=True), DEFAULT_CONFIG)
 
     def test_read_yaml(self):
         """
@@ -43,6 +42,6 @@ class TestConfig(TestCase):
         """
         cfg = {}
         cfg.update(DEFAULT_CONFIG)
-        with open('.travis.yml', mode='r') as data_file:
+        with open(".travis.yml", mode="r") as data_file:
             cfg.update(yaml.load(data_file))
-        self.assertDictEqual(config('.travis.yml', force_reload=True), cfg)
+        self.assertDictEqual(config(".travis.yml", force_reload=True), cfg)

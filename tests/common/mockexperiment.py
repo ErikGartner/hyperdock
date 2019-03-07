@@ -26,8 +26,8 @@ class MockExperiment(Experiment):
         self.failure = True
 
     def get_result(self):
-        state = 'ok' if not self.failure else 'failure'
-        return {'loss': 1.0, 'state': state}
+        state = "ok" if not self.failure else "failure"
+        return {"loss": 1.0, "state": state}
 
     def cleanup(self):
         self.running = False

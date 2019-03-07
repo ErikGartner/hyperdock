@@ -11,7 +11,6 @@ from hyperdock.common.trialqueue import TrialQueue
 
 
 class TestSupervisor(HyperdockBaseTest):
-
     def setUp(self):
         super().setUp()
 
@@ -25,17 +24,19 @@ class TestSupervisor(HyperdockBaseTest):
         self.supervisor._trialqueue.update_trials = mock.MagicMock()
         self.supervisor._purge_dead_jobs = mock.MagicMock()
 
-        self.assertFalse(self.supervisor._running,
-                        'Supervisor should not be marked as running before started')
+        self.assertFalse(
+            self.supervisor._running,
+            "Supervisor should not be marked as running before started",
+        )
 
         # Start thread
         self.supervisor._sleep_time = 1
         self.supervisor.start()
 
-        self.assertTrue(self.supervisor.is_alive(),
-                        'Supervisor should be running')
-        self.assertTrue(self.supervisor._running,
-                        'Supervisor should be marked as running')
+        self.assertTrue(self.supervisor.is_alive(), "Supervisor should be running")
+        self.assertTrue(
+            self.supervisor._running, "Supervisor should be marked as running"
+        )
 
         self.supervisor._purge_old_workers.assert_called()
         self.supervisor._process_trials.assert_called()
@@ -58,15 +59,14 @@ class TestSupervisor(HyperdockBaseTest):
         self.supervisor._sleep_time = 1
         self.supervisor.start()
 
-        self.assertTrue(self.supervisor._running,
-                        'Supervisor should be running')
+        self.assertTrue(self.supervisor._running, "Supervisor should be running")
 
         self.supervisor.stop()
         self.supervisor.join(20)
-        self.assertFalse(self.supervisor.is_alive(),
-                         'Supervisor should have stopped')
-        self.assertFalse(self.supervisor._running,
-                         'Supervisor should not be marked as running')
+        self.assertFalse(self.supervisor.is_alive(), "Supervisor should have stopped")
+        self.assertFalse(
+            self.supervisor._running, "Supervisor should not be marked as running"
+        )
 
     def test_process_trials(self):
         """
@@ -80,21 +80,28 @@ class TestSupervisor(HyperdockBaseTest):
         # Reset workqueue
         self.work_col.remove({})
 
-        self.assertEqual(collection.find({'start_time': -1}).count(), 1,
-                         'Empty before start')
+        self.assertEqual(
+            collection.find({"start_time": -1}).count(), 1, "Empty before start"
+        )
 
         self.supervisor._process_trials()
-        self.assertEqual(collection.find({'start_time': -1}).count(), 0,
-                         'Trials not dequeued before start')
+        self.assertEqual(
+            collection.find({"start_time": -1}).count(),
+            0,
+            "Trials not dequeued before start",
+        )
 
         workq = self.db.workqueue
-        self.assertEqual(workq.find({'start_time': -1}).count(), 4,
-                         'Missing parameter combinations')
-        self.assertEqual(workq.find({'parameters':
-                                     {'learning_rate': 0.001,
-                                      'solver': 'adagrad'}
-                                     }).count(), 1,
-                         'Missing parameter combination')
+        self.assertEqual(
+            workq.find({"start_time": -1}).count(), 4, "Missing parameter combinations"
+        )
+        self.assertEqual(
+            workq.find(
+                {"parameters": {"learning_rate": 0.001, "solver": "adagrad"}}
+            ).count(),
+            1,
+            "Missing parameter combination",
+        )
 
     def test_purge_old_workers(self):
         """
@@ -103,16 +110,17 @@ class TestSupervisor(HyperdockBaseTest):
         should remove time-out workers from the worker collection
         """
         collection = self.db.workers
-        collection.insert({'id': 'test-worker-old', 'time': datetime(year=1,
-                                                                     month=1,
-                                                                     day=1)})
-        collection.insert({'id': 'test-worker-new', 'time': datetime.utcnow()})
-        self.assertEqual(collection.find().count(), 2, 'Missing workers')
+        collection.insert(
+            {"id": "test-worker-old", "time": datetime(year=1, month=1, day=1)}
+        )
+        collection.insert({"id": "test-worker-new", "time": datetime.utcnow()})
+        self.assertEqual(collection.find().count(), 2, "Missing workers")
 
         self.supervisor._purge_old_workers()
-        self.assertEqual(collection.find().count(), 1, 'Incorrect purge')
-        self.assertEqual(collection.find({'id': 'test-worker-new'}).count(), 1,
-                                         'Incorrect purge')
+        self.assertEqual(collection.find().count(), 1, "Incorrect purge")
+        self.assertEqual(
+            collection.find({"id": "test-worker-new"}).count(), 1, "Incorrect purge"
+        )
 
     def test_retry_dead_job(self):
         """
@@ -132,11 +140,23 @@ class TestSupervisor(HyperdockBaseTest):
 
         # Time out all jobs
         old_time = datetime.utcnow() - timedelta(minutes=300)
-        self.work_col.update_many({}, {'$set': {'last_update': old_time,
-                                        'start_time': old_time,
-                                        'worker': 'worker-1'}})
+        self.work_col.update_many(
+            {},
+            {
+                "$set": {
+                    "last_update": old_time,
+                    "start_time": old_time,
+                    "worker": "worker-1",
+                }
+            },
+        )
 
         self.supervisor._purge_dead_jobs()
-        self.assertEqual(self.work_col.find().count(), 5, 'Should have retried one job.')
-        self.assertEqual(self.work_col.find({'cancelled': True, 'orphaned': True}).count(),
-                         4, 'Should have marked jobs as cancelled and orphaned')
+        self.assertEqual(
+            self.work_col.find().count(), 5, "Should have retried one job."
+        )
+        self.assertEqual(
+            self.work_col.find({"cancelled": True, "orphaned": True}).count(),
+            4,
+            "Should have marked jobs as cancelled and orphaned",
+        )

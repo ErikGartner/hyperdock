@@ -1,5 +1,4 @@
-class Service():
-
+class Service:
     def __init__(self):
         """
         Creates the service object

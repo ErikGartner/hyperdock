@@ -10,12 +10,11 @@ from hyperdock.common.stability import *
 
 
 class TestStability(HyperdockBaseTest):
-
     def test_tryd(self):
         """
         tryd function should call function
         """
-        return_value = 'some-api-response'
+        return_value = "some-api-response"
         docker_function = mock.MagicMock(return_value=return_value)
         result = tryd(docker_function)
 
@@ -28,17 +27,21 @@ class TestStability(HyperdockBaseTest):
         tryd should retry and throw errors
         """
         # Test with invalid Docker connection
-        self.docker = client = docker.DockerClient(base_url='unix://var/run/docker0000.sock')
+        self.docker = client = docker.DockerClient(
+            base_url="unix://var/run/docker0000.sock"
+        )
 
-        with self.assertRaises(requests.exceptions.RequestException,
-                               msg='Should throw error after failed retries!'):
+        with self.assertRaises(
+            requests.exceptions.RequestException,
+            msg="Should throw error after failed retries!",
+        ):
             tryd(self.docker.containers.list)
 
     def test_trym(self):
         """
         trym should call the function
         """
-        return_value = 'some-api-response'
+        return_value = "some-api-response"
         mongo_function = mock.MagicMock(return_value=return_value)
         result = trym(mongo_function, {})
 
@@ -63,7 +66,7 @@ class TestStability(HyperdockBaseTest):
         mock_func = mock.MagicMock(side_effect=NotImplementedError)
 
         with self.assertRaises(NotImplementedError):
-            retry(mock_func, 2, 0.01, (NotImplementedError, ), 13)
+            retry(mock_func, 2, 0.01, (NotImplementedError,), 13)
         mock_func.assert_called_with(13)
         self.assertEqual(mock_func.call_count, 3)
 
@@ -81,4 +84,4 @@ class TestStability(HyperdockBaseTest):
         from the system.
         """
         msg = crash_analysis()
-        self.assertRegexpMatches(msg, r'Time: \d+', 'Should contain time stamp')
+        self.assertRegexpMatches(msg, r"Time: \d+", "Should contain time stamp")

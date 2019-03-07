@@ -13,16 +13,24 @@ from .stability import tryd
 
 LOG_TAIL_ROWS = 100
 
-SCHEMA_GRAPH = schema.Schema([{
-    'name': schema.And(str, len),
-    'x_axis': str,
-    'y_axis': str,
-    'series': schema.Schema([{
-        'label': schema.And(str),
-        'x': schema.And(list, len),
-        'y': schema.And(list, len)
-    }])
-}])
+SCHEMA_GRAPH = schema.Schema(
+    [
+        {
+            "name": schema.And(str, len),
+            "x_axis": str,
+            "y_axis": str,
+            "series": schema.Schema(
+                [
+                    {
+                        "label": schema.And(str),
+                        "x": schema.And(list, len),
+                        "y": schema.And(list, len),
+                    }
+                ]
+            ),
+        }
+    ]
+)
 
 
 class Experiment:
@@ -34,9 +42,9 @@ class Experiment:
         super().__init__()
 
         self.has_started = False
-        self.id = job['_id']
+        self.id = job["_id"]
         self._queue_job = job
-        self._logger = logging.getLogger('Experiment %s' % self.id)
+        self._logger = logging.getLogger("Experiment %s" % self.id)
         self._is_running = False
         self._result = {}
         self._graphs = []
@@ -52,15 +60,15 @@ class Experiment:
         """
         Start the experiment.
         """
-        self._logger.info('Starting experiment!')
+        self._logger.info("Starting experiment!")
 
         if self.has_started:
-            raise RuntimeError('This experiment has already been executed.')
+            raise RuntimeError("This experiment has already been executed.")
         self.has_started = True
 
         self._is_running = True
         self._setup_volumes()
-        image = self._queue_job['data']['docker']['image']
+        image = self._queue_job["data"]["docker"]["image"]
         self._container = self._start_container(image)
 
         if self._container is None:
@@ -74,8 +82,8 @@ class Experiment:
             try:
                 tryd(self._container.stop)
             except (docker.errors.APIError) as e:
-                self._logger.error('Failed to stop container:\n%s' % e)
-                self._result = {'status': 'fail', 'msg': e}
+                self._logger.error("Failed to stop container:\n%s" % e)
+                self._result = {"status": "fail", "msg": e}
             self._fetch_result()
 
     def cleanup(self):
@@ -89,7 +97,7 @@ class Experiment:
             try:
                 tryd(self._container.remove, force=True)
             except (docker.errors.APIError) as e:
-                self._logger.error('Failed to remove container:\n%s' % e)
+                self._logger.error("Failed to remove container:\n%s" % e)
             self._container = None
             self._is_running = False
 
@@ -112,7 +120,7 @@ class Experiment:
         Returns the result, that is: state, loss, and any extra data.
         """
         if self.is_running():
-            return {'state': 'running'}
+            return {"state": "running"}
         else:
             return self._result
 
@@ -122,22 +130,23 @@ class Experiment:
         """
         if self._container is not None:
             try:
-                logs = tryd(self._container.logs, stdout=True, stderr=True,
-                            tail=LOG_TAIL_ROWS)
+                logs = tryd(
+                    self._container.logs, stdout=True, stderr=True, tail=LOG_TAIL_ROWS
+                )
                 if isinstance(logs, (bytes, bytearray)):
                     logs = logs.decode()
             except (docker.errors.APIError) as e:
-                logs = 'Failed to fetch logs.'
-                self._logger.warning('Failed to fetch logs: %s' % e)
+                logs = "Failed to fetch logs."
+                self._logger.warning("Failed to fetch logs: %s" % e)
 
             self._update = {
-                'container':  {
-                    'name': self._container.name,
-                    'id': self._container.short_id,
-                    'long_id': self._container.id,
-                    'logs': logs,
-                    'results_folder': self._volume_root,
-                    'graphs': self._read_graphs(),
+                "container": {
+                    "name": self._container.name,
+                    "id": self._container.short_id,
+                    "long_id": self._container.id,
+                    "logs": logs,
+                    "results_folder": self._volume_root,
+                    "graphs": self._read_graphs(),
                 }
             }
 
@@ -148,30 +157,36 @@ class Experiment:
         Starts a docker container and returns its handle.
         """
         try:
-            runtime = try_key(self._queue_job['data'], '', 'docker', 'runtime')
+            runtime = try_key(self._queue_job["data"], "", "docker", "runtime")
             environment = self._get_environment()
             volumes = self._volumes
-            container = tryd(self._docker_client.containers.run,
-                             image=image,
-                             tty=False,
-                             detach=True,
-                             environment=self._get_environment(),
-                             runtime=runtime,
-                             log_config={'type': 'json-file'},
-                             stdout=True,
-                             stderr=True,
-                             privileged=self._privileged,
-                             volumes=self._volumes,
-                             hostname=str(self.id))
-            self._logger.info('Started container %s, environment: %s, volumes: %s'
-                             % (container, environment, volumes))
+            container = tryd(
+                self._docker_client.containers.run,
+                image=image,
+                tty=False,
+                detach=True,
+                environment=self._get_environment(),
+                runtime=runtime,
+                log_config={"type": "json-file"},
+                stdout=True,
+                stderr=True,
+                privileged=self._privileged,
+                volumes=self._volumes,
+                hostname=str(self.id),
+            )
+            self._logger.info(
+                "Started container %s, environment: %s, volumes: %s"
+                % (container, environment, volumes)
+            )
             return container
 
-        except (docker.errors.ContainerError,
-                docker.errors.APIError,
-                docker.errors.ImageNotFound) as e:
-            self._logger.error('Failed to start container:\n%s' % e)
-            self._result = {'state': 'fail', 'msg': e}
+        except (
+            docker.errors.ContainerError,
+            docker.errors.APIError,
+            docker.errors.ImageNotFound,
+        ) as e:
+            self._logger.error("Failed to start container:\n%s" % e)
+            self._result = {"state": "fail", "msg": e}
             return None
 
     def _get_environment(self):
@@ -181,14 +196,14 @@ class Experiment:
         the wrong format.
         """
         env = []
-        job_env = try_key(self._queue_job['data'], [], 'docker', 'environment')
+        job_env = try_key(self._queue_job["data"], [], "docker", "environment")
         if isinstance(job_env, list):
             env.extend(job_env)
         elif isinstance(job_env, dict):
             for k, v in job_env.items():
-                env.append('%s=%s' % (k, v))
+                env.append("%s=%s" % (k, v))
         else:
-            raise ValueError('Invalid environment in job spec: %s' % job_env)
+            raise ValueError("Invalid environment in job spec: %s" % job_env)
         env.extend(self._worker_env)
         return env
 
@@ -201,11 +216,10 @@ class Experiment:
         else:
             try:
                 tryd(self._container.reload)
-            except (docker.errors.ContainerError,
-                    docker.errors.APIError) as e:
-                self._logger.warning('Failed to get status of container: %s' % e)
+            except (docker.errors.ContainerError, docker.errors.APIError) as e:
+                self._logger.warning("Failed to get status of container: %s" % e)
                 return False
-            return self._container.status == 'running'
+            return self._container.status == "running"
 
     def _fetch_result(self):
         """
@@ -213,7 +227,7 @@ class Experiment:
         result from the container.
         """
         if self._container is None:
-            self._result = {'state': 'fail'}
+            self._result = {"state": "fail"}
 
         else:
             self._result = self._read_loss()
@@ -225,12 +239,12 @@ class Experiment:
         Tries to read the loss from the experiment.
         """
         try:
-            with open(os.path.join(self._volume_root, 'loss.json'), 'r') as f:
+            with open(os.path.join(self._volume_root, "loss.json"), "r") as f:
                 loss = json.load(f)
             return loss
         except:
-            self._logger.warning('Failed to read loss')
-            return {'state': 'fail', 'msg': 'Failed to read loss.'}
+            self._logger.warning("Failed to read loss")
+            return {"state": "fail", "msg": "Failed to read loss."}
 
     def _read_docker_logs(self):
         """
@@ -238,23 +252,26 @@ class Experiment:
         """
         try:
             docker_logs = tryd(self._container.logs, stdout=True, stderr=True)
-            with open(os.path.join(self._volume_root, 'docker_log.txt'), 'wb') as f:
+            with open(os.path.join(self._volume_root, "docker_log.txt"), "wb") as f:
                 f.write(docker_logs)
         except:
-            self._logger.warning('Failed to read/write docker logs: %s' % sys.exc_info()[0])
+            self._logger.warning(
+                "Failed to read/write docker logs: %s" % sys.exc_info()[0]
+            )
 
     def _read_graphs(self):
         """
         Tries to read and validate the graph from the out folder.
         """
-        graphs_path = os.path.join(self._volume_root, 'graphs.json')
+        graphs_path = os.path.join(self._volume_root, "graphs.json")
         try:
-            with open(graphs_path, 'r') as f:
+            with open(graphs_path, "r") as f:
                 graphs = json.load(f)
             graphs = SCHEMA_GRAPH.validate(graphs)
         except:
-            self._logger.debug('Failed to read %s: %s' %
-                              (graphs_path, sys.exc_info()[0]))
+            self._logger.debug(
+                "Failed to read %s: %s" % (graphs_path, sys.exc_info()[0])
+            )
             graphs = []
         return graphs
 
@@ -263,13 +280,14 @@ class Experiment:
         Sets up the volumes on the host's end along with the paths for the
         volumes.
         """
-        data = self._queue_job['data']
+        data = self._queue_job["data"]
 
         # Results folder path on host
-        results_folder = try_key(data, 'results', 'volumes', 'results')
-        folder_name = 'run_%s' % datetime.utcnow().strftime('%Y-%m-%d_%H.%M.%S.%f')
-        trial_folder = slugify('%s-%s' % (self._queue_job['trial_name'],
-                                          self._queue_job['trial']))
+        results_folder = try_key(data, "results", "volumes", "results")
+        folder_name = "run_%s" % datetime.utcnow().strftime("%Y-%m-%d_%H.%M.%S.%f")
+        trial_folder = slugify(
+            "%s-%s" % (self._queue_job["trial_name"], self._queue_job["trial"])
+        )
         volume_root = os.path.join(results_folder, trial_folder, folder_name)
 
         # Ensure path is absolute
@@ -277,31 +295,29 @@ class Experiment:
         os.makedirs(volume_root, exist_ok=True)
 
         # Folder paths
-        out_folder = os.path.join(volume_root, 'out')
-        in_file = os.path.join(volume_root, 'params.json')
-        loss_file = os.path.join(volume_root, 'loss.json')
-        docker_log = os.path.join(volume_root, 'docker_log.txt')
+        out_folder = os.path.join(volume_root, "out")
+        in_file = os.path.join(volume_root, "params.json")
+        loss_file = os.path.join(volume_root, "loss.json")
+        docker_log = os.path.join(volume_root, "docker_log.txt")
 
         # Make empty foldes and files
         os.mkdir(out_folder)
-        open(loss_file, 'a').close()
+        open(loss_file, "a").close()
 
         # Create params file
-        with open(in_file, 'w') as f:
-            json.dump(self._queue_job['parameters'], f)
+        with open(in_file, "w") as f:
+            json.dump(self._queue_job["parameters"], f)
 
-        self._volumes = [
-            '%s:/hyperdock' % volume_root,
-        ]
+        self._volumes = ["%s:/hyperdock" % volume_root]
         self._volume_root = volume_root
 
         # Get host data folder, ensure it is absolute
-        host_data_folder = try_key(data, '', 'volumes', 'data')
+        host_data_folder = try_key(data, "", "volumes", "data")
         host_data_folder = os.path.abspath(host_data_folder)
-        if host_data_folder is not '':
-            self._volumes.append('%s:/data:ro' % host_data_folder)
+        if host_data_folder is not "":
+            self._volumes.append("%s:/data:ro" % host_data_folder)
 
         return self._volumes
 
     def __str__(self):
-        return 'Experiment: %s' % self._queue_job
+        return "Experiment: %s" % self._queue_job

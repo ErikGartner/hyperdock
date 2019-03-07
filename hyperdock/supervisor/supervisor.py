@@ -18,9 +18,9 @@ class Supervisor(Thread):
     """
 
     def __init__(self, mongodb, in_docker=False):
-        super().__init__(name='Supervisor')
+        super().__init__(name="Supervisor")
 
-        self._logger = logging.getLogger('Supervisor')
+        self._logger = logging.getLogger("Supervisor")
         self._mongodb = mongodb
         self._trialqueue = TrialQueue(mongodb)
         self._workqueue = WorkQueue(mongodb)
@@ -36,7 +36,7 @@ class Supervisor(Thread):
         If it finds a trial it will process it by queuing new
         experiments.
         """
-        self._logger.info('Started main loop')
+        self._logger.info("Started main loop")
         self._running = True
 
         while self._running:
@@ -66,11 +66,12 @@ class Supervisor(Thread):
         Takes a trial experiment, expands the parameter space and
         adds experiments to the work queue.
         """
-        params_list = Grid.expand(trial['param_space'])
+        params_list = Grid.expand(trial["param_space"])
 
         for params in params_list:
-            self._workqueue.add_job(params, trial['data'], trial['_id'],
-                                   trial['name'], trial['priority'])
+            self._workqueue.add_job(
+                params, trial["data"], trial["_id"], trial["name"], trial["priority"]
+            )
 
     def _purge_old_workers(self):
         """
@@ -78,7 +79,7 @@ class Supervisor(Thread):
         timed out workers.
         """
         t = datetime.utcnow() - timedelta(seconds=WORK_TIMEOUT)
-        self._worker_collection.remove({'time': {'$lt': t}})
+        self._worker_collection.remove({"time": {"$lt": t}})
 
     def _purge_dead_jobs(self):
         """
@@ -89,14 +90,14 @@ class Supervisor(Thread):
             if job is None:
                 continue
 
-            retry = self._trialqueue.use_retry_ticket(job['trial'])
+            retry = self._trialqueue.use_retry_ticket(job["trial"])
             if not retry:
                 # No more retries
                 return
 
-            self._logger.info('Retried timed out job %s for trial %s' %
-                             (job['_id'], job['trial']))
-            self._workqueue.add_job(job['parameters'],
-                                   job['data'],
-                                   job['trial'],
-                                   job['priority'])
+            self._logger.info(
+                "Retried timed out job %s for trial %s" % (job["_id"], job["trial"])
+            )
+            self._workqueue.add_job(
+                job["parameters"], job["data"], job["trial"], job["priority"]
+            )

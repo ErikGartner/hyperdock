@@ -1,5 +1,4 @@
-
-class Search():
+class Search:
     """
     The super class for the parameter search methods
     Implemented:

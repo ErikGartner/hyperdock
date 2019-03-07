@@ -5,7 +5,7 @@ import os
 
 from .notification import Slack, Pushover, valid_services
 
-logger = logging.getLogger('utils')
+logger = logging.getLogger("utils")
 
 
 def try_key(dictionary, default, *keys):
@@ -25,14 +25,14 @@ def in_docker():
     """
     Checks if Hyperdock is running in its Docker image.
     """
-    return os.environ.get('HYPERDOCK_IN_DOCKER', 'false').lower() == 'true'
+    return os.environ.get("HYPERDOCK_IN_DOCKER", "false").lower() == "true"
 
 
 def setup_logging(level=logging.INFO):
     """
     Setups the format string and config for the Python logging module.
     """
-    FORMAT = '[%(asctime)-15s - %(levelname)s - %(name)s in %(filename)s:%(lineno)s - %(funcName)s()]: %(message)s\n'
+    FORMAT = "[%(asctime)-15s - %(levelname)s - %(name)s in %(filename)s:%(lineno)s - %(funcName)s()]: %(message)s\n"
     logging.basicConfig(format=FORMAT)
     logging.getLogger().setLevel(level)
 
@@ -43,9 +43,11 @@ def slugify(value):
     and converts spaces to hyphens.
     """
     value = str(value)
-    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
-    value = re.sub(r'[^\w\s-]', '', value).strip().lower()
-    return re.sub(r'[-\s]+', '-', value)
+    value = (
+        unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
+    )
+    value = re.sub(r"[^\w\s-]", "", value).strip().lower()
+    return re.sub(r"[-\s]+", "-", value)
 
 
 def send_notifiction(title, msg):

@@ -5,7 +5,6 @@ from hyperdock.common.notification.service import Service
 
 
 class TestSlack(TestCase):
-
     def test_verify_credentials(self):
         """
         Service should raise NotImplementedError for verify_credentials
