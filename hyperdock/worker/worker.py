@@ -220,3 +220,6 @@ class Worker(Thread):
                 self._workqueue.not_orphaned(job_id)
 
         return len(orphans)
+
+    def __str__(self):
+        return "Worker {}".format(self.id)
