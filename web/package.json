@@ -6,12 +6,12 @@
     "test": "meteor test --once --driver-package meteortesting:mocha"
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0-beta.55",
+    "@babel/runtime": "^7.4.3",
     "@fortawesome/fontawesome-free": "^5.2.0",
     "chart.js": "^2.7.2",
     "google-palette": "^1.1.0",
     "highlight.js": "^9.12.0",
-    "lodash": ">=4.17.11",
+    "lodash": "^4.17.11",
     "meteor-node-stubs": "^0.4.1",
     "simpl-schema": "^1.4.3"
   },
