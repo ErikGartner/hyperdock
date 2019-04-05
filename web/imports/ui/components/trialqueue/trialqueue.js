@@ -14,7 +14,7 @@ Template.trialqueue.helpers({
   },
   trialqueue() {
     return TrialQueue.find({end_time: -1},
-                           {sort: {start_time: -1}});
+                           {sort: {start_time: 1}});
   },
   trialhistory() {
     return TrialQueue.find({end_time: {$ne: -1}},
@@ -57,8 +57,15 @@ Template.trialqueue.helpers({
 
 Template.trialqueue.events({
   'click .delete-trial': function (event) {
-    let id = $(event.currentTarget).data().id;
 
+    if(!event.ctrlKey) {
+      yes = confirm("Permanently delete the trial and its jobs?\nHold ctrl to force delete.")
+      if (!yes) {
+        return;
+      }
+    }
+
+    let id = $(event.currentTarget).data().id;
     Meteor.call('trialqueue.delete', id, (error) => {
       if (error) {
         alert(error.error);
@@ -67,6 +74,6 @@ Template.trialqueue.events({
   },
 
   'click #load-trials': function (event) {
-    Session.set('nbr-finished-trials', Session.get('nbr-finished-trials') + 10);
+    Session.set('nbr-finished-trials', Session.get('nbr-finished-trials') + 25);
   }
 })
