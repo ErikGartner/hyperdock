@@ -82,4 +82,6 @@ class TrialQueue:
         """
         Returns all trials that have not ended or been cancelled.
         """
-        return list(self._collection.find({"end_time": -1}))
+        return [
+            trial['_id'] for trial in self._collection.find({"end_time": -1})
+        ]
