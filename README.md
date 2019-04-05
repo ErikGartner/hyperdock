@@ -179,7 +179,7 @@ export MONGO_URL=mongodb://localhost:27017/hyperdock
 
 meteor npm install
 meteor run
-``
+```
 
 ## License
 Copyright 2016-2019 Erik Gärtner
