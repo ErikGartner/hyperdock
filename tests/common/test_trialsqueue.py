@@ -84,3 +84,4 @@ class TestTrialQueue(HyperdockBaseTest):
         trials = self.trialq.get_live_trials()
         self.assertEqual(len(trials), 1, "Should have 1 live trial")
         self.assertEqual(type(trials), list)
+        self.assertEqual(trials, [self.trial_id])
