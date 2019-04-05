@@ -19,7 +19,7 @@
           <div class="btn btn-danger cancel-work" data-id={{_id}}>Cancel</div>
           {{/if}}
           <a class="btn btn-primary" data-toggle="collapse" href="#collapseLogs-{{_id}}" role="button" aria-expanded="false" aria-controls="collapseLogs-{{_id}}">Info</a></td>
-        <td>{{_id}}</td>
+        <td><a href="/job/{{_id}}">{{_id}}</a></td>
         <td>{{getHost worker}}</td>
         <td>{{niceTime start_time}}</td>
         <td>{{resultSummary}}</td>

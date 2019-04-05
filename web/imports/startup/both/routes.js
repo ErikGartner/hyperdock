@@ -1,6 +1,7 @@
 import { Tracker } from 'meteor/tracker'
 
 import { TrialQueue } from '../../api/trialqueue/trialqueue.js';
+import { WorkQueue } from '../../api/workqueue/workqueue.js';
 
 Router.configure({
   layoutTemplate: 'ApplicationLayout'
@@ -27,3 +28,17 @@ Router.route('/trial/:trialId', {
     return TrialQueue.findOne(this.params.trialId);
   }
 });
+
+Router.route('/job/:jobId', function () {
+  job = WorkQueue.findOne(this.params.jobId);
+  if (job) {
+    var redirectUrl = '/trial/' + job.trial;
+  } else {
+    var redirectUrl = '/';
+  }
+
+  this.response.writeHead(302, {
+    'Location': redirectUrl
+  });
+  this.response.end();
+}, {where: 'server'});
