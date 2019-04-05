@@ -32,7 +32,7 @@ Router.route('/trial/:trialId', {
 Router.route('/job/:jobId', function () {
   job = WorkQueue.findOne(this.params.jobId);
   if (job) {
-    var redirectUrl = '/trial/' + job.trial;
+    var redirectUrl = '/trial/' + job.trial + '#' + this.params.jobId;
   } else {
     var redirectUrl = '/';
   }
