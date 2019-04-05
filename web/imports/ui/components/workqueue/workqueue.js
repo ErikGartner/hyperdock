@@ -84,3 +84,14 @@ Template.workqueue.events({
     });
   }
 })
+
+Template.workqueue.onRendered(function() {
+  // if jobId is given in hash; open and scroll to it.
+  var hash = Router.current().params.hash;
+  if (hash) {
+    var elem = $('#collapseLogs-' + hash);
+    elem.collapse('show');
+    var elem = $('#workRow-' + hash);
+    elem[0].scrollIntoView();
+  }
+});

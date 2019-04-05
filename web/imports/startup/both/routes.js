@@ -21,7 +21,7 @@ Router.route('/', {
 
 Router.route('/trial/:trialId', {
   name: 'Trial',
-  subscriptions: function() {
+  waitOn: function() {
    return [Meteor.subscribe('trial', this.params.trialId)];
   },
   data: function() {
