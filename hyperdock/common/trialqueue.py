@@ -54,7 +54,8 @@ class TrialQueue:
             ).count()
             if unfinished_jobs == 0:
                 self._collection.update_one(
-                    {"end_time": -1, "_id": trial_id}, {"$set": {"end_time": end_time}}
+                    {"end_time": -1, "_id": trial_id},
+                    {"$set": {"end_time": end_time}},
                 )
 
                 send_notifiction("Trial finished", trial["name"])
@@ -76,3 +77,9 @@ class TrialQueue:
         Retrieves the trial by id.
         """
         return self._collection.find_one({"_id": trial_id})
+
+    def get_live_trials(self):
+        """
+        Returns all trials that have not ended or been cancelled.
+        """
+        return list(self._collection.find({"end_time": -1}))

@@ -33,7 +33,9 @@ class TestSupervisor(HyperdockBaseTest):
         self.supervisor._sleep_time = 1
         self.supervisor.start()
 
-        self.assertTrue(self.supervisor.is_alive(), "Supervisor should be running")
+        self.assertTrue(
+            self.supervisor.is_alive(), "Supervisor should be running"
+        )
         self.assertTrue(
             self.supervisor._running, "Supervisor should be marked as running"
         )
@@ -59,13 +61,18 @@ class TestSupervisor(HyperdockBaseTest):
         self.supervisor._sleep_time = 1
         self.supervisor.start()
 
-        self.assertTrue(self.supervisor._running, "Supervisor should be running")
+        self.assertTrue(
+            self.supervisor._running, "Supervisor should be running"
+        )
 
         self.supervisor.stop()
         self.supervisor.join(20)
-        self.assertFalse(self.supervisor.is_alive(), "Supervisor should have stopped")
         self.assertFalse(
-            self.supervisor._running, "Supervisor should not be marked as running"
+            self.supervisor.is_alive(), "Supervisor should have stopped"
+        )
+        self.assertFalse(
+            self.supervisor._running,
+            "Supervisor should not be marked as running",
         )
 
     def test_process_trials(self):
@@ -93,7 +100,9 @@ class TestSupervisor(HyperdockBaseTest):
 
         workq = self.db.workqueue
         self.assertEqual(
-            workq.find({"start_time": -1}).count(), 4, "Missing parameter combinations"
+            workq.find({"start_time": -1}).count(),
+            4,
+            "Missing parameter combinations",
         )
         self.assertEqual(
             workq.find(
@@ -119,7 +128,9 @@ class TestSupervisor(HyperdockBaseTest):
         self.supervisor._purge_old_workers()
         self.assertEqual(collection.find().count(), 1, "Incorrect purge")
         self.assertEqual(
-            collection.find({"id": "test-worker-new"}).count(), 1, "Incorrect purge"
+            collection.find({"id": "test-worker-new"}).count(),
+            1,
+            "Incorrect purge",
         )
 
     def test_retry_dead_job(self):
@@ -128,9 +139,6 @@ class TestSupervisor(HyperdockBaseTest):
 
         jobs that have timed out should be retried given enough tickets
         """
-
-        self.work_col = self.work_col
-
         # Reset self.work_col
         self.work_col.remove({})
 
@@ -159,4 +167,25 @@ class TestSupervisor(HyperdockBaseTest):
             self.work_col.find({"cancelled": True, "orphaned": True}).count(),
             4,
             "Should have marked jobs as cancelled and orphaned",
+        )
+
+    def test_cancel_abandoned_jobs(self):
+        """
+        test cancelling jobs when the trials become invalid
+
+        jobs that have timed out should be retried given enough tickets
+        """
+        self.assertEqual(self.work_col.find().count(), 1)
+
+        # Finish trial
+        self.trial_col.update({'_id': self.trial_id}, {"$set": {"end_time": 1}})
+
+        self.supervisor._cancel_abandoned_jobs()
+
+        self.assertEqual(
+            self.work_col.find(
+                {"cancelled": True, "end_time": {"$ne": -1}}
+            ).count(),
+            1,
+            "Should have marked jobs as cancelled",
         )

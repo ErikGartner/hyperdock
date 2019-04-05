@@ -18,7 +18,12 @@ SLEEP_TIME = 15
 
 class Worker(Thread):
     def __init__(
-        self, mongodb, docker_env, parallelism=1, in_docker=False, privileged=False
+        self,
+        mongodb,
+        docker_env,
+        parallelism=1,
+        in_docker=False,
+        privileged=False,
     ):
         super().__init__(name="Worker")
 
@@ -68,7 +73,9 @@ class Worker(Thread):
 
             diff = datetime.now() - self._last_loop_finished
             if diff > timedelta(seconds=0.5 * WORK_TIMEOUT):
-                self._logger.warning("Loop time was dangerously long: %s" % diff)
+                self._logger.warning(
+                    "Loop time was dangerously long: %s" % diff
+                )
 
         self._shutdown()
 
@@ -92,8 +99,10 @@ class Worker(Thread):
             "host": self.host,
             "version": hyperdock_version,
         }
-        self._mongodb.workers.update_one({"id": self.id}, {"$set": data}, upsert=True)
-        self._logger.info("Alive message sent: {}".format(data))
+        self._mongodb.workers.update_one(
+            {"id": self.id}, {"$set": data}, upsert=True
+        )
+        self._logger.debug("Alive message sent: {}".format(data))
 
     def _get_hostname(self, in_docker=False):
         """
@@ -178,7 +187,8 @@ class Worker(Thread):
                 ex.cleanup()
             except:
                 self._logger.error(
-                    "Failed to stop experiment during shutdown: %s", sys.exc_info()[0]
+                    "Failed to stop experiment during shutdown: %s",
+                    sys.exc_info()[0],
                 )
         self._experiments = []
 
@@ -205,12 +215,14 @@ class Worker(Thread):
         for (docker_id, job_id) in orphans:
             try:
                 self._logger.info(
-                    "Orphan found: docker_id=%s, job_id=%s." % (docker_id, job_id)
+                    "Orphan found: docker_id=%s, job_id=%s."
+                    % (docker_id, job_id)
                 )
                 container = tryd(self._docker_client.containers.get, docker_id)
                 if container is not None:
                     self._logger.info(
-                        "Orphan state=%s, trying to kill it." % (container.status)
+                        "Orphan state=%s, trying to kill it."
+                        % (container.status)
                     )
                     tryd(container.kill)
                     tryd(container.remove, force=True)

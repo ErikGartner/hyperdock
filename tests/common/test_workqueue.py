@@ -30,14 +30,18 @@ class TestWorkQueue(HyperdockBaseTest):
         self.assertEqual(
             self.work_col.find_one()["start_time"], -1, msg="Timestamp off"
         )
-        self.assertEqual(self.work_col.find_one()["end_time"], -1, msg="Timestamp off")
+        self.assertEqual(
+            self.work_col.find_one()["end_time"], -1, msg="Timestamp off"
+        )
         self.assertEqual(
             self.work_col.find_one()["last_update"], -1, msg="Timestamp off"
         )
 
         job = self.work_col.find_one()
         self.assertEqual(job["trial"], self.trial_id, msg="Incorrect trial id")
-        self.assertEqual(job["trial_name"], self.trial_name, msg="Incorrect trial name")
+        self.assertEqual(
+            job["trial_name"], self.trial_name, msg="Incorrect trial name"
+        )
 
     def test_take_job(self):
         """
@@ -125,7 +129,9 @@ class TestWorkQueue(HyperdockBaseTest):
 
         res = self.workqueue.purge_dead_jobs()
         self.assertEqual(
-            self.work_col.find({"cancelled": True}).count(), 2, "Should purge dead jobs"
+            self.work_col.find({"cancelled": True}).count(),
+            2,
+            "Should purge dead jobs",
         )
         self.assertEqual(res[0]["cancelled"], True)
         self.assertEqual(res[0]["result"]["state"], "fail")
@@ -168,3 +174,15 @@ class TestWorkQueue(HyperdockBaseTest):
             0,
             "Shouldn't report as orphan",
         )
+
+    def test_cancel_invalid_jobs(self):
+        ok_trials = [self.trial_id]
+        jobs = self.workqueue.cancel_invalid_jobs(ok_trials)
+        self.assertEqual(len(jobs), 0, "Shouldn't cancel queing jobs")
+        self.assertEqual(self.work_col.find({"cancelled": False}).count(), 1)
+
+        jobs = self.workqueue.cancel_invalid_jobs([])
+        self.assertEqual(
+            len(jobs), 1, "Empty list of valid trials should cancel all jobs"
+        )
+        self.assertEqual(self.work_col.find({"cancelled": True}).count(), 1)

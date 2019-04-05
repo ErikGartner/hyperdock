@@ -44,6 +44,7 @@ class Supervisor(Thread):
             self._process_trials()
             self._trialqueue.update_trials()
             self._purge_dead_jobs()
+            self._cancel_abandoned_jobs()
             sleep(self._sleep_time)
 
     def stop(self):
@@ -70,7 +71,11 @@ class Supervisor(Thread):
 
         for params in params_list:
             self._workqueue.add_job(
-                params, trial["data"], trial["_id"], trial["name"], trial["priority"]
+                params,
+                trial["data"],
+                trial["_id"],
+                trial["name"],
+                trial["priority"],
             )
 
     def _purge_old_workers(self):
@@ -87,17 +92,24 @@ class Supervisor(Thread):
         """
         dead_jobs = self._workqueue.purge_dead_jobs()
         for job in dead_jobs:
-            if job is None:
-                continue
-
             retry = self._trialqueue.use_retry_ticket(job["trial"])
             if not retry:
                 # No more retries
                 return
 
             self._logger.info(
-                "Retried timed out job %s for trial %s" % (job["_id"], job["trial"])
+                "Retried timed out job %s for trial %s"
+                % (job["_id"], job["trial"])
             )
             self._workqueue.add_job(
                 job["parameters"], job["data"], job["trial"], job["priority"]
             )
+
+    def _cancel_abandoned_jobs(self):
+        """
+        All jobs not associated with a live trial will be cancelled.
+        """
+        live_trials = self._trialqueue.get_live_trials()
+        jobs = self._workqueue.cancel_invalid_jobs(live_trials)
+        if len(jobs) > 0:
+            self._logger.info("Cancelled: {}".format(jobs))
