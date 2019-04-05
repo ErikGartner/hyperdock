@@ -1,3 +1,5 @@
+import { _ } from 'lodash';
+
 import { TrialQueue, TrialInsertSchema } from '/imports/api/trialqueue/trialqueue.js';
 import { WorkQueue } from '../../../api/workqueue/workqueue.js';
 import { Meteor } from 'meteor/meteor';

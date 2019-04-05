@@ -1,3 +1,5 @@
+import { _ } from 'lodash';
+
 import './trial.html';
 import '../../components/workqueue/workqueue.js';
 import { WorkQueue } from '../../../api/workqueue/workqueue.js';
@@ -38,7 +40,7 @@ Template.Trial.events({
     let trial_spec = {
       name: t.name,
       docker_image: t.data.docker.image,
-      docker_runtime: t.data.docker.runtime,
+      docker_runtime: _.defaultTo(t.data.docker.runtime, ''),
       results_path: t.data.volumes.results,
       data_path: t.data.volumes.data,
       docker_environment: t.data.docker.environment,

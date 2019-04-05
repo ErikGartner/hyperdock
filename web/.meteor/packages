@@ -28,7 +28,6 @@ aldeed:autoform
 aldeed:collection2@3.0.0
 aldeed:delete-button
 ongoworks:security
-underscore@1.0.10
 reywood:publish-composite
 iron:router
 momentjs:moment

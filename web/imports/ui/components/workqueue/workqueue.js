@@ -1,3 +1,5 @@
+import { _ } from 'lodash';
+
 import { WorkQueue } from '/imports/api/workqueue/workqueue.js';
 import { TrialQueue } from '/imports/api/trialqueue/trialqueue.js';
 import { Workers } from '/imports/api/workers/workers.js';
