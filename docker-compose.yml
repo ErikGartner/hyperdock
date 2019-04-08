@@ -1,0 +1,29 @@
+version: '3'
+services:
+  supervisor:
+    image: erikgartner/hyperdock-supervisor:latest
+    command: --mongodb mongodb://mongo:27017/hyperdock
+    links:
+      - mongo
+
+  worker:
+    image: erikgartner/hyperdock-worker:latest
+    command: --mongodb mongodb://mongo:27017/hyperdock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home:/home # -- SET THIS PATH TO YOUR LOCAL HYPERDOCK DIRECTORY!
+    links:
+      - mongo
+
+  webui:
+    image: erikgartner/hyperdock-webui
+    ports:
+      - "3000:3000"
+    environment:
+      - "ROOT_URL=http://localhost:3000/"
+      - "MONGO_URL=mongodb://mongo:27017/hyperdock"
+    links:
+      - mongo
+
+  mongo:
+    image: mongo

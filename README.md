@@ -32,7 +32,7 @@ Hyperdock currently only implements grid search of the parameter space but futur
 
 ## Setting up Hyperdock
 
-You can either use the pre-built Docker images for Hyperdock or run the sub-systems directly on the host(s).
+You can either use the pre-built Docker images for Hyperdock or run the sub-systems directly on the host(s). Finally you can also use the [Docker compose](#docker-compose) file to setup a single host Hyperdock environment useful for testing - this method is very quick way to get started.
 
 ### Supervisor
 To start the Hyperdock Supervisor using the Docker image run the following command:
@@ -151,6 +151,13 @@ To start a Mongo database you can use this simple Docker command or use any norm
 ```bash
 # Starts mongo db, add --bind_ip_all to listen on all interfaces.
 docker run --name hyperdock-mongo -p 27017:27017 -d mongo
+```
+
+### Docker Compose
+To setup Hyperdock on a single host the Docker compose file is a very easy way to get started. Just set the marked line in `docker-compose.yml` to a host directory that should contain data and results. Then simply run:
+
+```bash
+docker-compose up
 ```
 
 ## Developing
