@@ -150,7 +150,7 @@ class WorkQueue:
                     "$set": {
                         "cancelled": True,
                         "end_time": now,
-                        "result": {"state": "fail", "msg": "Cancelled."},
+                        "result": {"state": "fail", "msg": "Abandoned"},
                     }
                 },
                 new=True,
