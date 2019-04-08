@@ -131,10 +131,7 @@ class Experiment:
         if self._container is not None:
             try:
                 logs = tryd(
-                    self._container.logs,
-                    stdout=True,
-                    stderr=True,
-                    tail=LOG_TAIL_ROWS,
+                    self._container.logs, stdout=True, stderr=True, tail=LOG_TAIL_ROWS
                 )
                 if isinstance(logs, (bytes, bytearray)):
                     logs = logs.decode()
@@ -225,9 +222,7 @@ class Experiment:
             try:
                 tryd(self._container.reload)
             except (docker.errors.ContainerError, docker.errors.APIError) as e:
-                self._logger.warning(
-                    "Failed to get status of container: %s" % e
-                )
+                self._logger.warning("Failed to get status of container: %s" % e)
                 return False
             return self._container.status == "running"
 
@@ -262,9 +257,7 @@ class Experiment:
         """
         try:
             docker_logs = tryd(self._container.logs, stdout=True, stderr=True)
-            with open(
-                os.path.join(self._volume_root, "docker_log.txt"), "wb"
-            ) as f:
+            with open(os.path.join(self._volume_root, "docker_log.txt"), "wb") as f:
                 f.write(docker_logs)
         except:
             self._logger.warning(
@@ -296,9 +289,7 @@ class Experiment:
 
         # Results folder path on host
         results_folder = try_key(data, "results", "volumes", "results")
-        folder_name = "run_%s" % datetime.utcnow().strftime(
-            "%Y-%m-%d_%H.%M.%S.%f"
-        )
+        folder_name = "run_%s" % datetime.utcnow().strftime("%Y-%m-%d_%H.%M.%S.%f")
         trial_folder = slugify(
             "%s-%s" % (self._queue_job["trial_name"], self._queue_job["trial"])
         )

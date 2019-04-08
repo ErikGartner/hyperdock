@@ -71,11 +71,7 @@ class Supervisor(Thread):
 
         for params in params_list:
             self._workqueue.add_job(
-                params,
-                trial["data"],
-                trial["_id"],
-                trial["name"],
-                trial["priority"],
+                params, trial["data"], trial["_id"], trial["name"], trial["priority"]
             )
 
     def _purge_old_workers(self):
@@ -98,8 +94,7 @@ class Supervisor(Thread):
                 return
 
             self._logger.info(
-                "Retried timed out job %s for trial %s"
-                % (job["_id"], job["trial"])
+                "Retried timed out job %s for trial %s" % (job["_id"], job["trial"])
             )
             self._workqueue.add_job(
                 job["parameters"], job["data"], job["trial"], job["priority"]

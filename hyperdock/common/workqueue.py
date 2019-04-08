@@ -26,9 +26,7 @@ class WorkQueue:
         job = self._collection.find_and_modify(
             query={"start_time": -1, "cancelled": False},
             sort=[("priority", -1), ("created_on", 1)],
-            update={
-                "$set": {"start_time": t, "last_update": t, "worker": worker_id}
-            },
+            update={"$set": {"start_time": t, "last_update": t, "worker": worker_id}},
             new=True,
         )
         return job
@@ -70,9 +68,7 @@ class WorkQueue:
         """
         Checks if a certain job has been cancelled or all together removed.
         """
-        return (
-            self._collection.find_one({"_id": _id, "cancelled": False}) is None
-        )
+        return self._collection.find_one({"_id": _id, "cancelled": False}) is None
 
     def finish_job(self, _id, result):
         """
@@ -80,8 +76,7 @@ class WorkQueue:
         """
         t = datetime.utcnow()
         self._collection.update_one(
-            {"_id": _id},
-            {"$set": {"end_time": t, "last_update": t, "result": result}},
+            {"_id": _id}, {"$set": {"end_time": t, "last_update": t, "result": result}}
         )
 
     def purge_dead_jobs(self):
@@ -123,9 +118,7 @@ class WorkQueue:
         jobs = self._collection.find(
             {"orphaned": True, "update.container.long_id": {"$in": id_list}}
         )
-        return [
-            (j["update"]["container"]["long_id"], j["_id"]) for j in list(jobs)
-        ]
+        return [(j["update"]["container"]["long_id"], j["_id"]) for j in list(jobs)]
 
     def not_orphaned(self, _id):
         """
