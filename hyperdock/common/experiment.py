@@ -191,7 +191,7 @@ class Experiment:
             docker.errors.ImageNotFound,
         ) as e:
             self._logger.error("Failed to start container:\n%s" % e)
-            self._result = {"state": "fail", "msg": e}
+            self._result = {"state": "fail", "msg": str(e)}
             return None
 
     def _get_environment(self):
