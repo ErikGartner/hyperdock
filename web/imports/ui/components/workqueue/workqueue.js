@@ -47,7 +47,7 @@ Template.workqueue.helpers({
     let params = [];
     _.keys(trial.param_space).forEach(function (key){
       let value = trial.param_space[key];
-      if (_.isArray(value)) {
+      if (_.isArray(value) && value.length > 1) {
         params.push(key);
       }
     });
