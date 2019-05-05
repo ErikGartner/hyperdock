@@ -311,7 +311,7 @@ class Experiment:
 
         # Create params file
         with open(in_file, "w") as f:
-            json.dump(self._queue_job["parameters"], f)
+            json.dump(self._queue_job["parameters"], f, indent=2)
 
         self._volumes = ["%s:/hyperdock" % volume_root]
         self._volume_root = volume_root
