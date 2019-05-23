@@ -45,7 +45,7 @@ setup(
         "six==1.12.0",
         "sklearn==0.0",
         "slackclient==1.3.1",
-        "urllib3==1.24.1",
+        "urllib3==1.24.2",
         "websocket-client==0.54.0",
     ],
     extras_require={"tests": ["mongomock==3.15.0", "nose==1.3.7"]},
