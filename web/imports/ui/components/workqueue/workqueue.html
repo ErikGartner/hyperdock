@@ -7,6 +7,7 @@
       <th>Id</th>
       <th>Host</th>
       <th>Start Time</th>
+      <th>End Time</th>
       <th>Result</th>
     </thead>
     <tbody>
@@ -22,6 +23,7 @@
         <td><a href="/job/{{_id}}">{{_id}}</a></td>
         <td>{{getHost worker}}</td>
         <td>{{niceTime start_time}}</td>
+        <td>{{niceTime end_time}}</td>
         <td>{{resultSummary}}</td>
       </tr>
       <tr class="{{rowColor}} collapse" id="collapseLogs-{{_id}}">
