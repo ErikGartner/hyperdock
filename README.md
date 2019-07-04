@@ -201,7 +201,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 If you use Hyperdock in your research please cite it as:
 
     @misc{hyperdock,
-      author = {Gärtner, Erik},
+      author = {G{\"a}rtner, Erik},
       title = {Hyperdock},
       year = {2019},
       publisher = {GitHub},
