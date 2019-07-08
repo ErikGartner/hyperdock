@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from ..common.trialqueue import TrialQueue
 from ..common.workqueue import WorkQueue, WORK_TIMEOUT
-from .search import Grid
+from .search import Search
 
 SLEEP_TIME = 15
 
@@ -67,7 +67,7 @@ class Supervisor(Thread):
         Takes a trial experiment, expands the parameter space and
         adds experiments to the work queue.
         """
-        params_list = Grid.expand(trial["param_space"])
+        params_list = Search.expand(trial["param_space"])
 
         for params in params_list:
             self._workqueue.add_job(
