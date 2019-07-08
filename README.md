@@ -28,7 +28,7 @@ Each program that should be optimized needs to have its own Docker image, the *t
 
 ### How does Hyperdock work?
 
-Hyperdock supports grid search of parameters from lists and distributions. See the [wiki](https://github.com/ErikGartner/hyperdock/wiki/The-Parameter-Spaces) for details on how to define the parameters space.
+Hyperdock supports grid search of parameters from lists and distributions. See the [wiki](https://github.com/ErikGartner/hyperdock/wiki/The-Parameter-Space) for details on how to define the parameters space.
 
 ## Setting up Hyperdock
 
