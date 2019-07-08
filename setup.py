@@ -9,6 +9,7 @@ setup(
     version=__version__,
     description="A distributed hyperparameter optimizer for machine learning that lives in Docker",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     keywords="hyperparameter,optimization,docker",
     author="Erik Gärtner",
     author_email="erik@gartner.io",
