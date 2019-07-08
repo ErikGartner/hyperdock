@@ -266,3 +266,14 @@ class TestExperiment(HyperdockBaseTest):
             # Should throw error on invalid data type. Should be list/dict
             self.experiment._queue_job["data"]["docker"]["environment"] = 123
             res = self.experiment._get_environment()
+
+    def test_trial_id_in_folder_with_correct_case(self):
+        """
+        test that trial id is in volume_root name, see #84.
+        """
+        self.experiment.start()
+        self.assertIn(
+            str(self.experiment._queue_job["trial"]),
+            self.experiment._volume_root,
+            "Volume root doesn't have trial id in name",
+        )

@@ -289,10 +289,9 @@ class Experiment:
 
         # Results folder path on host
         results_folder = try_key(data, "results", "volumes", "results")
-        folder_name = "run_%s" % datetime.utcnow().strftime("%Y-%m-%d_%H.%M.%S.%f")
-        trial_folder = slugify(
-            "%s-%s" % (self._queue_job["trial_name"], self._queue_job["trial"])
-        )
+        folder_name = datetime.utcnow().strftime("%Y-%m-%d_%H.%M.%S.%f")
+        trial_name = slugify(self._queue_job["trial_name"])[:64]
+        trial_folder = "{}-{}".format(trial_name, self._queue_job["trial"])
         volume_root = os.path.join(results_folder, trial_folder, folder_name)
 
         # Ensure path is absolute
