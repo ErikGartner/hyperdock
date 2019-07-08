@@ -28,7 +28,7 @@ Each program that should be optimized needs to have its own Docker image, the *t
 
 ### How does Hyperdock work?
 
-Hyperdock currently only implements grid search of the parameter space but future release may contain other methods such as sampling from distributions over the parameters.
+Hyperdock supports grid search of parameters from lists and distributions. See the [wiki](https://github.com/ErikGartner/hyperdock/wiki/The-Parameter-Spaces) for details on how to define the parameters space.
 
 ## Setting up Hyperdock
 
@@ -208,5 +208,3 @@ If you use Hyperdock in your research please cite it as:
       journal = {GitHub repository},
       howpublished = {\url{https://github.com/ErikGartner/Hyperdock}},
     }
-
-
