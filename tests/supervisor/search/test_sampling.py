@@ -12,3 +12,6 @@ class TestSearch(TestCase):
     def test_sample_values(self):
         res = sample_values({"hdock_distr": "expon", "hdock_samples": 5})
         self.assertEqual(len(res), 5)
+
+        res = sample_values({"hdock_distr": "expon"})
+        self.assertEqual(res, None)
