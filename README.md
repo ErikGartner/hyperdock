@@ -137,7 +137,7 @@ Communication between Hyperdock and the target program is handle through a few s
 
 - `/hyperdock/`
   - `loss.json` write the loss here; format described [here](https://github.com/ErikGartner/hyperdock/wiki/Loss)
-  - `params.json` parameters for the run
+  - `params.json` parameters for the run; format described [here](https://github.com/ErikGartner/hyperdock/wiki/The-Parameter-Space)
   - `graphs.json` optional file, contains graphs for Web UI plots; format described [here](https://github.com/ErikGartner/hyperdock/issues/36)
   - `out/` persistent folder, use this to write any other files to the result folder
 - `/data` a read only folder that contains any external data needed
