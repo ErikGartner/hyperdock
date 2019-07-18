@@ -50,6 +50,9 @@ Template.workqueue.helpers({
       if (_.isArray(value) && value.length > 1) {
         params.push(key);
       }
+      if (_.isObject(value) && _.has(value, 'hdock_distr')) {
+        params.push(key);
+      }
     });
     let variable =  _.pick(object, params);
     return JSON.stringify(variable, null, '  ');
